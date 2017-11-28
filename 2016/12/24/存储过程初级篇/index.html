@@ -1,0 +1,763 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="存储过程,SQL," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文旨在把自己学到的有关存储过程的知识和大家分享，并希望能够帮助正在被存储过程折磨的同学。">
+<meta name="keywords" content="存储过程,SQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="存储过程初级篇">
+<meta property="og:url" content="http://yoursite.com/2016/12/24/存储过程初级篇/index.html">
+<meta property="og:site_name" content="天边一钩残月带三星">
+<meta property="og:description" content="本文旨在把自己学到的有关存储过程的知识和大家分享，并希望能够帮助正在被存储过程折磨的同学。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3993341-4182833472a4d9cf.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3993341-20071311d7544ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3993341-ebd43290102a5a9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-02-02T13:51:11.220Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="存储过程初级篇">
+<meta name="twitter:description" content="本文旨在把自己学到的有关存储过程的知识和大家分享，并希望能够帮助正在被存储过程折磨的同学。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3993341-4182833472a4d9cf.gif?imageMogr2/auto-orient/strip">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/24/存储过程初级篇/"/>
+
+
+
+
+
+  <title> 存储过程初级篇 | 天边一钩残月带三星 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">天边一钩残月带三星</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/24/存储过程初级篇/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="AlexanderZhou">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="天边一钩残月带三星">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="天边一钩残月带三星" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                存储过程初级篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-24T14:14:20+08:00">
+                2016-12-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/24/存储过程初级篇/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/24/存储过程初级篇/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文旨在把自己学到的有关存储过程的知识和大家分享，并希望能够帮助正在被存储过程折磨的同学。<br><a id="more"></a></p>
+<h3 id="什么是存储过程"><a href="#什么是存储过程" class="headerlink" title="什么是存储过程"></a>什么是存储过程</h3><blockquote>
+<p><a href="http://docs.oracle.com/cd/E11882_01/appdev.112/e25519/subprograms.htm#LNPLS99900" target="_blank" rel="external">官方定义：</a><br>A procedure is a subprogram that performs a specific action</p>
+<p>A PL/SQL subprogram is a named PL/SQL block that can be invoked repeatedly. If the subprogram has parameters, their values can differ for each invocation.</p>
+<p>A subprogram is either a procedure or a function. Typically, you use a procedure to perform an action and a function to compute and return a value.</p>
+</blockquote>
+<p><strong>翻译：</strong><br>存储过程是一个可以执行特定行为的子程序</p>
+<p>PL/SQL子程序是一个可以被重复调用的拥有名称的PL/SQL块（PL/SQL程序都是以块为基本单位的）。如果这个子程序有参数，我们则可以在调用的时候赋予不同的参数</p>
+<p>子程序可以是存储过程或函数。通常情况下，你可以使用存储过程来执行一个动作，使用函数来计算并返回一个值</p>
+<p><strong>总结：</strong>存储过程对于不同的领域的人有不同的理解方式。可以把它理解为一个指令集，它可以帮助我们完成一系列复杂的数据操作，也可以把它看做一个专门处理SQL的批处理工具，在需要的时候执行一些增删改查的操作。</p>
+<h3 id="为什么学习存储过程"><a href="#为什么学习存储过程" class="headerlink" title="为什么学习存储过程"></a>为什么学习存储过程</h3><p>相信在学习存储过程的你一定已经对普通SQL了如指掌了，简单了解了存储过程的概念之后，用普通的SQL与存储过程进行比较可以让我们在工作中做出正确的选择。两者区别很大，详细的对比可以问度娘，由于本文主讲存储过程，故罗列一些重要存储过程的优点如下：</p>
+<ul>
+<li>降低网络的通讯量。如果只是执行简单的SQL语句的话存储过程和普通SQL没有太大差别，但随着时间的推移SQL量越来越大甚至达到上百行时，其优越性明显体现</li>
+<li>提高执行效率。我们都知道SQL是先编译再执行的，而存储过程是预编译在服务器中的，当执行的时候跳过编译的环节效率自然会提高</li>
+<li>可维护性高。更新存储过程通常比更新，测试，重新部署需要较少的时间和精力</li>
+</ul>
+<p>总之存储过程是一个SQL提供的一个非常优秀的功能，在工作中我们或多或少都会用到，学会存储过程绝对会让你受益匪浅。</p>
+<h3 id="PL-SQL存储过程"><a href="#PL-SQL存储过程" class="headerlink" title="PL/SQL存储过程"></a>PL/SQL存储过程</h3><hr>
+<h5 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h5><p>存储过程在不同的数据库语言中语法略有不同，本文针对ORACLE的PL/SQL，但其他数据库语言也是大同小异<br><img src="http://upload-images.jianshu.io/upload_images/3993341-4182833472a4d9cf.gif?imageMogr2/auto-orient/strip" alt="create_procedure"></p>
+<p>上图是一个存储过程的模型，由此可知一个最简单的存储过程必须包含以下关键字CREATE、PROCEDURE、存储过程名称、IS/AS、PL/SQLB标准执行语句（BEGIN … END;）。<br>通过不断的实践我们将会完全理解上图的含义。首先从简单的存储过程开始(其功能是向EMP表中添加一条数据)：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span>        <span class="comment">-- 存储过程头部区域开始</span></div><div class="line"><span class="keyword">or</span> <span class="keyword">replace</span>    <span class="comment">--可选表示如果数据库中已经存在一条相同名称的存储过程就把它替换掉</span></div><div class="line"><span class="keyword">procedure</span></div><div class="line">proc_emp_create <span class="comment">--存储过程名称 procedure_name</span></div><div class="line">(</div><div class="line">empno <span class="built_in">number</span>, ename varchar2, job varchar2, mgr <span class="built_in">number</span>, hiredate <span class="built_in">date</span>, sal <span class="built_in">number</span>, comm <span class="built_in">number</span>, deptno <span class="built_in">number</span></div><div class="line">) <span class="comment">-- parameter_declaration 声明参数（注意不需要写长度），存储过程头部区域结束</span></div><div class="line"><span class="keyword">as</span></div><div class="line"><span class="comment">--声明区域，不需要声明变量可以不写</span></div><div class="line"><span class="keyword">begin</span> <span class="comment">-- PL/SQL标准执行语句</span></div><div class="line"><span class="comment">--执行区域</span></div><div class="line">  <span class="keyword">insert</span> <span class="keyword">into</span> emp <span class="keyword">values</span>(empno, ename, job, mgr, hiredate, sal, comm, deptno);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>当我们执行上面的存储过程之后这条存储过程就被编译到数据库中了，进入PLSQL Developer中的Procedures文件夹就可以看到我们刚才创建的存储过程了</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-20071311d7544ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="已经编译好的存储过程"></p>
+<p>既然存储过程已经写好并编译完成了，接下来就是使用我们创建的存储过程了。使用存储过程有两种方法：<br>第一种是直接在SQL窗口中，执行SQL语句。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">  proc_emp_create(<span class="number">7778</span>,<span class="string">'Alexander'</span>,<span class="string">'analyst'</span>,<span class="number">6789</span>,<span class="keyword">sysdate</span>,<span class="number">4321</span>,<span class="string">''</span>,<span class="number">20</span>);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>第二种是在命令窗口中使用execute命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Connected to Oracle Database 11g Enterprise Edition Release 11.2.0.1.0</div><div class="line">Connected as scott</div><div class="line"></div><div class="line">SQL&gt; execute   proc_emp_create(7778,&apos;Alexander&apos;,&apos;analyst&apos;,6789,sysdate,4321,&apos;&apos;,20);</div><div class="line"></div><div class="line">PL/SQL procedure successfully completed</div><div class="line"></div><div class="line">SQL&gt;</div></pre></td></tr></table></figure></p>
+<p>无论使用哪一种方法，我们都会发现在EMP表中已经多了一条刚才插入的数据。也就是说，我们以后想要向EMP表中插入数据的话，就可以直接调用这条存储过程来执行插入操作。</p>
+<p>从上面的例子可以看出，一个存储过程可以分成三个区域</p>
+<ol>
+<li>头部区域<br>用于编写最基本的存储过程头部标记，定义是否要创建一个替代原有存储过程的存储过程；决定是否定义参数；定义参数的类型（in out inout）；定义执行权限（Schema）。</li>
+<li>声明区域<br>用于声明变量（要定义长度）包括cursor；</li>
+<li>执行区域<br>用于执行业务逻辑代码，可以使用条件语句（选择、判断、循环。。。）来进行一些业务逻辑CRUD的处理</li>
+</ol>
+<h5 id="继续实践"><a href="#继续实践" class="headerlink" title="继续实践"></a>继续实践</h5><p>了解了存储过程的基本语法和用途之后，再通过一些简单的实例可以帮助我们更好的理解存储过程的语法和其含义。上面的例子简单的完成了对EMP表的添加功能，接下来将会使用存储过程对EMP进行删除、修改和查询功能，实现完整的CRUD<br><strong>D</strong><br>创建用于根据EMPNO删除EMP中一条数据的存储过程<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">procedure</span> proc_emp_delete(deleteid <span class="built_in">number</span>) <span class="keyword">as</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  <span class="keyword">delete</span> <span class="keyword">from</span> emp <span class="keyword">where</span> empno = deleteid;</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>执行（两种方法任选其一即可）<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">  proc_emp_delete(<span class="number">7778</span>);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>执行完成之后，刚才我们在了解存储过程语法的那条数据就被删除了<br><strong>U</strong><br>接下来来写更新的存储过程，首先准备一条数据<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">proc_emp_create(<span class="number">7778</span>,<span class="string">'Alexander'</span>,<span class="string">'analyst'</span>,<span class="number">6789</span>,<span class="keyword">sysdate</span>,<span class="number">4321</span>,<span class="string">''</span>,<span class="number">20</span>);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>执行之后刚才被我们删掉的数据就又重新插入到EMP表中，接下来写更新的存储过程<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">procedure</span></div><div class="line">proc_emp_update</div><div class="line">(</div><div class="line">p_empno <span class="built_in">number</span>, p_ename varchar2, p_job varchar2, p_mgr <span class="built_in">number</span>, p_hiredate <span class="built_in">date</span>, p_sal <span class="built_in">number</span>, p_comm <span class="built_in">number</span>, p_deptno <span class="built_in">number</span></div><div class="line">)</div><div class="line"><span class="keyword">as</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  <span class="keyword">update</span> emp <span class="keyword">set</span> ename = p_ename,job = p_job,mgr = p_mgr,hiredate=p_hiredate,sal = p_sal,comm=p_comm,deptno = p_deptno <span class="keyword">where</span> empno=p_empno;</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>需要注意的是参数不能和字段表的名称相同，接下来执行<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">  proc_emp_update(<span class="number">7778</span>,<span class="string">'Alexander'</span>,<span class="string">'analyst'</span>,<span class="string">'6789'</span>,<span class="keyword">sysdate</span>,<span class="number">4321</span>,<span class="number">3000</span>,<span class="number">10</span>);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>再次查询会发现Alexander的奖金多了3000块。<br>R<br>最后要做的就是查询了，对于多条数据的查询输出要使用cursor，留在下篇文章中讨论，我们先做一个最简单的单条数据查询<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">procedure</span> proc_emp_read</div><div class="line"><span class="keyword">as</span></div><div class="line">v_no <span class="built_in">number</span>;<span class="comment">--声明变量</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  <span class="keyword">select</span> <span class="keyword">count</span>(empno) <span class="keyword">into</span> v_no <span class="keyword">from</span> emp;<span class="comment">--在执行代码块里面查询一定要使用into赋值</span></div><div class="line">  dbms_output.put_line(v_no);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>接下来执行<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">  proc_emp_read;</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>我的结果如下图所示：<br><img src="http://upload-images.jianshu.io/upload_images/3993341-ebd43290102a5a9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查询EMP表总记录数结果"></p>
+<p>至此，简单的CRUD实践就完成了，相信你已经对存储过程有了大概的理解并能写出简单存储过程了。当然这只是存储过程最基本的使用方法，其高级特性（cursor、schema、控制语句、事务等）将在下篇文章中讨论。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/存储过程/" rel="tag"># 存储过程</a>
+          
+            <a href="/tags/SQL/" rel="tag"># SQL</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/14/http/" rel="next" title="HTTP协议总结">
+                <i class="fa fa-chevron-left"></i> HTTP协议总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/29/存储过程高级篇/" rel="prev" title="存储过程高级篇">
+                存储过程高级篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/24/存储过程初级篇/"
+           data-title="存储过程初级篇" data-url="http://yoursite.com/2016/12/24/存储过程初级篇/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="AlexanderZhou" />
+          <p class="site-author-name" itemprop="name">AlexanderZhou</p>
+          <p class="site-description motion-element" itemprop="description">All Roads Lead to Rome</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是存储过程"><span class="nav-number">1.</span> <span class="nav-text">什么是存储过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么学习存储过程"><span class="nav-number">2.</span> <span class="nav-text">为什么学习存储过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PL-SQL存储过程"><span class="nav-number">3.</span> <span class="nav-text">PL/SQL存储过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基本语法"><span class="nav-number">3.0.1.</span> <span class="nav-text">基本语法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#继续实践"><span class="nav-number">3.0.2.</span> <span class="nav-text">继续实践</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AlexanderZhou</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="/about/">AlexanderZhou</a> 个人专属
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="#">
+    心
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"alexanderzhou"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

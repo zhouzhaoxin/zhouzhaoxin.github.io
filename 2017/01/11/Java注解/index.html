@@ -1,0 +1,743 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="java," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="学习注解最重要的就是弄清楚，为什么学习注解？学习注解的好处？学完能做什么？1、能够读懂别人写的代码，特别是框架相关的代码；2、能让编程更加简洁，代码更加清晰；">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java注解">
+<meta property="og:url" content="http://yoursite.com/2017/01/11/Java注解/index.html">
+<meta property="og:site_name" content="天边一钩残月带三星">
+<meta property="og:description" content="学习注解最重要的就是弄清楚，为什么学习注解？学习注解的好处？学完能做什么？1、能够读懂别人写的代码，特别是框架相关的代码；2、能让编程更加简洁，代码更加清晰；">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-02-02T13:49:20.882Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java注解">
+<meta name="twitter:description" content="学习注解最重要的就是弄清楚，为什么学习注解？学习注解的好处？学完能做什么？1、能够读懂别人写的代码，特别是框架相关的代码；2、能让编程更加简洁，代码更加清晰；">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/11/Java注解/"/>
+
+
+
+
+
+  <title> Java注解 | 天边一钩残月带三星 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">天边一钩残月带三星</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/11/Java注解/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="AlexanderZhou">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="天边一钩残月带三星">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="天边一钩残月带三星" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Java注解
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-11T17:48:53+08:00">
+                2017-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java之路/" itemprop="url" rel="index">
+                    <span itemprop="name">Java之路</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/11/Java注解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/11/Java注解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>学习注解最重要的就是弄清楚，为什么学习注解？学习注解的好处？学完能做什么？<br>1、能够读懂别人写的代码，特别是框架相关的代码；<br>2、能让编程更加简洁，代码更加清晰；<br><a id="more"></a></p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>注解是Java提供的一种 源程序中的元素关联任何信息和任何元数据的途径和方法。</p>
+<h2 id="按来源分类注解"><a href="#按来源分类注解" class="headerlink" title="按来源分类注解"></a>按来源分类注解</h2><ul>
+<li>java自带注解—— @Override 覆盖了父类的方法、@Deprecation 表示方法已经过时、@Suppvisewarnings 用于通知java编译器忽略特定的编译警告</li>
+<li>第三方注解—— 种类很多，Spring的@Resource Hibernate 的@Entity等等</li>
+<li>自定义注解—— 自定义注解的结构：元注解（用来注解注解的）、@接口定义、无参无异常的成员方法的定义（成员类型受限：基本数据类型、String、枚举）</li>
+</ul>
+<h2 id="按照运行机制分类注解"><a href="#按照运行机制分类注解" class="headerlink" title="按照运行机制分类注解"></a>按照运行机制分类注解</h2><ol>
+<li>源码注解——注解只在源码中存在，编译程.class文件时就不存在了</li>
+<li>编译时注解——注解在源码和.class文件都会存在的，JDK自带的注解都是编译时注解</li>
+<li>运行时注解——在运行阶段还起作用，甚至会影响运行逻辑的注解，比如：@Autowired。</li>
+</ol>
+<h2 id="学会自定义注解"><a href="#学会自定义注解" class="headerlink" title="学会自定义注解"></a>学会自定义注解</h2><p>学习注解最终就是要把他应用的实际中，其中看懂注解固然重要，会自定义注解并在实际项目中解决问题也不可忽视</p>
+<p>要自定义注解就要先了解下面的的元注解：</p>
+<ul>
+<li>@Target—作用域（constructor(构造方法声明)，field（字段声明），local_variable（局部变量声明），method（方法声明），package（包声明），parameter（参数声明），type（类，接口声明））</li>
+<li>@Retention—生命周期（source：只在源码显示，编译时会丢弃。class：编译时会记录到class中，运行时忽略。runtime：运行时存在，可以通过反射读取）</li>
+<li>Inherited—标识注解(允许子类继承)</li>
+<li>Documented—生成Javadoc</li>
+</ul>
+<p>下面看一个自定义注解的实例<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Target</span>(&#123;ElementType.METHOD,&#125;) <span class="comment">//作用域(控制注解能被用在什么地方)</span></div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME) <span class="comment">//生命周期</span></div><div class="line"><span class="meta">@Inherited</span> <span class="comment">//标识注解(允许子类继承)</span></div><div class="line"><span class="meta">@Documented</span> <span class="comment">//生成javadoc会生成注解信息</span></div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Description &#123;</div><div class="line">    <span class="comment">//1.类型受限制，包括基本类型及String、Class、Annotation、Enumeration</span></div><div class="line">    <span class="comment">//2.若只有一个成员，则名称必须为value(),使用时可以忽略成员名和赋值号(=)</span></div><div class="line">    <span class="comment">//3.注解类可以没有成员，称为标识注解</span></div><div class="line">    <span class="comment">//4成员无参且无异常声明</span></div><div class="line">    <span class="function">String <span class="title">desc</span><span class="params">()</span></span>;</div><div class="line">    <span class="function">String <span class="title">author</span><span class="params">()</span></span>;</div><div class="line">    <span class="comment">//5可指定默认值</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">age</span><span class="params">()</span> <span class="keyword">default</span> 18</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Description&#123;</div><div class="line">    String desc;</div><div class="line">    String author;</div><div class="line">    <span class="keyword">int</span> age <span class="keyword">default</span> <span class="number">18</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="解析注解"><a href="#解析注解" class="headerlink" title="解析注解"></a>解析注解</h2><p>概念：通过反射获取类、函数或成员上的运行时注解信息，从而实现动态控制程序运行的逻辑。</p>
+<p>只是定义注解而不解析是没有任何用处的，解析注解为注解学习的核心，最主要的是了解两个方法<code>isAnnotationPresent</code>和<code>getAnnotation</code></p>
+<p>@Inherited（子类是否可继承） 对接口interface、方法继承没有作用，对类才有效。<br>通过反射回去类，函数或成员以上的运行时的注解信息从而实现动态控制程序运行的逻辑</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//1.使用类加载器加载类</span></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    Class c = Class.forName(<span class="string">"com.ann.test.Child"</span>);</div><div class="line"></div><div class="line">    <span class="comment">//2.找到类上的注解</span></div><div class="line">    <span class="keyword">boolean</span> isExist = c.isAnnotationPresent(Description.class);</div><div class="line">    <span class="keyword">if</span>(isExist)&#123;</div><div class="line">        <span class="comment">//3.拿到注解实例</span></div><div class="line">        Description d = (Description)c.getAnnotation(Description.class);</div><div class="line">        System.out.println(d.value());</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//4.找到方法上的注解</span></div><div class="line">    Method[] ms = c.getMethods();</div><div class="line"></div><div class="line">    <span class="keyword">for</span>(Method m:ms)&#123;</div><div class="line">        <span class="keyword">boolean</span> isMExist = m.isAnnotationPresent(Description.class);</div><div class="line">        <span class="keyword">if</span>(isMExist)&#123;</div><div class="line">            Description d = m.getAnnotation(Description.class);</div><div class="line">            System.out.println(d.value());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//另外一种解析方法</span></div><div class="line">    <span class="keyword">for</span>(Method m:ms)&#123;</div><div class="line">        Annotation[] as = m.getAnnotations();</div><div class="line">        <span class="keyword">for</span>(Annotation a:as)&#123;</div><div class="line">        <span class="keyword">if</span>(a <span class="keyword">instanceof</span> Description)&#123;</div><div class="line">            Description d = (Description)a;</div><div class="line">            System.out.println(d.value());</div><div class="line">        &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>学会自定义并解析注解后我们就可以在项目中灵活的使用注解功能了</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/04/Maven/" rel="next" title="初识Maven">
+                <i class="fa fa-chevron-left"></i> 初识Maven
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/19/Maven的IDE集成使用与生命周期/" rel="prev" title="Maven的IDE集成使用与生命周期">
+                Maven的IDE集成使用与生命周期 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/11/Java注解/"
+           data-title="Java注解" data-url="http://yoursite.com/2017/01/11/Java注解/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="AlexanderZhou" />
+          <p class="site-author-name" itemprop="name">AlexanderZhou</p>
+          <p class="site-description motion-element" itemprop="description">All Roads Lead to Rome</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#按来源分类注解"><span class="nav-number">2.</span> <span class="nav-text">按来源分类注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#按照运行机制分类注解"><span class="nav-number">3.</span> <span class="nav-text">按照运行机制分类注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学会自定义注解"><span class="nav-number">4.</span> <span class="nav-text">学会自定义注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析注解"><span class="nav-number">5.</span> <span class="nav-text">解析注解</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AlexanderZhou</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="/about/">AlexanderZhou</a> 个人专属
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="#">
+    心
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"alexanderzhou"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

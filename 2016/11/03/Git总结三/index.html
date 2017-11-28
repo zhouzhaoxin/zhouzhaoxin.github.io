@@ -1,0 +1,719 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Git," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="承接上文,解决冲突和Bug分支的处理">
+<meta name="keywords" content="Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git总结三">
+<meta property="og:url" content="http://yoursite.com/2016/11/03/Git总结三/index.html">
+<meta property="og:site_name" content="天边一钩残月带三星">
+<meta property="og:description" content="承接上文,解决冲突和Bug分支的处理">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-02-02T13:50:44.515Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git总结三">
+<meta name="twitter:description" content="承接上文,解决冲突和Bug分支的处理">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/03/Git总结三/"/>
+
+
+
+
+
+  <title> Git总结三 | 天边一钩残月带三星 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">天边一钩残月带三星</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle"></p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/03/Git总结三/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="AlexanderZhou">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="天边一钩残月带三星">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="天边一钩残月带三星" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Git总结三
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-03T22:44:17+08:00">
+                2016-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/项目管理/" itemprop="url" rel="index">
+                    <span itemprop="name">项目管理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/11/03/Git总结三/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/03/Git总结三/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>承接上文,解决冲突和Bug分支的处理<br><a id="more"></a></p>
+<h2 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div></pre></td><td class="code"><pre><div class="line">$ git <span class="keyword">merge</span> feature1</div><div class="line"><span class="keyword">Auto</span>-merging readme.md</div><div class="line">CONFLICT (<span class="keyword">content</span>): <span class="keyword">Merge</span> conflict <span class="keyword">in</span> readme.md</div><div class="line"><span class="keyword">Automatic</span> <span class="keyword">merge</span> <span class="keyword">failed</span>; fix conflicts and then <span class="keyword">commit</span> the result.</div><div class="line">$ git <span class="keyword">status</span></div><div class="line"><span class="keyword">On</span> branch <span class="keyword">master</span></div><div class="line">Your branch <span class="keyword">is</span> ahead <span class="keyword">of</span> <span class="string">'origin/master'</span> <span class="keyword">by</span> <span class="number">2</span> commits.</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git push"</span> <span class="keyword">to</span> publish your <span class="keyword">local</span> commits)</div><div class="line">You have unmerged paths.</div><div class="line">  (fix conflicts <span class="keyword">and</span> run <span class="string">"git commit"</span>)</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git merge --abort"</span> <span class="keyword">to</span> <span class="keyword">abort</span> the <span class="keyword">merge</span>)</div><div class="line"></div><div class="line">Unmerged paths:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git add &lt;file&gt;..."</span> <span class="keyword">to</span> mark resolution)</div><div class="line"></div><div class="line">        <span class="keyword">both</span> modified:   readme.md</div><div class="line"></div><div class="line"><span class="keyword">no</span> changes added <span class="keyword">to</span> <span class="keyword">commit</span> (<span class="keyword">use</span> <span class="string">"git add"</span> <span class="keyword">and</span>/<span class="keyword">or</span> <span class="string">"git commit -a"</span>)</div><div class="line">=======================================================================================readme.md</div><div class="line">Git <span class="keyword">is</span> a <span class="keyword">distributed</span> <span class="keyword">version</span> control <span class="keyword">system</span></div><div class="line">Git <span class="keyword">is</span> free software distributes <span class="keyword">under</span> the GPL</div><div class="line"><span class="keyword">Create</span> a <span class="keyword">new</span> branch <span class="keyword">is</span> <span class="keyword">quick</span></div><div class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; <span class="keyword">HEAD</span></div><div class="line">Creating a <span class="keyword">new</span> branch <span class="keyword">is</span> <span class="keyword">new</span> &amp; simple</div><div class="line">=======</div><div class="line">Creating a <span class="keyword">new</span> branch <span class="keyword">is</span> <span class="keyword">new</span> <span class="keyword">and</span> simple</div><div class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature1</div><div class="line">=======================================================================================readme.md</div><div class="line">$ git <span class="keyword">add</span> readme.md</div><div class="line">$ git <span class="keyword">commit</span> -m <span class="string">"conflict fixed"</span></div><div class="line">[<span class="keyword">master</span> ede2552] conflict <span class="keyword">fixed</span></div><div class="line">$ git <span class="keyword">log</span></div><div class="line"><span class="keyword">commit</span> ede25527dd72c6c876f6ef6b79dd00921e6a16cd</div><div class="line"><span class="keyword">Merge</span>: a142647 <span class="number">59</span>f1f6b</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">10</span>:<span class="number">22</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">    conflict <span class="keyword">fixed</span></div><div class="line"></div><div class="line"><span class="keyword">commit</span> a142647b09b5109ef18703c5dfd1f71c696c74b4</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">05</span>:<span class="number">55</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">    &amp; simple</div><div class="line"></div><div class="line"><span class="keyword">commit</span> <span class="number">59</span>f1f6bf234fd893fb231af36098c8b1530f6953</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">04</span>:<span class="number">18</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">    <span class="keyword">AND</span> simple</div><div class="line"></div><div class="line"><span class="keyword">commit</span> <span class="number">6806e4</span>eca90d891a29858dc37c5a3cd1919ac8fc</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">09</span>:<span class="number">54</span>:<span class="number">18</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">:</div><div class="line"></div><div class="line">$ git <span class="keyword">log</span> -graph</div><div class="line">*   <span class="keyword">commit</span> ede25527dd72c6c876f6ef6b79dd00921e6a16cd</div><div class="line">|\  <span class="keyword">Merge</span>: a142647 <span class="number">59</span>f1f6b</div><div class="line">| | Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line">| | <span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">10</span>:<span class="number">22</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line">| |</div><div class="line">| |     conflict <span class="keyword">fixed</span></div><div class="line">| |</div><div class="line">| * <span class="keyword">commit</span> <span class="number">59</span>f1f6bf234fd893fb231af36098c8b1530f6953</div><div class="line">| | Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line">| | <span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">04</span>:<span class="number">18</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line">| |</div><div class="line">| |     <span class="keyword">AND</span> simple</div><div class="line">| |</div><div class="line">* | <span class="keyword">commit</span> a142647b09b5109ef18703c5dfd1f71c696c74b4</div><div class="line">|/  Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line">|   <span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">05</span>:<span class="number">55</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line">|</div><div class="line">|       &amp; simple</div><div class="line">|</div><div class="line">* <span class="keyword">commit</span> <span class="number">6806e4</span>eca90d891a29858dc37c5a3cd1919ac8fc</div><div class="line">| Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line">| <span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">09</span>:<span class="number">54</span>:<span class="number">18</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line">|</div><div class="line">:</div></pre></td></tr></table></figure>
+<h2 id="Bug分支"><a href="#Bug分支" class="headerlink" title="Bug分支"></a>Bug分支</h2><h4 id="当你不想提交的时候快速修复bug"><a href="#当你不想提交的时候快速修复bug" class="headerlink" title="当你不想提交的时候快速修复bug"></a>当你不想提交的时候快速修复bug</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">$ git status</div><div class="line">On branch master</div><div class="line">Your branch is ahead of 'origin/master' by 3 commits.</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git push"</span> <span class="keyword">to</span> publish your <span class="keyword">local</span> commits)</div><div class="line">Changes <span class="keyword">not</span> staged <span class="keyword">for</span> <span class="keyword">commit</span>:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git add &lt;file&gt;..."</span> <span class="keyword">to</span> <span class="keyword">update</span> what will be committed)</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git checkout -- &lt;file&gt;..."</span> <span class="keyword">to</span> discard changes <span class="keyword">in</span> working <span class="keyword">directory</span>)</div><div class="line"></div><div class="line">        modified:   readme.md</div><div class="line"></div><div class="line"><span class="keyword">no</span> changes added <span class="keyword">to</span> <span class="keyword">commit</span> (<span class="keyword">use</span> <span class="string">"git add"</span> <span class="keyword">and</span>/<span class="keyword">or</span> <span class="string">"git commit -a"</span>)</div><div class="line"></div><div class="line">$ git stash</div><div class="line">Saved working <span class="keyword">directory</span> <span class="keyword">and</span> <span class="keyword">index</span> state WIP <span class="keyword">on</span> <span class="keyword">master</span>: a3b3f7d <span class="keyword">delete</span> <span class="keyword">no</span>-<span class="keyword">off</span> <span class="built_in">text</span></div><div class="line"><span class="keyword">HEAD</span> <span class="keyword">is</span> <span class="keyword">now</span> <span class="keyword">at</span> a3b3f7d <span class="keyword">delete</span> <span class="keyword">no</span>-<span class="keyword">off</span> <span class="built_in">text</span></div><div class="line"></div><div class="line">得到</div><div class="line">$ git <span class="keyword">status</span></div><div class="line"><span class="keyword">On</span> branch <span class="keyword">master</span></div><div class="line">Your branch <span class="keyword">is</span> ahead <span class="keyword">of</span> <span class="string">'origin/master'</span> <span class="keyword">by</span> <span class="number">3</span> commits.</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git push"</span> <span class="keyword">to</span> publish your <span class="keyword">local</span> commits)</div><div class="line"><span class="keyword">nothing</span> <span class="keyword">to</span> <span class="keyword">commit</span>, working tree clean</div><div class="line"></div><div class="line">创建bug分支</div><div class="line">$ git checkout -b issue<span class="number">-101</span></div><div class="line">Switched <span class="keyword">to</span> a <span class="keyword">new</span> branch <span class="string">'issue-101'</span></div><div class="line"></div><div class="line">$ git stash pop</div></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/01/学会学习/" rel="next" title="学会学习">
+                <i class="fa fa-chevron-left"></i> 学会学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/10/Git总结二/" rel="prev" title="Git总结二">
+                Git总结二 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/03/Git总结三/"
+           data-title="Git总结三" data-url="http://yoursite.com/2016/11/03/Git总结三/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="AlexanderZhou" />
+          <p class="site-author-name" itemprop="name">AlexanderZhou</p>
+          <p class="site-description motion-element" itemprop="description">All Roads Lead to Rome</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#解决冲突"><span class="nav-number">1.</span> <span class="nav-text">解决冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bug分支"><span class="nav-number">2.</span> <span class="nav-text">Bug分支</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#当你不想提交的时候快速修复bug"><span class="nav-number">2.0.1.</span> <span class="nav-text">当你不想提交的时候快速修复bug</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AlexanderZhou</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="/about/">AlexanderZhou</a> 个人专属
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="#">
+    心
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"alexanderzhou"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
