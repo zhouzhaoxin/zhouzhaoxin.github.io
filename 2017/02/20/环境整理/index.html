@@ -348,17 +348,17 @@
 
       
         <p>刚过完年，公司也没什么比较忙的需求。于是请了个长假回家参加我老哥婚礼，顺便去看看老同学，老同事。玩的倒是很Happy，但是回到自己的小窝发现，<br><a id="more"></a><br>跟了我5年的dell终于扛不住了，之后三下五除二重新安了个系统。但是一些编辑器，软件的下载配置都得告诉度娘重新安过。为了防止以后再出现这种情况，整理一下所需的资源和配置。</p>
-<h2 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h2><p>第一步翻墙：<a href="https://laod.cn/hosts/2017-google-hosts.html" target="_blank" rel="external">一直用老D</a><br>第二步下浏览器安装：<a href="http://www.google.cn/chrome/browser/desktop/index.html" target="_blank" rel="external">Chrome</a></p>
-<h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="external">JDK下载地址</a><br>作为一名Java码农，第一件事当然是安装JDK配置和环境变量啦。</p>
+<h2 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h2><p>第一步翻墙：<a href="https://laod.cn/hosts/2017-google-hosts.html" target="_blank" rel="noopener">一直用老D</a><br>第二步下浏览器安装：<a href="http://www.google.cn/chrome/browser/desktop/index.html" target="_blank" rel="noopener">Chrome</a></p>
+<h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="noopener">JDK下载地址</a><br>作为一名Java码农，第一件事当然是安装JDK配置和环境变量啦。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">NAME : JAVA_HOME</div><div class="line">VALUE : JDK路径（以‘\’结尾,防止一些编辑器不识别）</div><div class="line"></div><div class="line">NAME : Path</div><div class="line">VALUE : %JAVA_HOME%\bin;</div></pre></td></tr></table></figure>
 <h2 id="IDEA编辑器"><a href="#IDEA编辑器" class="headerlink" title="IDEA编辑器"></a>IDEA编辑器</h2><p>一个合格码农当然要跟上时代的潮流(虽然公司用的还是eclipse)</p>
-<p><a href="https://www.jetbrains.com/idea/download/download-thanks.html" target="_blank" rel="external">IDEA下载地址</a><br><a href="http://idea.lanyus.com/" target="_blank" rel="external">激活方法</a></p>
+<p><a href="https://www.jetbrains.com/idea/download/download-thanks.html" target="_blank" rel="noopener">IDEA下载地址</a><br><a href="http://idea.lanyus.com/" target="_blank" rel="noopener">激活方法</a></p>
 <h2 id="Sublime编辑器"><a href="#Sublime编辑器" class="headerlink" title="Sublime编辑器"></a>Sublime编辑器</h2><p>写前端还是Sublime最舒服</p>
-<p><a href="http://www.sublimetext.com/" target="_blank" rel="external">下载地址</a></p>
-<p><a href="https://github.com/jikeytang/sublime-text" target="_blank" rel="external">插件安装</a></p>
+<p><a href="http://www.sublimetext.com/" target="_blank" rel="noopener">下载地址</a></p>
+<p><a href="https://github.com/jikeytang/sublime-text" target="_blank" rel="noopener">插件安装</a></p>
 <p>我常用的有：</p>
 <ul>
-<li>Emmet <a href="http://www.iteye.com/news/27580" target="_blank" rel="external">中文文档</a></li>
+<li>Emmet <a href="http://www.iteye.com/news/27580" target="_blank" rel="noopener">中文文档</a></li>
 <li>Side Bar</li>
 <li>Terminal Ctrl + Shift + T</li>
 <li>Sublime Linter</li>
@@ -366,18 +366,18 @@
 <li>Color Picker Ctrl + Shift + C 需要.net framework 4.0支持</li>
 <li>Markdown Preview Ctrl + Shift + P -&gt; markdown</li>
 </ul>
-<h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p><a href="https://git-scm.com/downloads" target="_blank" rel="external">下载地址</a></p>
+<h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p><a href="https://git-scm.com/downloads" target="_blank" rel="noopener">下载地址</a></p>
 <p>由于重新安装了系统，连接Github的SSH当然要更新啦</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ git config --global user.name &quot;abcd&quot;</div><div class="line">$ git config --global user.email abcd@efgh.com</div><div class="line"></div><div class="line">$ ssh-keygen -t rsa -C &quot;abcd@efgh.com&quot; //邮箱同上</div><div class="line"></div><div class="line"></div><div class="line">复制公钥id_rsa.pub</div><div class="line">到github网页中登陆自己的账号，然后再account setting中，找到SSH KEY讲复制的密钥加入（需要再次输入github的密码）</div></pre></td></tr></table></figure>
 <h2 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h2><p>博客必备</p>
-<p><a href="https://nodejs.org/en/" target="_blank" rel="external">下载地址</a></p>
+<p><a href="https://nodejs.org/en/" target="_blank" rel="noopener">下载地址</a></p>
 <p>安装Hexo：npm install -g hexo<br>可以继续更新博客啦</p>
-<p><a href="https://www.zhihu.com/question/21193762" target="_blank" rel="external">参考链接</a></p>
+<p><a href="https://www.zhihu.com/question/21193762" target="_blank" rel="noopener">参考链接</a></p>
 <h2 id="Evernote"><a href="#Evernote" class="headerlink" title="Evernote"></a>Evernote</h2><p>配合简书使用哒</p>
-<p><a href="https://www.yinxiang.com/" target="_blank" rel="external">在线网址</a></p>
-<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><p><a href="https://www.mysql.com/downloads/" target="_blank" rel="external">下载地址</a></p>
+<p><a href="https://www.yinxiang.com/" target="_blank" rel="noopener">在线网址</a></p>
+<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><p><a href="https://www.mysql.com/downloads/" target="_blank" rel="noopener">下载地址</a></p>
 <p>自己电脑安装的是MySQL，好用又省事</p>
-<h2 id="播放器"><a href="#播放器" class="headerlink" title="播放器"></a>播放器</h2><p>视频：最爱POTPLAYER,简介美观。<a href="http://potplayer.daum.net/?lang=zh_CN" target="_blank" rel="external">下载地址</a><br>音乐：网易云音乐，<a href="http://music.163.com/#/download" target="_blank" rel="external">下载地址</a></p>
+<h2 id="播放器"><a href="#播放器" class="headerlink" title="播放器"></a>播放器</h2><p>视频：最爱POTPLAYER,简介美观。<a href="http://potplayer.daum.net/?lang=zh_CN" target="_blank" rel="noopener">下载地址</a><br>音乐：网易云音乐，<a href="http://music.163.com/#/download" target="_blank" rel="noopener">下载地址</a></p>
 <h2 id="QQ微信"><a href="#QQ微信" class="headerlink" title="QQ微信"></a>QQ微信</h2><p>O(∩_∩)O哈哈~</p>
 
       
@@ -497,7 +497,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -515,7 +515,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

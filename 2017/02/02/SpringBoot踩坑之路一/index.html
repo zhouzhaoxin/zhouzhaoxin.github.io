@@ -84,7 +84,7 @@
 
 
 
-<meta name="description" content="Takes an opinionated view of building production-ready Spring applications. Spring Boot favors convention over configuration and is designed to get you up and running as quickly as possible.  旨在简化创建产">
+<meta name="description" content="Takes an opinionated view of building production-ready Spring applications. Spring Boot favors convention over configuration and is designed to get you up and r">
 <meta name="keywords" content="java,Spring Boot">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring Boot踩坑之路一">
@@ -384,12 +384,12 @@
 <li>配合Maven或Gradle等构件工具打成Jar包后，Java -jar 简化部署运行</li>
 </ul>
 <h4 id="建立maven-web项目"><a href="#建立maven-web项目" class="headerlink" title="建立maven web项目"></a>建立maven web项目</h4><p>使用maven建立web项目，并参考官方文档进行版本选择和pom配置</p>
-<p><a href="https://projects.spring.io/spring-boot/#quick-start" target="_blank" rel="external">官方maven配置，请根据需求选择版本</a></p>
+<p><a href="https://projects.spring.io/spring-boot/#quick-start" target="_blank" rel="noopener">官方maven配置，请根据需求选择版本</a></p>
 <h4 id="POM中添加parent标签"><a href="#POM中添加parent标签" class="headerlink" title="POM中添加parent标签"></a>POM中添加parent标签</h4><p>添加parent后添加相关依赖不需要version<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.4.2.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></div></pre></td></tr></table></figure></p>
 <h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>web工程的依赖，包括spring mvc tomcat等，spring boot会在需要时使用<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
 <h4 id="添加插件"><a href="#添加插件" class="headerlink" title="添加插件"></a>添加插件</h4><p>用来在main方法中启动工程<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin <span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div></pre></td></tr></table></figure></p>
 <h4 id="编写代码-HELLO-WORLD"><a href="#编写代码-HELLO-WORLD" class="headerlink" title="编写代码 HELLO WORLD"></a>编写代码 HELLO WORLD</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 其中@SpringBootApplication申明让spring boot自动给程序进行必要的配置，等价于使用@Configuration，@EnableAutoConfiguration和@ComponentScan</span></div><div class="line"><span class="meta">@RestController</span></div><div class="line"><span class="meta">@SpringBootApplication</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"Hello World"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        SpringApplication.run(HelloWorld.class,args);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h4 id="检验成果"><a href="#检验成果" class="headerlink" title="检验成果"></a>检验成果</h4><p>运行main函数之后访问<a href="http://localhost:8080/即可看到结果" target="_blank" rel="external">http://localhost:8080/即可看到结果</a></p>
+<h4 id="检验成果"><a href="#检验成果" class="headerlink" title="检验成果"></a>检验成果</h4><p>运行main函数之后访问<a href="http://localhost:8080/即可看到结果" target="_blank" rel="noopener">http://localhost:8080/即可看到结果</a></p>
 <p><img src="/images/springboot/springboot_helloworld.png" alt=""></p>
 <h4 id="我遇到的问题"><a href="#我遇到的问题" class="headerlink" title="我遇到的问题"></a>我遇到的问题</h4><p>问题出现在我建立maven项目编写java代码的时候在默认包中写的application类，并没有建立包。这种做法让Spring Boot每次都会扫描默认类及下属的所有类，浪费大量时间。所以在启动时会报警告，启动不成功</p>
 <p>Your <code>Application</code> class should be placed in a specific package and not in the default (top-level) package. For example, put it in <code>com.example</code> and place all your application code in this package or in sub-packages like <code>com.example.foo</code> and <code>com.example.bar</code>.</p>
@@ -514,7 +514,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -532,7 +532,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
