@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+    
+    <entry>
+      <title><![CDATA[Soket基本概念]]></title>
+      <url>/2017/12/21/socket/</url>
+      <content type="html"><![CDATA[<p>在计算机科学中，网络套接字（英语：Network socket），又译网络套接字、网络接口、网络插槽，是电脑网络中进程间数据流的端点。使用以网际协议（Internet Protocol）为通信基础的网络套接字，称为网际套接字（Internet socket）。因为网际协议的流行，现代绝大多数的网络套接字，都是属于网际套接字。</p>
+<p>socket是一种操作系统提供的进程间通信机制。<br><a id="more"></a></p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>在操作系统中，通常会为应用程序提供一组应用程序接口（API），称为套接字接口（英语：socket API）。应用程序可以通过套接字接口，来使用网络套接字，以进行数据交换。最早的套接字接口来自于4.2 BSD，因此现代常见的套接字接口大多源自Berkeley套接字（Berkeley sockets）标准。</p>
+<p><strong>在套接字接口中，以IP地址及通信端口组成套接字地址（socket address）。远程的套接字地址，以及本地的套接字地址完成连接后，再加上使用的协议（protocol），这个五元组（five-element tuple)，作为套接字对（socket pairs），之后就可以彼此交换数据。</strong></p>
+<p>例如，再同一台计算机上，TCP协议与UDP协议可以同时使用相同的port而互不干扰。 操作系统根据套接字地址，可以决定应该将数据送达特定的进程或线程。这就像是电话系统中，以电话号码加上分机号码，来决定通话对象一般。</p>
+<h2 id="Python-实现"><a href="#Python-实现" class="headerlink" title="Python 实现"></a>Python 实现</h2><p>每一种语言都会对socket进行封装，从而控制进程间的通讯。web服务器就是对socket实现的封装。</p>
+<h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><p>当你点击链接到此页面的时候，你的浏览器做了如下动作<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"><span class="comment"># socket.AF_INET    用于服务器与服务器之间的网络通信</span></div><div class="line"><span class="comment"># socket.SOCK_STREAM    基于TCP的流式socket通信</span></div><div class="line"><span class="keyword">import</span> socket</div><div class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line">s.connect((<span class="string">"www.python.org"</span>, <span class="number">80</span>))</div><div class="line">s.send(<span class="string">b'1234'</span>) <span class="comment"># 返回字符串的长度4</span></div></pre></td></tr></table></figure></p>
+<p>先建立一个服务器与服务器间通讯的<strong>socket</strong>（其协议为TCP，三次握手）,然后使用<strong>socket</strong>建立到本网站的链接。链接建立之后，我们创建的名为<strong>s</strong>的<strong>socket</strong>就可以发送一个包含信息的请求,之后,客户端会建立一个相同的socket接受返回的信息，然后销毁。客户端的socket一般只用于一次交换。</p>
+<h4 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"><span class="keyword">import</span> socket</div><div class="line">serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</div><div class="line"><span class="comment"># 绑定端口</span></div><div class="line">serversocket.bind((socket.gethostname(), <span class="number">80</span>))</div><div class="line"><span class="comment"># 监听端口，变成一个服务器</span></div><div class="line">serversocket.listen(<span class="number">5</span>)</div></pre></td></tr></table></figure>
+<p>使用<strong>socket.gethostname()</strong>作为url可以接受所有请求，而如果使用<strong>localhost 或者127.0.0.1</strong>我们就只能使用当前的<br>机器访问。</p>
+<p><strong>listen</strong>方法的参数可以制定此socket的最大连接数，超过最大链接则拒绝外部请求</p>
+<p>有了一个服务端的socket之后我们就可以把他放到循环中处理请求<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">    (clientsocket,address) = serversocket.accept()</div><div class="line">    <span class="comment"># clientsocket为和client建立的链接</span></div><div class="line">    <span class="comment"># 假设我们通过一个线程处理链接</span></div><div class="line">    ct = client_thread(clientsocket)</div><div class="line">    ct.run()</div></pre></td></tr></table></figure></p>
+<p>服务器端的socket只做了这些，它不会发送任何数据，也不会接受任何数据，他只是产生了一个客户端的socket<br>每一个被创建的客户端socket都会通过connect()方法与其他的socket进行通讯</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>理解socket的基本概念，了解在socket的程序实现。<br>socket有两种，服务器端和客户端，服务器端socket只是通过请求产生客户端socket，客户端socket可以通过建立的connection()进行通讯。</p>
+<p>客户端的socket和服务器端通过客户端请求产生的socket是同等的。</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> HTTP </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Java虚拟机]]></title>
+      <url>/2017/07/01/java-virtual-machine01/</url>
+      <content type="html"><![CDATA[<h2 id="跨平台的含义"><a href="#跨平台的含义" class="headerlink" title="跨平台的含义"></a>跨平台的含义</h2><p>Java的跨平台是“一次编译，到处运行”。Java在编译的时候没有编译成指定CPU类型的汇编代码，也没有和具体操作系统的系统调用相关联，所以编译出来的结果是和CPU，操作系统都不相关的。Java编译出来的是一种字节码，这种字节码必须在Java的虚拟机上才能运行，Java虚拟机会屏蔽不同操作系统，CPU之间的差异。<br><a id="more"></a><br>C编译出来后，就是指定CPU类型的汇编代码，编译过程中肯定也要和具体操作系统的系统库相关连，所以做不到Java那种跨平台。但是，如果写的C代码，没有直接调用任何系统调用，这个代码在不同的平台下都能编译，也能运行。和Java的区别是，C要在不同平台上分别编译。</p>
+<p>有些语言如JavaScript，Python等，他们是解释执行的，不存在编译过程，所以也能跨平台，前提是必须要有一个对应的解释器，PHP好像也是解释性的。</p>
+<h2 id="了解虚拟机"><a href="#了解虚拟机" class="headerlink" title="了解虚拟机"></a>了解虚拟机</h2><p>当用户量达到一定数量的时候，程序就很有可能出现各种问题（缓慢，死锁等）一般情况下，企业都会通过提升硬件配置的方法尝试解决问题，但对于运行在JVM 上的 java来说，如果不了解JVM的运行原理，单纯的提升硬件配置很有可能对问题的解决改善很小，甚至没有改善</p>
+<h2 id="Java技术体系"><a href="#Java技术体系" class="headerlink" title="Java技术体系"></a>Java技术体系</h2><p>由SUN公司官方定义：</p>
+<ul>
+<li>Java程序设计语言</li>
+<li>各种硬件平台上的Java虚拟机</li>
+<li>Class文件</li>
+<li>Java API类库</li>
+<li>来自商业机构或开源社区的Java类库<br><img src="/images/virtualMachine/javaTS.jpg" alt=""></li>
+</ul>
+<p><img src="/images/virtualMachine/javaHistory.jpg" alt=""></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> JAVA </tag>
+            
+            <tag> 虚拟机 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Spring事务处理]]></title>
+      <url>/2017/03/11/%E6%A1%86%E6%9E%B6%E8%A1%A5%E5%85%85/</url>
+      <content type="html"><![CDATA[<p>基础复习</p>
+<a id="more"></a>
+<h2 id="什么是软件框架"><a href="#什么是软件框架" class="headerlink" title="什么是软件框架"></a>什么是软件框架</h2><p>软件框架（Software framework），通常指的是为了实现某个业界标准或完成特定基本任务的软件组件规范，也指为了实现某个软件组件规范时，提供规范所要求之基础功能的软件产品。</p>
+<p>框架的功能类似于基础设施，与具体的软件应用无关，但是提供并实现最为基础的软件架构和体系。软件开发者通常依据特定的框架实现更为复杂的商业运用和业务逻辑。这样的软件应用可以在支持同一种框架的软件系统中运行。</p>
+<hr>
+<p>对于Spring框架来说：Spring是一套建筑标准，比如承重标准、丈量标准，通风标准等，并规范了结构：框架式结构，浇筑式结构，且定义了建筑的每个组成部分名字与接口，比如电力系统的接口是220v，通风系统的孔径必须符合ISO标准等。</p>
+<p>攻城狮是建筑的设计师，在基础框架与标准下，设计出符合客户要求的建筑图纸，并决定了使用哪个厂家生产的水泥，砖块，和电力，通风等系统。</p>
+<p>程序猿就是泥瓦匠，电工，依照图纸，完成各个部分的堆砌，安装，部署，装饰等等。说白了，程序猿就是一板砖的。</p>
+<h2 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h2><p>所谓控制反转，就是把原先我们代码里面需要实现的对象创建、依赖的代码，反转给容器来帮忙实现。那么必然的我们需要创建一个容器，同时需要一种描述来让容器知道需要创建的对象与对象的关系。这个描述最具体表现就是我们可配置的文件。</p>
+<h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><p>面向切面编程，作为对面向对象的补充，广泛应用于处理一些具有横切性质的系统级服务，如事务管理、安全检查、缓存、对象池管理等。</p>
+<h2 id="什么是事务"><a href="#什么是事务" class="headerlink" title="什么是事务"></a>什么是事务</h2><p>逻辑上的一组操作，这组操作要么全部成功，要么全部失败。</p>
+<h2 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h2><p>事务有四大特性：原子性、一致性、隔离性、持久性。</p>
+<ul>
+<li>原子性是指事务是一个不可分割的工作单位，事务中的操作，要么都发生，要么都失败</li>
+<li>一致性指的是事务前后数据完整性保持一致</li>
+<li>隔离性是指一个用户事务进行时，不能受到其他事务的影响。（通过隔离级别处理）</li>
+<li>持久性是指一个事务一旦被提交，它对数据库中数据的改变是永久性的，即使数据库发生故障也不应该对其有任何影响。</li>
+</ul>
+<h2 id="事务接口"><a href="#事务接口" class="headerlink" title="事务接口"></a>事务接口</h2><p>Spring为我们提供事务管理主要的接口，一共有三个</p>
+<ul>
+<li><p>事务管理器：PlatformTransactionManager</p>
+</li>
+<li><p>事务定义信息（隔离、传播、超时、只读）：TransactionDefinition</p>
+</li>
+<li><p>事务具体运行状态：TransactionStatus</p>
+</li>
+</ul>
+<h2 id="事务具体运行状态（TransactionStatus）"><a href="#事务具体运行状态（TransactionStatus）" class="headerlink" title="事务具体运行状态（TransactionStatus）"></a>事务具体运行状态（TransactionStatus）</h2><p>TransactionStatus接口定义了获得和判断事物状态的方法</p>
+<h2 id="事务管理器（PlatformTransactionManager）"><a href="#事务管理器（PlatformTransactionManager）" class="headerlink" title="事务管理器（PlatformTransactionManager）"></a>事务管理器（PlatformTransactionManager）</h2><p>Spring会根据持久层不同的实习选择不同的事务管理器</p>
+<ul>
+<li>DataSourceTransactionManager ： JDBC和MyBatis</li>
+<li>HibernateTransactionManager ： Hibernate</li>
+</ul>
+<p>所以Spring处理MyBatis和JDBC的事务使用的是一样的方法，而Hibernate是另外一种实现方法</p>
+<h2 id="事务定义信息（TransactionDefinition）"><a href="#事务定义信息（TransactionDefinition）" class="headerlink" title="事务定义信息（TransactionDefinition）"></a>事务定义信息（TransactionDefinition）</h2><ul>
+<li><p>ISOLATION 开头定义的是事务的隔离级别</p>
+</li>
+<li><p>PROPAGATION 开头定义的是事务的传播行为</p>
+</li>
+<li><p>TIMEOUT 开头定义的是事务的超时信息</p>
+</li>
+</ul>
+<h4 id="ISOLATION"><a href="#ISOLATION" class="headerlink" title="ISOLATION"></a>ISOLATION</h4><p>事务的隔离级别，主要是解决在实际开发中可能遇到的三个问题：</p>
+<ul>
+<li><p>脏读，A进行update、insert时候，B读取了中间状态不知道对不对的值；</p>
+</li>
+<li><p>不可重复读，B在A 的update操作前后，读到的数据不一致；</p>
+</li>
+<li><p>幻读，B在A的insert操作前后，读到了的数据不一致</p>
+</li>
+</ul>
+<p><img src="/images/transaction/isolation.jpg" alt=""></p>
+<p>MySQL底层采用的是REPEATABLE_READ隔离级别<br>Oracle底层采用的是READ_COMMITTED隔离级别</p>
+<h4 id="PROPAGATION"><a href="#PROPAGATION" class="headerlink" title="PROPAGATION"></a>PROPAGATION</h4><p>事务的传播行为：主要是解决业务层方法之间的相互调用的问题(比如一个业务需求为同时调用A和B两个数据库操作)</p>
+<p><img src="/images/transaction/propagation.jpg" alt=""></p>
+<p>事务的传播行为有七种，又分为三类：<br>第一类共同点：如果 A 方法中有事务，则调用 B 方法时就用该事务，即：A和B方法在同一个事务中。<br>PROPAGATION_REQUIRED：如果 A 方法中没有事务，则调用 B 方法时就创建一个新的事务，即：A和B方法在同一个事务中。<br>PROPAGATION_SUPPORTS：如果 A 方法中没有事务，则调用 B 方法时就不使用该事务。<br>PROPAGATION_MANDATORY：如果 A 方法中没有事务，则调用 B 方法时就抛出异常。</p>
+<p>第二类共同点：A方法和B方法没有在同一个事务里面。<br>PROPAGATION_REQUIRES_NEW：如果 A 方法中有事务，则挂起并新建一个事务给 B 方法。<br>PROPAGATION_NOT_SUPPORTED：如果 A 方法中有事务，则挂起。<br>PROPAGATION_NEVER：如果 A 方法中有事务，则报异常。</p>
+<p>第三类：如果 A 方法有的事务执行完，设置一个保存点，如果 B 方法中事务执行失败，可以滚回保存点或初始状态。<br>PROPAGATION_NESTED ：如果当前事务存在，则嵌套事务执行</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> Spring </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[SpringBoot踩坑之路三 ]]></title>
+      <url>/2017/02/26/SpringBoot%E8%B8%A9%E5%9D%91%E4%B9%8B%E8%B7%AF%E4%B8%89/</url>
+      <content type="html"><![CDATA[<p>使用JPA进行CRUD以及IDEA 中 Devtools热部署配置<br><a id="more"></a></p>
+<h2 id="Spring-Boot进行简单的CRUD"><a href="#Spring-Boot进行简单的CRUD" class="headerlink" title="Spring Boot进行简单的CRUD"></a>Spring Boot进行简单的CRUD</h2><p>只需要定义一个repository继承<code>PagingAndSortingRepository</code>、<code>PagingAndSortingRepository</code>或<code>JpaRepository</code>就可以使用Spring Data为我们提供的CRUD。三个接口都是做数据操作的，下面解释了他们三个的区别，我们应该根据需求灵活使用。</p>
+<p><code>JpaRepository</code>继承了<code>PagingAndSortingRepository</code>，<code>PagingAndSortingRepository</code>继承了<code>CrudRepository</code> </p>
+<p>他们的主要功能是：</p>
+<p><code>CrudRepository</code> 提供主要的CRUD方法</p>
+<p><code>PagingAndSortingRepository</code> 提供分页和排序的方法</p>
+<p><code>JpaRepository</code> 提供一些JPA关联方法，比如批量删除数据</p>
+<p>因为上述的继承关系，<code>JpaRepository</code>拥有<code>PagingAndSortingRepository</code>和<code>CrudRepository</code> 的所有方法。所以如果你不需要<code>JpaRepository</code>和<code>PagingAndSortingRepository</code>提供的方法的话，请使用<code>CrudRepository</code></p>
+<h2 id="Spring-Boot-IDEA-热部署"><a href="#Spring-Boot-IDEA-热部署" class="headerlink" title="Spring Boot IDEA 热部署"></a>Spring Boot IDEA 热部署</h2><p>首先要对IDEA进行必要配置，否则热部署不起作用</p>
+<h4 id="IDEA自动构建"><a href="#IDEA自动构建" class="headerlink" title="IDEA自动构建"></a>IDEA自动构建</h4><p><img src="http://upload-images.jianshu.io/upload_images/3993341-5ead03b8ddd353bc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IDEA Compiler配置"></p>
+<h4 id="修改IDEA注册信息"><a href="#修改IDEA注册信息" class="headerlink" title="修改IDEA注册信息"></a>修改IDEA注册信息</h4><p>输入命令Ctrl + Shift + A 然后搜索registry回车</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-5ec070235d9a2a91.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="修改IDEA注册信息"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-4c9db9a309e226de.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="修改IDEA注册信息"></p>
+<h4 id="添加devtools依赖"><a href="#添加devtools依赖" class="headerlink" title="添加devtools依赖"></a>添加devtools依赖</h4><p>添加依赖，重启项目，然后试着修改java文件，自动重新部署成功<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Java之路 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> Spring Boot </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[环境整理]]></title>
+      <url>/2017/02/20/%E7%8E%AF%E5%A2%83%E6%95%B4%E7%90%86/</url>
+      <content type="html"><![CDATA[<p>刚过完年，公司也没什么比较忙的需求。于是请了个长假回家参加我老哥婚礼，顺便去看看老同学，老同事。玩的倒是很Happy，但是回到自己的小窝发现，<br><a id="more"></a><br>跟了我5年的dell终于扛不住了，之后三下五除二重新安了个系统。但是一些编辑器，软件的下载配置都得告诉度娘重新安过。为了防止以后再出现这种情况，整理一下所需的资源和配置。</p>
+<h2 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h2><p>第一步翻墙：<a href="https://laod.cn/hosts/2017-google-hosts.html" target="_blank" rel="noopener">一直用老D</a><br>第二步下浏览器安装：<a href="http://www.google.cn/chrome/browser/desktop/index.html" target="_blank" rel="noopener">Chrome</a></p>
+<h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="noopener">JDK下载地址</a><br>作为一名Java码农，第一件事当然是安装JDK配置和环境变量啦。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">NAME : JAVA_HOME</div><div class="line">VALUE : JDK路径（以‘\’结尾,防止一些编辑器不识别）</div><div class="line"></div><div class="line">NAME : Path</div><div class="line">VALUE : %JAVA_HOME%\bin;</div></pre></td></tr></table></figure>
+<h2 id="IDEA编辑器"><a href="#IDEA编辑器" class="headerlink" title="IDEA编辑器"></a>IDEA编辑器</h2><p>一个合格码农当然要跟上时代的潮流(虽然公司用的还是eclipse)</p>
+<p><a href="https://www.jetbrains.com/idea/download/download-thanks.html" target="_blank" rel="noopener">IDEA下载地址</a><br><a href="http://idea.lanyus.com/" target="_blank" rel="noopener">激活方法</a></p>
+<h2 id="Sublime编辑器"><a href="#Sublime编辑器" class="headerlink" title="Sublime编辑器"></a>Sublime编辑器</h2><p>写前端还是Sublime最舒服</p>
+<p><a href="http://www.sublimetext.com/" target="_blank" rel="noopener">下载地址</a></p>
+<p><a href="https://github.com/jikeytang/sublime-text" target="_blank" rel="noopener">插件安装</a></p>
+<p>我常用的有：</p>
+<ul>
+<li>Emmet <a href="http://www.iteye.com/news/27580" target="_blank" rel="noopener">中文文档</a></li>
+<li>Side Bar</li>
+<li>Terminal Ctrl + Shift + T</li>
+<li>Sublime Linter</li>
+<li>advance new file Ctrl + Alt + N</li>
+<li>Color Picker Ctrl + Shift + C 需要.net framework 4.0支持</li>
+<li>Markdown Preview Ctrl + Shift + P -&gt; markdown</li>
+</ul>
+<h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p><a href="https://git-scm.com/downloads" target="_blank" rel="noopener">下载地址</a></p>
+<p>由于重新安装了系统，连接Github的SSH当然要更新啦</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ git config --global user.name &quot;abcd&quot;</div><div class="line">$ git config --global user.email abcd@efgh.com</div><div class="line"></div><div class="line">$ ssh-keygen -t rsa -C &quot;abcd@efgh.com&quot; //邮箱同上</div><div class="line"></div><div class="line"></div><div class="line">复制公钥id_rsa.pub</div><div class="line">到github网页中登陆自己的账号，然后再account setting中，找到SSH KEY讲复制的密钥加入（需要再次输入github的密码）</div></pre></td></tr></table></figure>
+<h2 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h2><p>博客必备</p>
+<p><a href="https://nodejs.org/en/" target="_blank" rel="noopener">下载地址</a></p>
+<p>安装Hexo：npm install -g hexo<br>可以继续更新博客啦</p>
+<p><a href="https://www.zhihu.com/question/21193762" target="_blank" rel="noopener">参考链接</a></p>
+<h2 id="Evernote"><a href="#Evernote" class="headerlink" title="Evernote"></a>Evernote</h2><p>配合简书使用哒</p>
+<p><a href="https://www.yinxiang.com/" target="_blank" rel="noopener">在线网址</a></p>
+<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><p><a href="https://www.mysql.com/downloads/" target="_blank" rel="noopener">下载地址</a></p>
+<p>自己电脑安装的是MySQL，好用又省事</p>
+<h2 id="播放器"><a href="#播放器" class="headerlink" title="播放器"></a>播放器</h2><p>视频：最爱POTPLAYER,简介美观。<a href="http://potplayer.daum.net/?lang=zh_CN" target="_blank" rel="noopener">下载地址</a><br>音乐：网易云音乐，<a href="http://music.163.com/#/download" target="_blank" rel="noopener">下载地址</a></p>
+<h2 id="QQ微信"><a href="#QQ微信" class="headerlink" title="QQ微信"></a>QQ微信</h2><p>O(∩_∩)O哈哈~</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> 整理 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Spring Boot踩坑之路二]]></title>
+      <url>/2017/02/04/Spring-Boot%E8%B8%A9%E5%9D%91%E4%B9%8B%E8%B7%AF%E4%BA%8C/</url>
+      <content type="html"><![CDATA[<p>上篇文章使用Maven构建项目并成功运行hello，让我初步感受Spring Boot的强大。本次我将使用更优雅的方式创建Spring Boot项目并学习它对数据库的相关操作<br><a id="more"></a></p>
+<h2 id="更优雅的创建Spring-Boot项目"><a href="#更优雅的创建Spring-Boot项目" class="headerlink" title="更优雅的创建Spring Boot项目"></a>更优雅的创建Spring Boot项目</h2><p>上篇文章的方法是建立Maven项目、配置pom.xml、建立application类。当用到的开源项目多的时候，每次配置pom.xml很会很麻烦。使用IDEA为我们提供的Spring Initializr可以快速创建Spring Boot项目，我们将不再需要之前繁琐的步骤</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-80127001e8d9aa1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Spring Initializr"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-b00901b482a12878.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Spring Initializr"></p>
+<p>按需选择，一路next之后，一个结构完整的Spring Boot项目就建立成功。看下生成的pom文件。我们需要的最基本的配置已经生成完毕，并且还贴心的添加了测试依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></div><div class="line">    <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.app<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>demo<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Demo project for Spring Boot<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.1.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">relativePath</span>/&gt;</span> <span class="comment">&lt;!-- lookup parent from repository --&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">project.reporting.outputEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.reporting.outputEncoding</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="Spring-Boot-JPA"><a href="#Spring-Boot-JPA" class="headerlink" title="Spring Boot JPA"></a>Spring Boot JPA</h2><p>回归主题，Spring Boot是如何操作数据库的呢，本次以Oracle数据库为例介绍Spring Boot的JPA操作（Hibernate版）</p>
+<h4 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h4><p>添加依赖(需要添加两个依赖，一个是Spring Boot操作数据库的依赖，还有一个是数据库驱动)<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">  <span class="comment">&lt;!--Spring Boot java persist API dependency--&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-jpa<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- Oracle数据库驱动 --&gt;</span></div><div class="line">  <span class="comment">&lt;!-- Oracle Driver Dependency which located in local repository --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.oracle<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>ojdbc6<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>11.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- MySql 驱动，maven官方就有，无需本地添加</span></div><div class="line">&lt;dependency&gt;</div><div class="line">   &lt;groupId&gt;mysql&lt;/groupId&gt;</div><div class="line">   &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">--&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>由于商业版权和版本的问题，Maven中心仓库并不支持Oracle驱动包，所以需要根据自己的Oracle进行手动安装</p>
+<p>首先从Oracle安装目录中找到本地Oracle驱动，以我为例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">E:\app\Administrator\product\11.2.0\dbhome_1\jdbc\lib</div></pre></td></tr></table></figure></p>
+<p>进入我的路径将ojdbc添加到本地Maven仓库<br><figure class="highlight cmd"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=<span class="number">11</span>.<span class="number">2</span>.<span class="number">0</span>.<span class="number">1</span>.<span class="number">0</span> -Dpackaging=jar -Dfile=ojdbc6.jar</div><div class="line">-- 指定坐标、打包格式、打包文件</div></pre></td></tr></table></figure></p>
+<p>回车安装，安装完成会如下图所示</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-75da8eeab2128f51.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Maven添加jar包到本地仓库"></p>
+<p>至此关于JPA的依赖配置就完成了</p>
+<h4 id="添加属性配置"><a href="#添加属性配置" class="headerlink" title="添加属性配置"></a>添加属性配置</h4><p>加载了SpringBoot连接和驱动依赖当然不能让我们连接到数据库，我们还需要告诉Spring Boot一些数据库连接信息</p>
+<p>我们只需要在application.properties文件中添加就可以了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># 基本的连接信息，指定数据源</div><div class="line">spring.datasource.url = jdbc:oracle:thin:@127.0.0.1:1521:orcl</div><div class="line">spring.datasource.username = scott</div><div class="line">spring.datasource.password = orcl</div><div class="line">spring.datasource.driverClassName = oracle.jdbc.OracleDriver</div><div class="line"></div><div class="line"># java持久化API Hibernate配置模式</div><div class="line">spring.jpa.hibernate.ddl-auto = update</div></pre></td></tr></table></figure></p>
+<h4 id="新建实体类，并交给Hibernate-维护"><a href="#新建实体类，并交给Hibernate-维护" class="headerlink" title="新建实体类，并交给Hibernate 维护"></a>新建实体类，并交给Hibernate 维护</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.example.entity;</div><div class="line"></div><div class="line"><span class="keyword">import</span> javax.persistence.*;</div><div class="line"></div><div class="line"><span class="meta">@Entity</span></div><div class="line"><span class="meta">@Table</span>(name = <span class="string">"demo_user"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">    <span class="meta">@Id</span> <span class="meta">@GeneratedValue</span>(strategy = GenerationType.SEQUENCE,generator = <span class="string">"seq_user"</span>)</div><div class="line">    <span class="meta">@SequenceGenerator</span>(name = <span class="string">"seq_user"</span>,sequenceName = <span class="string">"seq_user"</span>)</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</div><div class="line">    <span class="keyword">private</span> String userName;</div><div class="line">    <span class="keyword">private</span> String password;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> id;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.id = id;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUserName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> userName;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserName</span><span class="params">(String userName)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.userName = userName;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPassword</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> password;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPassword</span><span class="params">(String password)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.password = password;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后启动项目，是不是发现数据库里面多了个<code>demo_user</code>表了呢</p>
+<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><p>安装完成ojdbc驱动在pom.xml中引用仍然无效</p>
+<blockquote>
+<p>创建项目的时候选择了默认C盘.m2下的仓库，而我的Maven仓库配置在D盘，所以安装的驱动的时候安装到了D盘的仓库，使用的却是系统默认的仓库，尴尬-_-!</p>
+</blockquote>
+<p>在全部配置好之后启动工程会把表建立出来，但是当再次启动的时候竟然报了<code>对象已由现有名称引用</code>异常</p>
+<blockquote>
+<p>通过log观察，他又执行了一次建表语句。我多次检查自己的配置，确实是<code>spring.jpa.hibernate.ddl-auto = update</code>没问题。到网上查了半天，也没找到有相似问题的结果。出去吹个风，回来发现我需要引用的驱动jar包是ojdbc6，而在pom中引入的是服务器数据库的ojdbc14。白白浪费了这么长时间&lt;(￣3￣)&gt; 。</p>
+</blockquote>
+]]></content>
+      
+        <categories>
+            
+            <category> Java之路 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> Spring Boot </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Spring Boot踩坑之路一]]></title>
+      <url>/2017/02/02/SpringBoot%E8%B8%A9%E5%9D%91%E4%B9%8B%E8%B7%AF%E4%B8%80/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>Takes an opinionated view of building production-ready Spring applications. Spring Boot favors convention over configuration and is designed to get you up and running as quickly as possible.</p>
+</blockquote>
+<p>旨在简化创建产品级的 Spring应用和服务。Spring Boot 引导优先于配置，它可以让你避免繁杂的配置，尽可能的帮助你快速建站。<br><a id="more"></a></p>
+<h4 id="为什么使用Spring-Boot"><a href="#为什么使用Spring-Boot" class="headerlink" title="为什么使用Spring Boot"></a>为什么使用Spring Boot</h4><p>经过十多年的发展Spring家族已经壮大，要灵活使用Spring家族的产品已经变得有些困难，尤其是要维护一大堆的配置文件，在项目开发中令人头疼。Spring Boot解决了这个问题，并大大简化了我们的开发成本</p>
+<p><b>其优点如下:</b></p>
+<ul>
+<li>不用看一大坨的xml。用java config可以让你很容易明白一些框架的关键</li>
+<li>Spring Boot 要解决的问题, 精简配置是一方面, 另外一方面是如何方便的让spring生态圈和其他工具链整合(比如redis, email, elecsearch)</li>
+<li>配合各种starter使用，基本上可以做到自动化配置</li>
+<li>配合Maven或Gradle等构件工具打成Jar包后，Java -jar 简化部署运行</li>
+</ul>
+<h4 id="建立maven-web项目"><a href="#建立maven-web项目" class="headerlink" title="建立maven web项目"></a>建立maven web项目</h4><p>使用maven建立web项目，并参考官方文档进行版本选择和pom配置</p>
+<p><a href="https://projects.spring.io/spring-boot/#quick-start" target="_blank" rel="noopener">官方maven配置，请根据需求选择版本</a></p>
+<h4 id="POM中添加parent标签"><a href="#POM中添加parent标签" class="headerlink" title="POM中添加parent标签"></a>POM中添加parent标签</h4><p>添加parent后添加相关依赖不需要version<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.4.2.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h4 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h4><p>web工程的依赖，包括spring mvc tomcat等，spring boot会在需要时使用<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h4 id="添加插件"><a href="#添加插件" class="headerlink" title="添加插件"></a>添加插件</h4><p>用来在main方法中启动工程<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin <span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h4 id="编写代码-HELLO-WORLD"><a href="#编写代码-HELLO-WORLD" class="headerlink" title="编写代码 HELLO WORLD"></a>编写代码 HELLO WORLD</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 其中@SpringBootApplication申明让spring boot自动给程序进行必要的配置，等价于使用@Configuration，@EnableAutoConfiguration和@ComponentScan</span></div><div class="line"><span class="meta">@RestController</span></div><div class="line"><span class="meta">@SpringBootApplication</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"Hello World"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        SpringApplication.run(HelloWorld.class,args);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="检验成果"><a href="#检验成果" class="headerlink" title="检验成果"></a>检验成果</h4><p>运行main函数之后访问<a href="http://localhost:8080/即可看到结果" target="_blank" rel="noopener">http://localhost:8080/即可看到结果</a></p>
+<p><img src="/images/springboot/springboot_helloworld.png" alt=""></p>
+<h4 id="我遇到的问题"><a href="#我遇到的问题" class="headerlink" title="我遇到的问题"></a>我遇到的问题</h4><p>问题出现在我建立maven项目编写java代码的时候在默认包中写的application类，并没有建立包。这种做法让Spring Boot每次都会扫描默认类及下属的所有类，浪费大量时间。所以在启动时会报警告，启动不成功</p>
+<p>Your <code>Application</code> class should be placed in a specific package and not in the default (top-level) package. For example, put it in <code>com.example</code> and place all your application code in this package or in sub-packages like <code>com.example.foo</code> and <code>com.example.bar</code>.</p>
+<p>Placing your <code>Application</code> class in the default package, i.e. directly in <code>src/main/java</code> isn’t a good idea and it will almost certainly cause your application to fail to start. If you do so, you should see this warning:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">** WARNING ** : Your ApplicationContext is unlikely to start due to a @ComponentScan of the default package.</div></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Java之路 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> Spring Boot </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Maven配置解析与依赖传递]]></title>
+      <url>/2017/01/24/Maven%E9%85%8D%E7%BD%AE%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BE%9D%E8%B5%96%E4%BC%A0%E9%80%92/</url>
+      <content type="html"><![CDATA[<p>Maven的核心配置文件pom.xml的解析与其依赖传递特性,并简单介绍Maven在Web开发中的配置操作过程</p>
+<hr>
+<p>Maven安装本地jar备忘<br>mvn install:install-file -Dfile=jar包的位置 -DgroupId=上面的groupId -DartifactId=上面的artifactId -Dversion=上面的version -Dpackaging=jar<br><a id="more"></a></p>
+<hr>
+<h2 id="pom-xml解析"><a href="#pom-xml解析" class="headerlink" title="pom.xml解析"></a>pom.xml解析</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>项目的描述名<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">url</span>&gt;</span>项目的地址<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">description</span>&gt;</span>项目描述<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">developers</span>&gt;</span>开发人员信息<span class="tag">&lt;/<span class="name">developers</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">licenses</span>&gt;</span>许可证信息<span class="tag">&lt;/<span class="name">licenses</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 依赖列表 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 依赖项 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">        <span class="comment">&lt;!--指定坐标--&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>反写公司网址+项目名<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>项目名+模块名<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>版本0.0.0（大版本+分支版本+小版本）<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">type</span>&gt;</span>类型<span class="tag">&lt;/<span class="name">type</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>依赖的范围<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>设置依赖是否可选，默认是false<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></div><div class="line">        <span class="comment">&lt;!-- 排除依赖传递列表 --&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span><span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 依赖的管理，一般定义在父模块中，由子模块去继承 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependencyManagement</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependencyManagement</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 对构建行为提供相应的支持 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 插件列表 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></div><div class="line">        <span class="comment">&lt;!-- 指定坐标 --&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>反写公司网址+项目名<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>项目名+模块名<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>版本0.0.0（大版本+分支版本+小版本）<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 一般在子模块中指定所继承的父模块 --&gt;</span></div><div class="line"><span class="comment">&lt;!-- 继承后拥有父模块的特性 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 模块列表 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">modules</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">module</span>&gt;</span><span class="tag">&lt;/<span class="name">module</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">modules</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!--作用域--&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">scope</span>&gt;</span></div><div class="line"><span class="comment">&lt;!--</span></div><div class="line">    scope作用域简介</div><div class="line">    1.compile：默认范围，编译测试运行都有效</div><div class="line">    2.provided：在编译和测试时有效</div><div class="line">    3.runtime：在测试和运行时有效</div><div class="line">    4.test:只在测试时有效</div><div class="line">    5.system:在编译和测试时有效，与本机系统关联，可移植性差</div><div class="line">    6.import:导入的范围，它只使用在dependencyManagement中，表示从其他的pom中导入dependency的配置</div><div class="line">--&gt;</div></pre></td></tr></table></figure>
+<h2 id="Maven依赖传递"><a href="#Maven依赖传递" class="headerlink" title="Maven依赖传递"></a>Maven依赖传递</h2><p>假设B项目依赖A项目，C项目又依赖B项目，那么在C项目中运行compile时，在引进B项目的同时，自动就把A项目也引进来了。如果不想将A项目导入的话，可以使用exclusions下设置exclusion，然后将A项目的坐标添加即可。</p>
+<p>Ps：可以在settings.xml中的profile结点，来更改默认的Maven使用的jdk版本，否则将显示默认的1.5版本。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">profile</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>jdk-1.7<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activation</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">activeByDefault</span>&gt;</span>true<span class="tag">&lt;/<span class="name">activeByDefault</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">jdk</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">jdk</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">activation</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">maven.compiler.compilerVersion</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">maven.compiler.compilerVersion</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">profile</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h2 id="依赖冲突"><a href="#依赖冲突" class="headerlink" title="依赖冲突"></a>依赖冲突</h2><p>如果A和B依赖了一个不同版本的相同的构件C。</p>
+<h2 id="短路优先"><a href="#短路优先" class="headerlink" title="短路优先"></a>短路优先</h2><p>会优先解析路径短的版本。<br>A -&gt; B -&gt; C -&gt; X(jar)<br>A -&gt; D -&gt; X(jar) 优先解析短的</p>
+<h2 id="先声明先优先"><a href="#先声明先优先" class="headerlink" title="先声明先优先"></a>先声明先优先</h2><p>如果路径长度相同，则谁先声明，先解析谁。</p>
+<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>如果项目D依赖项目C，项目C依赖项目B，项目B依赖项目A，我们需要一个个安装这项项目，在Maven中有一种方式可以将多个项目一次性安装，这就是聚合的概念。</p>
+<p>简单讲就是，需要人工多次操作的，只要Maven能理解，一次性告诉他，他就能帮我们做这件单调烦人的事情了。<br>使用<code>&lt;modules&gt;&lt;/modules&gt;</code>这个标签</p>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>多次使用到的依赖，比如：单元测试，没有必要在所有的项目中都引用一下，此时就可以采用继承的方式来实现，先来一个父级的POM.XML然后再继承此POM.XML。使用<code>&lt;parent&gt;</code>标签</p>
+<h2 id="Maven-配置web项目实例"><a href="#Maven-配置web项目实例" class="headerlink" title="Maven 配置web项目实例"></a>Maven 配置web项目实例</h2><p>1：打开Eclipse</p>
+<p>2：创建Maven项目，选择archetype-webapp模板</p>
+<p>3：解决Servlet没有生命依赖的问题，在pom.xml中添加servlet的依赖，可以去中央仓库选择servlet版本<br>例如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.servlet<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>javax.servlet-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">version</span>&gt;</span>4.0.0-b01<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>4：手工完善Maven约定好的目录结构<br>可以在navigator窗口中手动新建<br>../src/main/java<br>../src/test/java</p>
+<p>5：Project Explorer中更新项目</p>
+<p>6：创建项目的输出目录<br>build path中设置输出路径output folder，确保每个module都输出在../tartet/classes目录中</p>
+<p>7：将Maven项目转换为Web项目<br>右击-属性-project facets-勾选动态模板（Dynamic Web Module）</p>
+<p>8：修改部署时配置去掉多余的配置项例如：测试代码<br>右击-属性-Deployment Assembly-删除多余的配置项（测试代码）</p>
+<p>9：使用package命令打包项目—使用jetty这个插件（在Maven的中央插件库中寻找）作为Web容器，在中央仓库查找jetty的plugin坐标配置到pom.xml中</p>
+<p>pom.xml例子：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">finalName</span>&gt;</span>webbproject-demo<span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.tomcat.maven<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>tomcat7-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">executions</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">execution</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">goals</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">goal</span>&gt;</span>run<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></div></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 项目管理 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Maven </tag>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Maven的IDE集成使用与生命周期]]></title>
+      <url>/2017/01/19/Maven%E7%9A%84IDE%E9%9B%86%E6%88%90%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
+      <content type="html"><![CDATA[<p>在实际开发中，我们不是使用命令行或者记事本，而是使用诸如IDEA或者Eclipse的IDE进行开发，本文将介绍Maven与IDE集成和使用以及Maven的生命周期<br><a id="more"></a></p>
+<h2 id="在eclipse中安装maven插件以及创建maven项目"><a href="#在eclipse中安装maven插件以及创建maven项目" class="headerlink" title="在eclipse中安装maven插件以及创建maven项目"></a>在eclipse中安装maven插件以及创建maven项目</h2><p>由于IDEA默认集成Maven所以不做介绍</p>
+<p>1: 在eclipse4.0及MyEclipse中就不需要安装maven插件，在window–preference中可以查看是否有maven插件，没有的话就需要安装Maven插件，直接复制Maven插件到eclipse安装目录中的dropins中，然后修改eclipse.<br>ini,在这个文件里的512m后面添加-vm,换行，再添加jdk/bin/javaw.exe保存。</p>
+<p><img src="/images/maven/maven-eclipse-01.jpg" alt=""></p>
+<p>2: eclipse是默认运行在jre之上的而maven需要jdk的支持，需要tools.jar在jdk/lib目录中，所以修改eclipse的JRE，java—Installed JREs–ADD–Next–把本地JDK的目录放到JRE home中，并设置Dmaven.multiModuleProjectDirectory=$M2_HOME–最后勾选JDK</p>
+<p><img src="/images/maven/maven-eclipse-02.jpg" alt=""></p>
+<p>3: 更改maven本地的配置Installactions—ADD—把本地的maven目录放进去</p>
+<p>4: 修改setting的路径</p>
+<p><img src="/images/maven/maven-eclipse-03.jpg" alt=""></p>
+<h3 id="集成时遇到的问题"><a href="#集成时遇到的问题" class="headerlink" title="集成时遇到的问题"></a>集成时遇到的问题</h3><p>如果版本不匹配 则mvn -v查看maven的jdk版本，然后在eclipse中配置当前使用的jdk</p>
+<p>Eclipse中run as–&gt;Maven build…–&gt;在goals中compile（可以在此处使用其他的命令，如：package）—&gt;run<br>若报-Dmaven.multiModuleProjectDirectory错误，则在选项–&gt;java–&gt;installed JRES 中设置jdk的参数，添加上“-Dmaven.multiModuleProjectDirectory=$M2_HOME”</p>
+<p><img src="/images/maven/maven-eclipse-04.jpg" alt=""></p>
+<h2 id="Maven的生命周期和插件"><a href="#Maven的生命周期和插件" class="headerlink" title="Maven的生命周期和插件"></a>Maven的生命周期和插件</h2><p>Maven的生命周期大概如下：</p>
+<p>clean compile test package install</p>
+<p>这几个命令对应了一个项目的完整的构建过程，这几个步骤对应的都有插件来完成：<br>清理、编译、测试、打包、集成测试、验证、部署</p>
+<p>Maven的生命周期分为三个独立的生命周期（每一个生命周期有分为若干个阶段，其中defaul是最核心的一个）：</p>
+<ol>
+<li>clean 清理项目</li>
+<li>default 构建项目</li>
+<li>site 生成项目的站点</li>
+</ol>
+<h4 id="clean-清理项目："><a href="#clean-清理项目：" class="headerlink" title="clean 清理项目："></a>clean 清理项目：</h4><p>pre-clean ：执行清理前的工作<br>clean：清理上一次构建生成的所有文件<br>post-clean：执行清理后的文件</p>
+<h4 id="default构建项目（最核心）"><a href="#default构建项目（最核心）" class="headerlink" title="default构建项目（最核心）"></a>default构建项目（最核心）</h4><p>compile test package install</p>
+<h4 id="site-生成项目站点"><a href="#site-生成项目站点" class="headerlink" title="site 生成项目站点"></a>site 生成项目站点</h4><p>pre-site 在生成项目站点之前要完成的工作<br>site 生成项目的站点文档<br>post-site在生成项目站点后要完成的工作<br>site-deploy发布生成的站点到服务器上</p>
+<p>注意：Maven的生命周期对应的命令是顺序执行的，如果没有人为的顺序的一个个执行，那么Maven会默认的自动运行。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 项目管理 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Maven </tag>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Java注解]]></title>
+      <url>/2017/01/11/Java%E6%B3%A8%E8%A7%A3/</url>
+      <content type="html"><![CDATA[<p>学习注解最重要的就是弄清楚，为什么学习注解？学习注解的好处？学完能做什么？<br>1、能够读懂别人写的代码，特别是框架相关的代码；<br>2、能让编程更加简洁，代码更加清晰；<br><a id="more"></a></p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>注解是Java提供的一种 源程序中的元素关联任何信息和任何元数据的途径和方法。</p>
+<h2 id="按来源分类注解"><a href="#按来源分类注解" class="headerlink" title="按来源分类注解"></a>按来源分类注解</h2><ul>
+<li>java自带注解—— @Override 覆盖了父类的方法、@Deprecation 表示方法已经过时、@Suppvisewarnings 用于通知java编译器忽略特定的编译警告</li>
+<li>第三方注解—— 种类很多，Spring的@Resource Hibernate 的@Entity等等</li>
+<li>自定义注解—— 自定义注解的结构：元注解（用来注解注解的）、@接口定义、无参无异常的成员方法的定义（成员类型受限：基本数据类型、String、枚举）</li>
+</ul>
+<h2 id="按照运行机制分类注解"><a href="#按照运行机制分类注解" class="headerlink" title="按照运行机制分类注解"></a>按照运行机制分类注解</h2><ol>
+<li>源码注解——注解只在源码中存在，编译程.class文件时就不存在了</li>
+<li>编译时注解——注解在源码和.class文件都会存在的，JDK自带的注解都是编译时注解</li>
+<li>运行时注解——在运行阶段还起作用，甚至会影响运行逻辑的注解，比如：@Autowired。</li>
+</ol>
+<h2 id="学会自定义注解"><a href="#学会自定义注解" class="headerlink" title="学会自定义注解"></a>学会自定义注解</h2><p>学习注解最终就是要把他应用的实际中，其中看懂注解固然重要，会自定义注解并在实际项目中解决问题也不可忽视</p>
+<p>要自定义注解就要先了解下面的的元注解：</p>
+<ul>
+<li>@Target—作用域（constructor(构造方法声明)，field（字段声明），local_variable（局部变量声明），method（方法声明），package（包声明），parameter（参数声明），type（类，接口声明））</li>
+<li>@Retention—生命周期（source：只在源码显示，编译时会丢弃。class：编译时会记录到class中，运行时忽略。runtime：运行时存在，可以通过反射读取）</li>
+<li>Inherited—标识注解(允许子类继承)</li>
+<li>Documented—生成Javadoc</li>
+</ul>
+<p>下面看一个自定义注解的实例<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Target</span>(&#123;ElementType.METHOD,&#125;) <span class="comment">//作用域(控制注解能被用在什么地方)</span></div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME) <span class="comment">//生命周期</span></div><div class="line"><span class="meta">@Inherited</span> <span class="comment">//标识注解(允许子类继承)</span></div><div class="line"><span class="meta">@Documented</span> <span class="comment">//生成javadoc会生成注解信息</span></div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Description &#123;</div><div class="line">    <span class="comment">//1.类型受限制，包括基本类型及String、Class、Annotation、Enumeration</span></div><div class="line">    <span class="comment">//2.若只有一个成员，则名称必须为value(),使用时可以忽略成员名和赋值号(=)</span></div><div class="line">    <span class="comment">//3.注解类可以没有成员，称为标识注解</span></div><div class="line">    <span class="comment">//4成员无参且无异常声明</span></div><div class="line">    <span class="function">String <span class="title">desc</span><span class="params">()</span></span>;</div><div class="line">    <span class="function">String <span class="title">author</span><span class="params">()</span></span>;</div><div class="line">    <span class="comment">//5可指定默认值</span></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">age</span><span class="params">()</span> <span class="keyword">default</span> 18</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Description&#123;</div><div class="line">    String desc;</div><div class="line">    String author;</div><div class="line">    <span class="keyword">int</span> age <span class="keyword">default</span> <span class="number">18</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="解析注解"><a href="#解析注解" class="headerlink" title="解析注解"></a>解析注解</h2><p>概念：通过反射获取类、函数或成员上的运行时注解信息，从而实现动态控制程序运行的逻辑。</p>
+<p>只是定义注解而不解析是没有任何用处的，解析注解为注解学习的核心，最主要的是了解两个方法<code>isAnnotationPresent</code>和<code>getAnnotation</code></p>
+<p>@Inherited（子类是否可继承） 对接口interface、方法继承没有作用，对类才有效。<br>通过反射回去类，函数或成员以上的运行时的注解信息从而实现动态控制程序运行的逻辑</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//1.使用类加载器加载类</span></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    Class c = Class.forName(<span class="string">"com.ann.test.Child"</span>);</div><div class="line"></div><div class="line">    <span class="comment">//2.找到类上的注解</span></div><div class="line">    <span class="keyword">boolean</span> isExist = c.isAnnotationPresent(Description.class);</div><div class="line">    <span class="keyword">if</span>(isExist)&#123;</div><div class="line">        <span class="comment">//3.拿到注解实例</span></div><div class="line">        Description d = (Description)c.getAnnotation(Description.class);</div><div class="line">        System.out.println(d.value());</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//4.找到方法上的注解</span></div><div class="line">    Method[] ms = c.getMethods();</div><div class="line"></div><div class="line">    <span class="keyword">for</span>(Method m:ms)&#123;</div><div class="line">        <span class="keyword">boolean</span> isMExist = m.isAnnotationPresent(Description.class);</div><div class="line">        <span class="keyword">if</span>(isMExist)&#123;</div><div class="line">            Description d = m.getAnnotation(Description.class);</div><div class="line">            System.out.println(d.value());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//另外一种解析方法</span></div><div class="line">    <span class="keyword">for</span>(Method m:ms)&#123;</div><div class="line">        Annotation[] as = m.getAnnotations();</div><div class="line">        <span class="keyword">for</span>(Annotation a:as)&#123;</div><div class="line">        <span class="keyword">if</span>(a <span class="keyword">instanceof</span> Description)&#123;</div><div class="line">            Description d = (Description)a;</div><div class="line">            System.out.println(d.value());</div><div class="line">        &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>学会自定义并解析注解后我们就可以在项目中灵活的使用注解功能了</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Java之路 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[初识Maven]]></title>
+      <url>/2017/01/04/Maven/</url>
+      <content type="html"><![CDATA[<p>试想一下，当我们要开展一个新项目的时候。我们第一步就是搭建环境。要从各大官网找jar包、下载jar包、然后分辨重复的、是否有用的、最后放到项目中，项目还没开始就要放几十个jar包，还可能在开发时因为少放了一个而出各种bug，这样做维护时间和成本都很高。Maven可以很好的帮助我们管理jar包，这也就是我们要学习并使用Maven的原因</p>
+<a id="more"></a>
+<h2 id="什么是Maven"><a href="#什么是Maven" class="headerlink" title="什么是Maven"></a>什么是Maven</h2><p>Maven是基于项目对象模型（POM），可以通过一小段描述信息来管理项目的构建、报告和文档的软件项目管理工具。</p>
+<p>Maven是自动化构建工具，可以管理第三方的jar包。</p>
+<h2 id="Maven源文件的目录结构"><a href="#Maven源文件的目录结构" class="headerlink" title="Maven源文件的目录结构"></a>Maven源文件的目录结构</h2><p>要使用Maven，首先要到官网下载Maven</p>
+<p><a href="http://maven.apache.org/download.cgi" target="_blank" rel="noopener">Maven官网下载地址</a></p>
+<p>下载完成后解压如下图<br><img src="/images/maven/maven-catalog.png" alt=""></p>
+<p>bin目录包含Maven的运行脚本<br>boot目录包含一个类加载器的框架，Maven使用它来加载自己的类库<br>conf是配置文件目录<br>lib是类库（自身及第三方）</p>
+<p>此时Maven已经安装到电脑中，打开CMD，进入bin目录输入mvn -v即可查看Maven版本。当然为了方便使用，最好把Maven配置到环境变量中，一般命名为M2_HOME（配置方法和JAVA_HOME一样）</p>
+<h2 id="Maven项目的目录结构"><a href="#Maven项目的目录结构" class="headerlink" title="Maven项目的目录结构"></a>Maven项目的目录结构</h2><p>使用Maven构建项目时要遵守Maven的目录结构，如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">src</div><div class="line">     -main</div><div class="line">          -java</div><div class="line">               -package</div><div class="line">     -test</div><div class="line">          -java</div><div class="line">               -package</div><div class="line">     resources</div></pre></td></tr></table></figure>
+<h2 id="Maven常用命令"><a href="#Maven常用命令" class="headerlink" title="Maven常用命令"></a>Maven常用命令</h2><ul>
+<li><p>mvn compile<br>编译主程序源代码，不会编译test目录的源代码。第一次运行时，会下载相关的依赖包，可能会比较费时，    生成target文件夹</p>
+</li>
+<li><p>mvn test<br>运行应用程序中的单元测试<br>会生成target文件夹，主程序编译的字节码文件在classes下面，测试程序放在test-classes下，surefire-reports文件夹下面存放是的所生成的测试报告</p>
+</li>
+<li><p>mvn package<br>会在target目录下生成一个jar文件</p>
+</li>
+<li><p>mvn clean<br>删除target文件夹</p>
+</li>
+</ul>
+<p>由于Maven创建项目的时候要遵守Maven的目录结构，那么每次创建项目的时候我们都手动建立合法目录结构是很麻烦的事，所以 Maven为我们提供的以下两种自动化方式快速创建项目</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mvn archetype:generate 按照提示进行选择</div><div class="line"></div><div class="line">mvn archetype:generate -DgroupId= 组织名 ，公司网址的反写+项目名</div><div class="line">                       -DartifactId=项目名-模块名</div><div class="line">                       -Dversion=版本号</div><div class="line">                       -Dpackage=代码所存在的包名</div></pre></td></tr></table></figure>
+<h2 id="坐标与仓库"><a href="#坐标与仓库" class="headerlink" title="坐标与仓库"></a>坐标与仓库</h2><p>坐标: 构建 maven的唯一标识 groupid artifactId version 共同构建一个坐标<br>仓库: 本地仓库和全球仓库<br>M2_HOME\lib\maven-model-builder-版本号.jar中的pom-4.0.0.0.xml中记录了默认的全球仓库的地址</p>
+<p>由于国内被墙的缘故，直接从Apache 中央仓库下载jar包会很费时间，所以大多使用镜像仓库，访问速度快，也比较稳定</p>
+<p>镜像仓库：<br>修改镜像仓库的位置：<br>M2_HOME\conf\setting.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>maven.net.cn<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span><span class="comment">&lt;!--可以用*匹配所有的镜像，一旦配置了镜像，所有针对原仓库进行的访问都会转到这个配置的镜像仓库，原仓库将不能再访问--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>central mirror in china<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.net.cn/content/groups/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!--下面的配置是使用oschina的远程仓库：--&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>maven.oschina.net<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>*<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">name</span>&gt;</span>central mirror in oschina<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.oschina.net/content/groups/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>修改仓库位置：<br>默认存在位置：用户目录.m2\repository<br>修改settings.xml中的localRespository节点的路径之后即修改了仓库的默认位置</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 项目管理 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Maven </tag>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[存储过程高级篇]]></title>
+      <url>/2016/12/29/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E9%AB%98%E7%BA%A7%E7%AF%87/</url>
+      <content type="html"><![CDATA[<p>继续上文的初级篇，聊一聊存储过程的常用特性，谈谈存储过程在工作中的具体使用，希望能对读者有所帮助。<br><a id="more"></a></p>
+<h3 id="参数传入模式"><a href="#参数传入模式" class="headerlink" title="参数传入模式"></a>参数传入模式</h3><p>PL/SQL存储过程有三种传参模式in 、out、in out。默认情况下（即不写）为in模式<br>先来看看下面的存储过程：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">--in 、out、 in out模式测试</span></div><div class="line"><span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">procedure</span> proc_param_demo(p1 <span class="keyword">in</span> <span class="built_in">number</span>,p2 <span class="keyword">out</span> <span class="built_in">number</span>,p3 <span class="keyword">in</span> <span class="keyword">out</span> <span class="built_in">number</span>) <span class="keyword">as</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  dbms_output.put_line(<span class="string">'测试in    模式存储过程中p1的值为：'</span>||p1);<span class="comment">--标准输出</span></div><div class="line">  dbms_output.put_line('测试out   模式存储过程中p2的值为：'||p2);</div><div class="line">  dbms_output.put_line('测试in out模式存储过程中p3的值为：'||p3);</div><div class="line">  <span class="comment">--p1 :=100; --报错</span></div><div class="line">  p2 := 100; <span class="comment">--:=PL/SQL标准赋值</span></div><div class="line">  p3 :=100;</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>调试完错误之后，调用上面的存储过程，这次调用我们不直接把值传递给存储过程的参数。所以需要使用declare关键字来声明变量，然后就可以在执行区域才可以使用这些变量：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">declare</span> <span class="comment">--声明区域</span></div><div class="line">p1 <span class="built_in">number</span>;</div><div class="line">p2 number;</div><div class="line">p3 number;</div><div class="line"><span class="keyword">begin</span></div><div class="line">  p1 := <span class="number">10</span>;</div><div class="line">  p2 := 10;</div><div class="line">  p3 := 10;</div><div class="line">  proc_param_demo(p1,p2,p3);</div><div class="line">  dbms_output.put_line('测试in    模式存储过程后p1的值为：'||p1);</div><div class="line">  dbms_output.put_line('测试out   模式存储过程后p2的值为：'||p2);</div><div class="line">  dbms_output.put_line('测试in out模式存储过程后p3的值为：'||p3);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>输出结果如下图所示：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-ec87d87fed22ebf5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="存储过程三种模式测试结果"><br>通过测试可以得到以下结果：</p>
+<ul>
+<li>in模式可以理解为引用传递，它的值被完整的传入到存储过程中，但在执行过程中不能被重新赋值，我们传递的值执行之后不会发生改变。</li>
+<li>out模式为值传递，它的值在传入到存储过程的时候会默认赋值为null，可以在执行的时候为其赋值，执行之后传递的值也会随之改变</li>
+<li>in out模式为值传递，它的值被完整的传入到存储过程中，可以在执行的时候为其赋值，执行之后传递的值也会随之改变</li>
+</ul>
+<p><strong>总结：</strong>可以把in模式看做是向存储过程传递的不想被改变的参数，可以把out模式看做返回值，当执行之后out模式的值就会随着业务逻辑发生改变以供我们使用，而in out模式则很灵活，我们即可以把它当参数传递，也可以当做返回值来使用。</p>
+<h3 id="控制语句"><a href="#控制语句" class="headerlink" title="控制语句"></a>控制语句</h3><p>流程控制语句语句无处不在，只要有一点编程基础就能够理解，在这里我列举一些在工作中常用的语法，详细语法请<a href="http://docs.oracle.com/cd/B28359_01/appdev.111/b28370/controlstructures.htm#CJAIJFCI" target="_blank" rel="noopener">参考官方文档</a></p>
+<p>IF判断语句<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">IF 条件 THEN</div><div class="line">  执行体;</div><div class="line"><span class="keyword">END</span> <span class="keyword">IF</span>;</div></pre></td></tr></table></figure></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">IF 条件 THEN</div><div class="line">  执行体;</div><div class="line">ELSE</div><div class="line">  执行体;</div><div class="line"><span class="keyword">END</span> <span class="keyword">IF</span>;</div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">IF 条件 THEN</div><div class="line">  执行体;</div><div class="line">ELSEIF 条件 THEN</div><div class="line">  执行体;</div><div class="line">ELSE</div><div class="line">  执行体;</div><div class="line"><span class="keyword">END</span> <span class="keyword">IF</span>;</div></pre></td></tr></table></figure>
+<p>CASE选择语句<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CASE 变量</div><div class="line">  WHEN 匹配变量  THEN   执行体;</div><div class="line">  WHEN 匹配变量  THEN   执行体;</div><div class="line">  WHEN 匹配变量  THEN   执行体;</div><div class="line">  ELSE 执行体;</div><div class="line"><span class="keyword">END</span> <span class="keyword">CASE</span>;</div></pre></td></tr></table></figure></p>
+<p>LOOP循环语句<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">LOOP</div><div class="line">  执行体;</div><div class="line">  IF 条件 THEN</div><div class="line">    执行体;</div><div class="line">    EXIT;<span class="comment">--此处为跳出循环</span></div><div class="line">  <span class="keyword">END</span> <span class="keyword">IF</span>;</div><div class="line"><span class="keyword">END</span> <span class="keyword">LOOP</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">LOOP</div><div class="line">  执行体;</div><div class="line">  EXIT WHEN 条件;<span class="comment">--跳出循环 对比的有CONTINUE和CONTINUE WHEN语法</span></div><div class="line"><span class="keyword">END</span> <span class="keyword">LOOP</span></div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">FOR i IN 1..3 LOOP <span class="comment">-- FOR EACH 语法，遍历1~3并输出</span></div><div class="line"> <span class="comment">--执行体;</span></div><div class="line">  DBMS_OUTPUT.PUT_LINE (TO_CHAR(i));</div><div class="line"><span class="keyword">END</span> <span class="keyword">LOOP</span>;</div></pre></td></tr></table></figure>
+<p>流程控制语句先了解其语法即可，因为它无处不在，我们就可以在实践中慢慢的掌握并精通。</p>
+<h3 id="Cursor游标"><a href="#Cursor游标" class="headerlink" title="Cursor游标"></a>Cursor游标</h3><blockquote>
+<p>An explicit cursor names the unnamed work area in which the database stores processing information when it executes a multiple-row query. When you have named the work area, you can access its information, and process the rows of the query individually.</p>
+</blockquote>
+<p>翻译：Cursor就是当我们在数据库一块未命名的存储数据的工作空间进行多行查询的时候对其进行命名。当你对一块工作空间命名之后，你就可以获取并处理这些查询的数据<br>总结：可以把Cursor理解为一个有名称的结果集，当需要的时候就可以拿过来用，也可以吧Cursor看成一个实体类，存储了我们定义的数据。</p>
+<p><a href="http://docs.oracle.com/cd/B28359_01/appdev.111/b28370/explicit_cursor.htm#LNPLS01313" target="_blank" rel="noopener">参考官方文档</a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-868a3a8831207f2b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Cursor"><br>接下来我们通过看一个具体的例子了解cursor的具体实现，需求为从emp中查出所有的姓名和其职位输出<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">procedure</span> proc_cursor_demo <span class="keyword">as</span></div><div class="line"><span class="keyword">cursor</span> emp_cursor <span class="keyword">is</span>        <span class="comment">--定义cursor</span></div><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp;          <span class="comment">--将数据空间指向emp_cursor</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  <span class="keyword">for</span> emp_data <span class="keyword">in</span> emp_cursor <span class="keyword">loop</span>            <span class="comment">--遍历cursor数据输出</span></div><div class="line">    dbms_output.put_line(emp_data.ename ||<span class="string">'  的工作为: '</span>||emp_data.job);</div><div class="line">  <span class="keyword">end</span> <span class="keyword">loop</span>;</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>结果如下<br><img src="http://upload-images.jianshu.io/upload_images/3993341-c8a22c8e5a546cae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="使用Cursor输出emp表名称和职位"></p>
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><p><img src="http://upload-images.jianshu.io/upload_images/3993341-5d4b31760b02595d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<p>存储过程的异常在工作中非常常用，但具体使用一般很简单，包括自定义异常和系统异常，<a href="http://blog.csdn.net/jojo52013145/article/details/6585833" target="_blank" rel="noopener">jojo52013145</a>总结的很好，如果想深入了解请参考他的文章。</p>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>不管学习什么光说不练都是假把式，看到的知识不一定是自己的，只有实践之后才能真正的理解，让我们通过一个例子。比如说我们有这样的一个需求，要把emp表中有奖金的员工提取到另外一个表，并在员工的姓名后添加后缀_V。下面就是实现代码：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">create or replace procedure proc_copy_demo</div><div class="line">(tn in varchar2)</div><div class="line">as</div><div class="line">v_count number;             --检查是否已经有这个名称的表了</div><div class="line">tablename varchar2(20);     --表名称</div><div class="line">v_emp_copy emp%rowtype;      --表结构</div><div class="line"></div><div class="line">v_sql varchar(200);           --sql</div><div class="line"></div><div class="line">cursor emp_data_cursor is   -- 将有emp表中有奖金的人员放到cursor中</div><div class="line">select * from emp where comm&gt;0; --过滤有奖金的</div><div class="line"></div><div class="line">begin</div><div class="line">  tablename := tn; -- 定义表名称</div><div class="line">  select count(*) into v_count from user_objects where object_name = upper(tablename); -- 查询用户表，校验是否已经存在名称为tablename的表</div><div class="line">  if v_count&gt;0 then    -- 表存在</div><div class="line">    execute immediate 'drop table '|| tablename ||' cascade constraints'; -- 执行删除表 execute immediate执行SQL语句</div><div class="line">  end if;</div><div class="line"></div><div class="line">  execute immediate 'create table '|| tablename ||' as select * from emp where 1=2'; -- 新建表结果和emp相同的表，添加条件后只创建表，不添加数据</div><div class="line"></div><div class="line">  for emp_data in emp_data_cursor loop          -- 从cursor中取出数据，做一些处理并插入到指定表中</div><div class="line">      v_emp_copy.empno := emp_data.empno;</div><div class="line">      v_emp_copy.ename := emp_data.ename || '_A';</div><div class="line">      v_emp_copy.job := emp_data.job;</div><div class="line">      v_emp_copy.mgr := emp_data.mgr;</div><div class="line">      v_emp_copy.hiredate := emp_data.hiredate;</div><div class="line">      v_emp_copy.sal := emp_data.sal;</div><div class="line">      v_emp_copy.comm := emp_data.comm;</div><div class="line">      v_emp_copy.deptno := emp_data.deptno;</div><div class="line"></div><div class="line"></div><div class="line">      v_sql := 'insert into '||tablename||' values</div><div class="line">      (' ||v_emp_copy.empno    ||','''</div><div class="line">         ||v_emp_copy.ename    ||''','''</div><div class="line">         ||v_emp_copy.job      ||''','</div><div class="line">         ||v_emp_copy.mgr      ||','''</div><div class="line">         ||v_emp_copy.hiredate ||''','</div><div class="line">         ||v_emp_copy.sal      ||','</div><div class="line">         ||v_emp_copy.comm     ||','</div><div class="line">         ||v_emp_copy.deptno   ||')';</div><div class="line">     dbms_output.put_line(v_sql);</div><div class="line">     execute immediate v_sql;</div><div class="line">  end loop;</div><div class="line">  commit;</div><div class="line">  exception            -- 捕获异常常用写法</div><div class="line">    when others then</div><div class="line">      dbms_output.put_line('捕获的异常代码（SQLCODE） 为 ' ||SQLCODE );        -- 输出异常信息</div><div class="line">      dbms_output.put_line('捕获的异常信息（SQLERRM） 为 ' ||SQLERRM);</div><div class="line">end;</div><div class="line"></div><div class="line">-------------------------test-------------------------------</div><div class="line">begin</div><div class="line"> proc_copy_demo('emp_copy');</div><div class="line">end;</div><div class="line">-------------------------test-------------------------------</div></pre></td></tr></table></figure></p>
+<p>运行之后可能会出现下面的输出，PL/SQL抛出了一个异常，通过异常捕获机制，我们可以轻松的找到问题所在。<br><img src="http://upload-images.jianshu.io/upload_images/3993341-a72eab18212ffc10.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="异常结果"><br>因为我们没有为scott用户赋予创建标的权限，具体代码如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">revoke</span> <span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">from</span> scott <span class="comment">-- 收回scott创建表的权限</span></div><div class="line"><span class="keyword">grant</span> <span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">to</span> scott   <span class="comment">-- 赋予scott创建表的权限</span></div></pre></td></tr></table></figure></p>
+<p>然后再执行上面的存储过程，我们会发现想要的数据已经被提取到emp_copy表中了。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 数据库 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 存储过程 </tag>
+            
+            <tag> SQL </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[存储过程初级篇]]></title>
+      <url>/2016/12/24/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%88%9D%E7%BA%A7%E7%AF%87/</url>
+      <content type="html"><![CDATA[<p>本文旨在把自己学到的有关存储过程的知识和大家分享，并希望能够帮助正在被存储过程折磨的同学。<br><a id="more"></a></p>
+<h3 id="什么是存储过程"><a href="#什么是存储过程" class="headerlink" title="什么是存储过程"></a>什么是存储过程</h3><blockquote>
+<p><a href="http://docs.oracle.com/cd/E11882_01/appdev.112/e25519/subprograms.htm#LNPLS99900" target="_blank" rel="noopener">官方定义：</a><br>A procedure is a subprogram that performs a specific action</p>
+<p>A PL/SQL subprogram is a named PL/SQL block that can be invoked repeatedly. If the subprogram has parameters, their values can differ for each invocation.</p>
+<p>A subprogram is either a procedure or a function. Typically, you use a procedure to perform an action and a function to compute and return a value.</p>
+</blockquote>
+<p><strong>翻译：</strong><br>存储过程是一个可以执行特定行为的子程序</p>
+<p>PL/SQL子程序是一个可以被重复调用的拥有名称的PL/SQL块（PL/SQL程序都是以块为基本单位的）。如果这个子程序有参数，我们则可以在调用的时候赋予不同的参数</p>
+<p>子程序可以是存储过程或函数。通常情况下，你可以使用存储过程来执行一个动作，使用函数来计算并返回一个值</p>
+<p><strong>总结：</strong>存储过程对于不同的领域的人有不同的理解方式。可以把它理解为一个指令集，它可以帮助我们完成一系列复杂的数据操作，也可以把它看做一个专门处理SQL的批处理工具，在需要的时候执行一些增删改查的操作。</p>
+<h3 id="为什么学习存储过程"><a href="#为什么学习存储过程" class="headerlink" title="为什么学习存储过程"></a>为什么学习存储过程</h3><p>相信在学习存储过程的你一定已经对普通SQL了如指掌了，简单了解了存储过程的概念之后，用普通的SQL与存储过程进行比较可以让我们在工作中做出正确的选择。两者区别很大，详细的对比可以问度娘，由于本文主讲存储过程，故罗列一些重要存储过程的优点如下：</p>
+<ul>
+<li>降低网络的通讯量。如果只是执行简单的SQL语句的话存储过程和普通SQL没有太大差别，但随着时间的推移SQL量越来越大甚至达到上百行时，其优越性明显体现</li>
+<li>提高执行效率。我们都知道SQL是先编译再执行的，而存储过程是预编译在服务器中的，当执行的时候跳过编译的环节效率自然会提高</li>
+<li>可维护性高。更新存储过程通常比更新，测试，重新部署需要较少的时间和精力</li>
+</ul>
+<p>总之存储过程是一个SQL提供的一个非常优秀的功能，在工作中我们或多或少都会用到，学会存储过程绝对会让你受益匪浅。</p>
+<h3 id="PL-SQL存储过程"><a href="#PL-SQL存储过程" class="headerlink" title="PL/SQL存储过程"></a>PL/SQL存储过程</h3><hr>
+<h5 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h5><p>存储过程在不同的数据库语言中语法略有不同，本文针对ORACLE的PL/SQL，但其他数据库语言也是大同小异<br><img src="http://upload-images.jianshu.io/upload_images/3993341-4182833472a4d9cf.gif?imageMogr2/auto-orient/strip" alt="create_procedure"></p>
+<p>上图是一个存储过程的模型，由此可知一个最简单的存储过程必须包含以下关键字CREATE、PROCEDURE、存储过程名称、IS/AS、PL/SQLB标准执行语句（BEGIN … END;）。<br>通过不断的实践我们将会完全理解上图的含义。首先从简单的存储过程开始(其功能是向EMP表中添加一条数据)：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span>        <span class="comment">-- 存储过程头部区域开始</span></div><div class="line"><span class="keyword">or</span> <span class="keyword">replace</span>    <span class="comment">--可选表示如果数据库中已经存在一条相同名称的存储过程就把它替换掉</span></div><div class="line"><span class="keyword">procedure</span></div><div class="line">proc_emp_create <span class="comment">--存储过程名称 procedure_name</span></div><div class="line">(</div><div class="line">empno <span class="built_in">number</span>, ename varchar2, job varchar2, mgr <span class="built_in">number</span>, hiredate <span class="built_in">date</span>, sal <span class="built_in">number</span>, comm <span class="built_in">number</span>, deptno <span class="built_in">number</span></div><div class="line">) <span class="comment">-- parameter_declaration 声明参数（注意不需要写长度），存储过程头部区域结束</span></div><div class="line"><span class="keyword">as</span></div><div class="line"><span class="comment">--声明区域，不需要声明变量可以不写</span></div><div class="line"><span class="keyword">begin</span> <span class="comment">-- PL/SQL标准执行语句</span></div><div class="line"><span class="comment">--执行区域</span></div><div class="line">  <span class="keyword">insert</span> <span class="keyword">into</span> emp <span class="keyword">values</span>(empno, ename, job, mgr, hiredate, sal, comm, deptno);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>当我们执行上面的存储过程之后这条存储过程就被编译到数据库中了，进入PLSQL Developer中的Procedures文件夹就可以看到我们刚才创建的存储过程了</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-20071311d7544ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="已经编译好的存储过程"></p>
+<p>既然存储过程已经写好并编译完成了，接下来就是使用我们创建的存储过程了。使用存储过程有两种方法：<br>第一种是直接在SQL窗口中，执行SQL语句。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">  proc_emp_create(<span class="number">7778</span>,<span class="string">'Alexander'</span>,<span class="string">'analyst'</span>,<span class="number">6789</span>,<span class="keyword">sysdate</span>,<span class="number">4321</span>,<span class="string">''</span>,<span class="number">20</span>);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>第二种是在命令窗口中使用execute命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Connected to Oracle Database 11g Enterprise Edition Release 11.2.0.1.0</div><div class="line">Connected as scott</div><div class="line"></div><div class="line">SQL&gt; execute   proc_emp_create(7778,&apos;Alexander&apos;,&apos;analyst&apos;,6789,sysdate,4321,&apos;&apos;,20);</div><div class="line"></div><div class="line">PL/SQL procedure successfully completed</div><div class="line"></div><div class="line">SQL&gt;</div></pre></td></tr></table></figure></p>
+<p>无论使用哪一种方法，我们都会发现在EMP表中已经多了一条刚才插入的数据。也就是说，我们以后想要向EMP表中插入数据的话，就可以直接调用这条存储过程来执行插入操作。</p>
+<p>从上面的例子可以看出，一个存储过程可以分成三个区域</p>
+<ol>
+<li>头部区域<br>用于编写最基本的存储过程头部标记，定义是否要创建一个替代原有存储过程的存储过程；决定是否定义参数；定义参数的类型（in out inout）；定义执行权限（Schema）。</li>
+<li>声明区域<br>用于声明变量（要定义长度）包括cursor；</li>
+<li>执行区域<br>用于执行业务逻辑代码，可以使用条件语句（选择、判断、循环。。。）来进行一些业务逻辑CRUD的处理</li>
+</ol>
+<h5 id="继续实践"><a href="#继续实践" class="headerlink" title="继续实践"></a>继续实践</h5><p>了解了存储过程的基本语法和用途之后，再通过一些简单的实例可以帮助我们更好的理解存储过程的语法和其含义。上面的例子简单的完成了对EMP表的添加功能，接下来将会使用存储过程对EMP进行删除、修改和查询功能，实现完整的CRUD<br><strong>D</strong><br>创建用于根据EMPNO删除EMP中一条数据的存储过程<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">procedure</span> proc_emp_delete(deleteid <span class="built_in">number</span>) <span class="keyword">as</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  <span class="keyword">delete</span> <span class="keyword">from</span> emp <span class="keyword">where</span> empno = deleteid;</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>执行（两种方法任选其一即可）<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">  proc_emp_delete(<span class="number">7778</span>);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>执行完成之后，刚才我们在了解存储过程语法的那条数据就被删除了<br><strong>U</strong><br>接下来来写更新的存储过程，首先准备一条数据<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">proc_emp_create(<span class="number">7778</span>,<span class="string">'Alexander'</span>,<span class="string">'analyst'</span>,<span class="number">6789</span>,<span class="keyword">sysdate</span>,<span class="number">4321</span>,<span class="string">''</span>,<span class="number">20</span>);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>执行之后刚才被我们删掉的数据就又重新插入到EMP表中，接下来写更新的存储过程<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">procedure</span></div><div class="line">proc_emp_update</div><div class="line">(</div><div class="line">p_empno <span class="built_in">number</span>, p_ename varchar2, p_job varchar2, p_mgr <span class="built_in">number</span>, p_hiredate <span class="built_in">date</span>, p_sal <span class="built_in">number</span>, p_comm <span class="built_in">number</span>, p_deptno <span class="built_in">number</span></div><div class="line">)</div><div class="line"><span class="keyword">as</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  <span class="keyword">update</span> emp <span class="keyword">set</span> ename = p_ename,job = p_job,mgr = p_mgr,hiredate=p_hiredate,sal = p_sal,comm=p_comm,deptno = p_deptno <span class="keyword">where</span> empno=p_empno;</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>需要注意的是参数不能和字段表的名称相同，接下来执行<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">  proc_emp_update(<span class="number">7778</span>,<span class="string">'Alexander'</span>,<span class="string">'analyst'</span>,<span class="string">'6789'</span>,<span class="keyword">sysdate</span>,<span class="number">4321</span>,<span class="number">3000</span>,<span class="number">10</span>);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>再次查询会发现Alexander的奖金多了3000块。<br>R<br>最后要做的就是查询了，对于多条数据的查询输出要使用cursor，留在下篇文章中讨论，我们先做一个最简单的单条数据查询<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">procedure</span> proc_emp_read</div><div class="line"><span class="keyword">as</span></div><div class="line">v_no <span class="built_in">number</span>;<span class="comment">--声明变量</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  <span class="keyword">select</span> <span class="keyword">count</span>(empno) <span class="keyword">into</span> v_no <span class="keyword">from</span> emp;<span class="comment">--在执行代码块里面查询一定要使用into赋值</span></div><div class="line">  dbms_output.put_line(v_no);</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>接下来执行<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">begin</span></div><div class="line">  proc_emp_read;</div><div class="line"><span class="keyword">end</span>;</div></pre></td></tr></table></figure></p>
+<p>我的结果如下图所示：<br><img src="http://upload-images.jianshu.io/upload_images/3993341-ebd43290102a5a9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查询EMP表总记录数结果"></p>
+<p>至此，简单的CRUD实践就完成了，相信你已经对存储过程有了大概的理解并能写出简单存储过程了。当然这只是存储过程最基本的使用方法，其高级特性（cursor、schema、控制语句、事务等）将在下篇文章中讨论。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 数据库 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 存储过程 </tag>
+            
+            <tag> SQL </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[HTTP协议总结]]></title>
+      <url>/2016/12/14/http/</url>
+      <content type="html"><![CDATA[<p>HTTP无处不在，理解HTTP协议可以帮助我们更好的理解网络<br><a id="more"></a></p>
+<h2 id="浏览器请求流程概要"><a href="#浏览器请求流程概要" class="headerlink" title="浏览器请求流程概要"></a>浏览器请求流程概要</h2><p>当用户输入一个链接或者按F5刷新的时候浏览器内部都做了什么</p>
+<ol>
+<li>Chrome搜索自身的DNS缓存（一般缓存的时间只有一分钟，可以通过<strong>chrome://net-internals/#dns</strong>查看Chrome浏览器缓存</li>
+<li>搜索操作系统自身的DNS缓存（浏览器没有找到缓存或者缓存已经失效）</li>
+<li>读取本地的HOST文件</li>
+<li>浏览器发起一个DNS的系统调用(宽带运营商提供的)</li>
+<li>浏览器获得域名对应的IP地址后，发起HTTP“三次握手”</li>
+<li>TCP/IP连接建立起来之后，浏览器就可以向服务器发送HTTP请求了，使用了比如说GET方法请求一个根域的域名，协议可以采用HTTP1.0协议</li>
+<li>服务器接受到了这个请求，根据路径参数，通过后端的一些处理之后，把处理后的一个结果数据返回给浏览器，如一个网站的代码</li>
+<li>浏览器拿到完整的HTML代码，在解析和渲染这个页面的时候，里面的JS、CSS、图片静态资源，他们同样也是一个个HTTP请求都要经过上面主要七个步骤</li>
+<li>浏览器根据拿到的资源对页面进行渲染，最终把一个完整的页面展现给用户</li>
+</ol>
+<h3 id="运营商的做法"><a href="#运营商的做法" class="headerlink" title="运营商的做法"></a>运营商的做法</h3><ul>
+<li>宽带运营商服务器查看本身缓存</li>
+<li>运营商服务器发起一个迭代的DNS解析请求<ul>
+<li>询问根域（.com .cn eg.）</li>
+<li>根据顶级域查找对应的IP（baidu.com nodejs.org eg.）</li>
+<li>根据上级域找域名注册商可以获取IP</li>
+</ul>
+</li>
+</ul>
+<h3 id="运营商返回IP之后怎么做"><a href="#运营商返回IP之后怎么做" class="headerlink" title="运营商返回IP之后怎么做"></a>运营商返回IP之后怎么做</h3><ul>
+<li>服务器运营商把结果返回操作系统内核同时缓存起来</li>
+<li>操作系统内核把结果返回给浏览器</li>
+<li>最终浏览器拿到了请求的IP</li>
+</ul>
+<h2 id="HTTP请求"><a href="#HTTP请求" class="headerlink" title="HTTP请求"></a>HTTP请求</h2><ul>
+<li>HTTP头<br>发送的是一些附加信息：内容类型、服务器发送响应的日期、HTTP状态码</li>
+<li>HTTP正文<br>用户提交的表单数据或者是返回的数据</li>
+</ul>
+<h2 id="HTTP请求分析"><a href="#HTTP请求分析" class="headerlink" title="HTTP请求分析"></a>HTTP请求分析</h2><h3 id="Timing"><a href="#Timing" class="headerlink" title="Timing"></a>Timing</h3><p>通过分析Timing找到页面加载瓶颈</p>
+<ul>
+<li>stalled 等待时间，浏览器要发出请求，到请求可以发出的等待时间（TCP连接释放的时间登），不包含DNS查询和建立TCP连接的时间</li>
+<li>Proxy negotiation 代理协商的时间</li>
+<li>Request send 请求的第一个字节发出之前到最后一个字节发出后的时间，请求时间</li>
+<li>请求发出之后到收到响应的第一个字节锁花费的时间</li>
+<li>Content download 收到响应的第一个字节开始到收到最后一个字节所话费的时间</li>
+</ul>
+<h3 id="Headers"><a href="#Headers" class="headerlink" title="Headers"></a>Headers</h3><ul>
+<li>Remote Address 域名解析后的地址</li>
+<li>Request URL 请求地址</li>
+<li>Request method 请求方法</li>
+<li>Status code 状态码</li>
+</ul>
+<h3 id="请求方法"><a href="#请求方法" class="headerlink" title="请求方法"></a>请求方法</h3><ol>
+<li>GET 一般获取读取数据</li>
+<li>POST 一般提交数据</li>
+<li>PUT  更新数据</li>
+<li>DELETE 删除</li>
+<li>HEAD</li>
+<li>TRAGCE</li>
+<li>OPTIONS<br>。。。</li>
+</ol>
+<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><ul>
+<li>1XX 请求已经接受了，正在处理</li>
+<li>2XX 请求已经接受并处理完成<ul>
+<li>200 请求成功</li>
+</ul>
+</li>
+<li>3XX 重定向</li>
+<li>4XX 客户端请求错误<ul>
+<li>400 客户端请求语法错误</li>
+<li>401 请求没有经过授权</li>
+<li>403 服务器收到请求但是拒绝提供</li>
+<li>404 找不到资源</li>
+</ul>
+</li>
+<li>5XX 服务器错误<ul>
+<li>500 服务器端发生不可预期的错误</li>
+<li>503 服务器端当前还不能处理请求，可能过一段时间会恢复正产</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端积累 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> HTTP </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[AppCan总结--关闭页面和listview动态加载数据]]></title>
+      <url>/2016/12/07/AppCan%E6%80%BB%E7%BB%93-%E5%85%B3%E9%97%AD%E9%A1%B5%E9%9D%A2listview%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE/</url>
+      <content type="html"><![CDATA[<p>AppCan 的页面是由两个HTML组成，如果要完全关闭的话需要在主HTML eg.index.html中关闭,关闭方法：appcan.window.close(-1);<br><a id="more"></a></p>
+<h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3><ul>
+<li>AppCan中两个页面通过管道连接，并传递数据</li>
+<li>appcan.window.publish(channelId,msg)         向指定通道发送消息</li>
+<li>appcan.window.subscribe(channelId,callback)  订阅一个频道，如果有消息发给该频道，则会执行响应的回调如果是用超链接打开的页面收不到消息</li>
+</ul>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><ul>
+<li>需要注意的是，要确保publish方法执行过即开通了一个管道才可以接收到信息<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//在..._content页面发送消息</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">send</span>(<span class="params"></span>) </span>&#123;</div><div class="line">            <span class="comment">//发送消息</span></div><div class="line">            appcan.window.publish(<span class="string">'test'</span>, <span class="string">'hello'</span>);</div><div class="line">            alert(<span class="string">"发送成功"</span>);</div><div class="line"></div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//在.. .html文件ready方法中打开管道</span></div><div class="line"> appcan.ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line"></div><div class="line">            appcan.window.subscribe(<span class="string">'test'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>) </span>&#123;</div><div class="line">                <span class="keyword">if</span> (msg == <span class="string">'hello'</span>) &#123;</div><div class="line">                    closeMyself();</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    alert(<span class="string">"test"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;);</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//执行获取正确信息后的方法</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">closeMyself</span>(<span class="params"></span>) </span>&#123;</div><div class="line">            alert(<span class="string">"closeMyself调用"</span>);</div><div class="line">            appcan.window.close(<span class="number">-1</span>);</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<h3 id="listview动态加载数据"><a href="#listview动态加载数据" class="headerlink" title="listview动态加载数据"></a>listview动态加载数据</h3><ul>
+<li>appcan —&gt; 添加列表 —-&gt;带图片的列表<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//自动生成</span></div><div class="line">appcan.ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">var</span> lv = appcan.listview(&#123;</div><div class="line">            <span class="attr">selector</span> : <span class="string">"#listview"</span>,</div><div class="line">            <span class="attr">type</span> : <span class="string">"thinLine"</span>,</div><div class="line">            <span class="attr">hasIcon</span> : <span class="literal">false</span>,</div><div class="line">            <span class="attr">hasAngle</span> : <span class="literal">true</span>,</div><div class="line">            <span class="attr">hasSubTitle</span> : <span class="literal">true</span>,</div><div class="line">            <span class="attr">multiLine</span> : <span class="number">1</span>,</div><div class="line">        &#125;);</div><div class="line">        lv.set([&#123;</div><div class="line">            <span class="attr">title</span> : <span class="string">"临时数据"</span>,</div><div class="line">            <span class="attr">subTitle</span> : <span class="string">"12:05"</span>,</div><div class="line">            <span class="attr">id</span> : <span class="string">"1"</span></div><div class="line">        &#125;, &#123;</div><div class="line">            <span class="attr">title</span> : <span class="string">"临时数据"</span>,</div><div class="line">            <span class="attr">subTitle</span> : <span class="string">"12:05"</span>,</div><div class="line">            <span class="attr">id</span> : <span class="string">"2"</span></div><div class="line">        &#125;])</div><div class="line">        lv.on(<span class="string">"click"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">ele, obj, curEle</span>) </span>&#123;</div><div class="line">        &#125;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//从服务器获取数据</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getData</span>(<span class="params"></span>) </span>&#123;</div><div class="line">            <span class="keyword">var</span> url = <span class="string">"服务器地址"</span> + <span class="string">"用户登录id"</span>;</div><div class="line">            apcan.request.getJSON(url, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</div><div class="line">                <span class="comment">//提前判断是否加载成功，现将data解析</span></div><div class="line">                showMenu(data) &#123;</div><div class="line"></div><div class="line">                &#125;</div><div class="line">            &#125;, <span class="string">'json'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</div><div class="line">                alert(err);</div><div class="line">            &#125;, <span class="string">"get"</span>, <span class="string">""</span>, <span class="literal">false</span>);</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//将信息动态赋值给listview</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">showMenu</span>(<span class="params">data</span>) </span>&#123;</div><div class="line">            <span class="keyword">var</span> lv = appcan.listview(&#123;</div><div class="line">                <span class="attr">selector</span> : <span class="string">"#listview"</span>,</div><div class="line">                <span class="attr">type</span> : <span class="string">"thinLine"</span>,</div><div class="line">                <span class="attr">hasIcon</span> : <span class="literal">false</span>,</div><div class="line">                <span class="attr">hasAngle</span> : <span class="literal">true</span>,</div><div class="line">                <span class="attr">hasSubTitle</span> : <span class="literal">true</span>,</div><div class="line">                <span class="attr">multiLine</span> : <span class="number">1</span>,</div><div class="line">            &#125;);</div><div class="line">            <span class="keyword">var</span> datalist = data.data;</div><div class="line">            <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;data.datalist.length;i++)&#123;</div><div class="line">                datalist[i].title = data.data[i].title;</div><div class="line">                datalist[i].describ = data.data[i].content;</div><div class="line">                datalist[i].subtit = data.data[i].uid;</div><div class="line"></div><div class="line">                lv.set(datalist);</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> 前端积累 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> appcan </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[AppCan总结--Request和登录功能简单实现]]></title>
+      <url>/2016/11/30/AppCan%E6%80%BB%E7%BB%93-Request%E5%92%8C%E7%99%BB%E5%BD%95%E5%8A%9F%E8%83%BD%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/</url>
+      <content type="html"><![CDATA[<p>记录在apcan中对数据的请求获取<br><a id="more"></a><br>实现appcan中网络数据的上传和获取</p>
+<ul>
+<li>发起一个ajax请求,并获取相应的内容</li>
+<li><p>常用参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">options.type:        请求的类型，包括GET、POST等</div><div class="line">options.url:         要请求的地址 注：get方式请求中携带中文参数，需要对参数进行encode编码，具体函数：encodeURIComponent</div><div class="line">options.data:        要请求的URL的参数,如果要上传文件则data数据中必须传一个对象包含一个path的key 例如：data:&#123;file:&#123;path:&apos;a.jpeg&apos;&#125;,file2:&#123;path:&apos;b.jpeg&apos;&#125;&#125;上传                a.jpeg,b.jpeg图片</div><div class="line">options.dataType:    服务端的响应类型，包括json, jsonp, script, xml, html, text中的一种</div><div class="line">options.timeout:     请求的超时时间</div><div class="line">options.success(data, status,,requestCode,response, xhr):    请求发送成功后的回调</div><div class="line">options.error(xhr, errorType, error,msg):                    请求如果出现错误后的回调;msg: 错误详细信息，服务器返回的result信息</div></pre></td></tr></table></figure>
+</li>
+<li><p>script代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">appcan.button(<span class="string">"#submit"</span>, <span class="string">"ani-act"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">           login();</div><div class="line">       &#125;)</div><div class="line">       <span class="function"><span class="keyword">function</span> <span class="title">login</span>(<span class="params"></span>) </span>&#123;</div><div class="line">           <span class="keyword">var</span> name = $(<span class="string">"#username"</span>).val();</div><div class="line">           <span class="keyword">var</span> pwd = $(<span class="string">"#password"</span>).val();</div><div class="line">           <span class="built_in">console</span>.log(name + <span class="string">":"</span> + pwd);</div><div class="line">           appcan.ajax(&#123;</div><div class="line">               <span class="attr">url</span> : <span class="string">"http://testmas.appcan.cn:9000/ODBC/login?uName="</span> + name + <span class="string">"&amp;pwd="</span> + pwd,</div><div class="line">               <span class="attr">type</span> : <span class="string">'get'</span>,</div><div class="line">               <span class="attr">dateType</span> : <span class="string">'json'</span>,</div><div class="line">               <span class="attr">success</span> : <span class="function"><span class="keyword">function</span>(<span class="params">data, status, xhr</span>) </span>&#123;</div><div class="line">                   <span class="keyword">var</span> obj = <span class="built_in">eval</span>(<span class="string">'('</span> + data + <span class="string">')'</span>);</div><div class="line">                   alert(obj.status);</div><div class="line">                   <span class="keyword">if</span>(obj.status == <span class="string">"0"</span>)&#123;</div><div class="line">                       alert(<span class="string">"登录成功"</span>);</div><div class="line">                   &#125;<span class="keyword">else</span>&#123;</div><div class="line">                       alert(<span class="string">"用户名或密码不正确"</span>);</div><div class="line">                   &#125;</div><div class="line"></div><div class="line">               &#125;,</div><div class="line">               <span class="attr">error</span> : <span class="function"><span class="keyword">function</span>(<span class="params">xhr, status, errMessage</span>) </span>&#123;</div><div class="line">                   alert(<span class="string">"errMessage"</span>);</div><div class="line">               &#125;</div><div class="line">           &#125;);</div><div class="line">       &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>html代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">&lt;body <span class="class"><span class="keyword">class</span></span>=<span class="string">"um-vp bc-bg"</span> ontouchstart&gt;</div><div class="line">        &lt;div class="ub ub-ver uinn-a3 ub-fv"&gt;</div><div class="line">            &lt;div class="ub ub-ver uinn uinn-at1"&gt;</div><div class="line">                &lt;div class="umar-a uba bc-border c-wh"&gt;</div><div class="line">                    &lt;div class="ub ub-ac ubb umh5 bc-border "&gt;</div><div class="line">                        &lt;div class=" uinput ub ub-f1"&gt;</div><div class="line">                            &lt;div class="uinn fa fa-user sc-text"&gt;&lt;/div&gt;</div><div class="line">                            &lt;input id="username" placeholder="手机/邮箱/用户名" type="text" class="ub-f1"&gt;</div><div class="line">                        &lt;/div&gt;</div><div class="line">                    &lt;/div&gt;</div><div class="line">                    &lt;div class="ub ub-ac umh5 bc-border "&gt;</div><div class="line">                        &lt;div class=" uinput ub ub-f1"&gt;</div><div class="line">                            &lt;div class="uinn fa fa-lock sc-text"&gt;&lt;/div&gt;</div><div class="line">                            &lt;input id="password" placeholder="密码" type="password" class="umw4 ub-f1"&gt;</div><div class="line"></div><div class="line">                        &lt;/div&gt;</div><div class="line">                    &lt;/div&gt;</div><div class="line">                &lt;/div&gt;</div><div class="line">                &lt;div class="ub ub-ver"&gt;</div><div class="line">                    &lt;div class="ub ub-pe uinn-a6 sc-text-active ulev-4"&gt;</div><div class="line">                        忘记密码</div><div class="line">                    &lt;/div&gt;</div><div class="line">                    &lt;div class="uinn-at1"&gt;</div><div class="line">                        &lt;div class="btn ub ub-ac bc-text-head ub-pc bc-btn uc-a1" id="submit"&gt;</div><div class="line">                            登录</div><div class="line">                        &lt;/div&gt;</div><div class="line">                    &lt;/div&gt;</div><div class="line">                    &lt;div class="uinn-at2 ub sc-text-active ulev-4"&gt;</div><div class="line">                    &lt;/div&gt;</div><div class="line">                &lt;/div&gt;</div><div class="line">                &lt;button type="submit"class="uinvisible"&gt;&lt;/button&gt;</div><div class="line"></div><div class="line">            &lt;/div&gt;</div><div class="line"></div><div class="line">        &lt;/div&gt;</div><div class="line">        &lt;script src="js/appcan.js"&gt;&lt;/script&gt;</div><div class="line">        &lt;script src="js/appcan.control.js"&gt;&lt;/script&gt;</div><div class="line">    &lt;/body&gt;</div></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端积累 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> appcan </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[AppCan总结--数据存储及ListView的应用]]></title>
+      <url>/2016/11/24/AppCan%E6%80%BB%E7%BB%93-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%8F%8AListView%E7%9A%84%E5%BA%94%E7%94%A8/</url>
+      <content type="html"><![CDATA[<p>AppCan是Hybrid App开发框架即混合开发框架,由官方提供底层功能使用API<br><a id="more"></a><br>HTML5和JavaScript只是作为一种解析语言，真正调用的都是Native App一样封装的底层功能</p>
+<h3 id="AppCan打包"><a href="#AppCan打包" class="headerlink" title="AppCan打包"></a>AppCan打包</h3><ul>
+<li>本地打包<blockquote>
+<p>IDE生成的ipa包是越狱包，只能在越狱机安装，并且不支持app上传到应用市场</p>
+</blockquote>
+</li>
+<li>云端打包<blockquote>
+<p>只需要按照AppCan的开发流程和规范开发，应用开发完后可直接将其上传到AppCan打包服务器，进行打包，平台会自动生成iOS/Android平台安装包，同事支持上传AppStore</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="HTML5"><a href="#HTML5" class="headerlink" title="HTML5"></a>HTML5</h3><ul>
+<li>LocalStorage<blockquote>
+<p>LocalStorage 是window的全局属性，包括localStorage和sessionStorage,二者用法基本相同，但sessionStorage是会话级别的，窗口一旦被关闭就没了，而localStorage则一直存储在本地</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">在AppCan中的使用</div><div class="line">appcan.locStorage.getVal(key)               获取key保存在localStorage中对应的值</div><div class="line">appcan.locStorage.setVal(key，Val)          要设置的键值对</div><div class="line">appcan.locStorage.remove(key)               清除localStorage中对应的值</div><div class="line">appcan.locStorage.keys()                    获取localStorage中，保存的所有键值</div></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ul>
+<h3 id="AppCan中ListView的使用"><a href="#AppCan中ListView的使用" class="headerlink" title="AppCan中ListView的使用"></a>AppCan中ListView的使用</h3><blockquote>
+<p>列表组件是根据AppCan 布局框架对数据列表进行封装的JS对象，通过配合的样式，使开发者在界面中可以快速完成列表控件的开发。</p>
+<p>###使用之前要添加依赖</p>
+<ul>
+<li>appcan.js</li>
+<li>appcan.control.js</li>
+<li>appcan.listview.js</li>
+<li>appcan.control.css</li>
+</ul>
+</blockquote>
+<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul>
+<li>常用参数<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">selector:                                        <span class="comment">/*选择器*/</span></div><div class="line">type:   thinLine or thickLine                    <span class="comment">/*窄行和宽行设定*/</span></div><div class="line">hasIcon:   <span class="literal">true</span> or <span class="literal">false</span>                         <span class="comment">/*是否有图片*/</span></div><div class="line">hasAngle:   <span class="literal">true</span> or <span class="literal">false</span>                        <span class="comment">/*是否有右侧箭头*/</span></div><div class="line">hasSubTitle:   <span class="literal">true</span> or <span class="literal">false</span>                     <span class="comment">/*是否有子标题*/</span></div><div class="line">hasTouchEffect:   <span class="literal">true</span> or <span class="literal">false</span>                  <span class="comment">/*是否有点击效果*/</span></div><div class="line">hasCheckbox:   <span class="literal">true</span> or <span class="literal">false</span>                     <span class="comment">/*是否有复选按钮*/</span></div><div class="line">hasRadiobox:   <span class="literal">true</span> or <span class="literal">false</span>                     <span class="comment">/*是否有单选按钮*/</span></div><div class="line">align:   <span class="string">"left"</span> or <span class="string">"right"</span>                       <span class="comment">/*checkbox和radiobox居左还是居右*/</span></div><div class="line">multiLine:  <span class="number">1</span> <span class="number">2</span> or <span class="number">3</span>                             <span class="comment">/*主标题文字占用最大行数。到达行数显示不全使用…替换*/</span></div><div class="line">touchClass: <span class="string">'sc-bg-active'</span> or 用户自定义         <span class="comment">/*列表条目点击效果CSS类*/</span></div><div class="line">hasControl:   <span class="literal">true</span> or <span class="literal">false</span>                      <span class="comment">/*列表条目中是否包含switch组件。*/</span></div><div class="line">hasGroup:   <span class="literal">true</span> or <span class="literal">false</span>                        <span class="comment">/*列表条目是否以分组的形式展示。*/</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><p><img src="http://images2015.cnblogs.com/blog/883029/201603/883029-20160322125615854-63030869.png" alt=""></p>
+<ul>
+<li><p>定义HTML</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!--定义一个listview的容器--&gt;</span></div><div class="line"><span class="comment">&lt;!--</span></div><div class="line">引用系统CSS样式</div><div class="line">.ubt &#123;</div><div class="line">    border-top: 1px solid;</div><div class="line">&#125;</div><div class="line">.ubb &#123;</div><div class="line">    border-bottom: 1px solid;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.bc-border &#123;</div><div class="line">    border-color: #BABABA;</div><div class="line">&#125;</div><div class="line">自己制作的CSS样式</div><div class="line">.c-wh&#123;</div><div class="line">    background-color: white;</div><div class="line">&#125;</div><div class="line">.umar-at1&#123;</div><div class="line">    margin-top:0.625em;</div><div class="line">&#125;</div><div class="line">.uinn-a7&#123;</div><div class="line">    padding:0 0.625em;</div><div class="line">&#125;</div><div class="line"> --&gt;</div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"listview"</span>  <span class="attr">class</span>=<span class="string">"ubt bc-border ubb c-wh umar-at1 uinn-a7"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>第一种script写法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">  <span class="keyword">var</span> lv = appcan.listview(&#123;</div><div class="line">            <span class="attr">selector</span> : <span class="string">"#listview"</span>, <span class="comment">//选择器，指定body标签中id为listview的容器</span></div><div class="line">            type : <span class="string">"thinLine"</span>,      <span class="comment">//窄行</span></div><div class="line">            hasIcon : <span class="literal">true</span>,         <span class="comment">//指定是否有图标</span></div><div class="line">            hasAngle : <span class="literal">true</span>,        <span class="comment">//指定是否有向右侧的箭头</span></div><div class="line">            hasSubTitle : <span class="literal">true</span>,     <span class="comment">//指定是否有子标题</span></div><div class="line">            multiLine : <span class="number">1</span>           <span class="comment">//指定主标题文字占的最大行数</span></div><div class="line">        &#125;);</div><div class="line">        lv.set([&#123;</div><div class="line">            <span class="attr">icon</span> : <span class="string">'personal_content/css/myImg/myImg1.png'</span>,         <span class="comment">//指定图标</span></div><div class="line">            title : <span class="string">'我的相册'</span>,                                     <span class="comment">//指定标题文字</span></div><div class="line">            subTitle : <span class="string">'备注文字'</span>                                   <span class="comment">//指定子标题文字</span></div><div class="line">        &#125;, &#123;</div><div class="line">            <span class="attr">icon</span> : <span class="string">'personal_content/css/myImg/myImg2.png'</span>,</div><div class="line">            <span class="attr">title</span> : <span class="string">'我的收藏'</span>,</div><div class="line">            <span class="attr">subTitle</span> : <span class="string">''</span></div><div class="line">        &#125;, &#123;</div><div class="line">            <span class="attr">icon</span> : <span class="string">'personal_content/css/myImg/myImg3.png'</span>,</div><div class="line">            <span class="attr">title</span> : <span class="string">'我的银行卡'</span>,</div><div class="line">            <span class="attr">subTitle</span> : <span class="string">''</span></div><div class="line">        &#125;]);</div><div class="line">lv.on(<span class="string">"click"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">obj,data,subObj</span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(obj);                                            <span class="comment">//列表条目DOM对象</span></div><div class="line">        <span class="built_in">console</span>.log(data);                                           <span class="comment">//列表条目对应数据源对象</span></div><div class="line">        <span class="built_in">console</span>.log(subObj);                                         <span class="comment">//列表条目点击时的子元素DOM对象例如图片</span></div><div class="line">        appcan.window.open(data.pagename,data.pageurl,<span class="number">10</span>);           <span class="comment">//通过此方法打开对应的界面</span></div><div class="line">    &#125;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>第二种script写法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arrData = [&#123;</div><div class="line">            <span class="string">'tupian'</span> : <span class="string">'myWorkDOTO_content/css/myImg/myImg1.png'</span>,</div><div class="line">            <span class="string">'biaoti'</span> : <span class="string">'我的相册'</span>,</div><div class="line">            <span class="string">'zibiaoti'</span> : <span class="string">'备注文字'</span>,</div><div class="line">        &#125;, &#123;</div><div class="line">            <span class="string">'tupian'</span> : <span class="string">'myWorkDOTO_content/css/myImg/myImg2.png'</span>,</div><div class="line">            <span class="string">'biaoti'</span> : <span class="string">'我的收藏'</span>,</div><div class="line">            <span class="string">'zibiaoti'</span> : <span class="string">''</span>,</div><div class="line">        &#125;, &#123;</div><div class="line">            <span class="string">'tupian'</span> : <span class="string">'myWorkDOTO_content/css/myImg/myImg3.png'</span>,</div><div class="line">            <span class="string">'biaoti'</span> : <span class="string">'我的银行卡'</span>,</div><div class="line">            <span class="string">'zibiaoti'</span> : <span class="string">''</span>,</div><div class="line">        &#125;];</div><div class="line">        <span class="keyword">var</span> listData = [];</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>,</div><div class="line">            len = arrData.length; i &lt; len; i++) &#123;</div><div class="line">            <span class="keyword">var</span> list = &#123;</div><div class="line">                <span class="attr">title</span> : arrData[i].biaoti,</div><div class="line">                <span class="attr">icon</span> : arrData[i].tupian,</div><div class="line">                <span class="attr">subTitle</span> : arrData[i].zibiaoti</div><div class="line">            &#125;</div><div class="line">            listData.push(list);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">var</span> lv = appcan.listview(&#123;</div><div class="line">            <span class="attr">selector</span> : <span class="string">"#listview"</span>,</div><div class="line">            <span class="attr">type</span> : <span class="string">"thinLine"</span>,</div><div class="line">            <span class="attr">hasIcon</span> : <span class="literal">true</span>,</div><div class="line">            <span class="attr">hasAngle</span> : <span class="literal">true</span>,</div><div class="line">            <span class="attr">hasSubTitle</span> : <span class="literal">true</span>,</div><div class="line">            <span class="attr">multiLine</span> : <span class="number">1</span></div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        lv.set(listData);</div><div class="line">        lv.on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">ele, context, obj, subobj</span>) </span>&#123;</div><div class="line">        &#125;)</div></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端积累 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> appcan </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Git总结]]></title>
+      <url>/2016/11/16/Git%E6%80%BB%E7%BB%93/</url>
+      <content type="html"><![CDATA[<p>根据廖雪峰老师的《史上最浅显易懂的Git教程！》总结<br><a id="more"></a></p>
+<h2 id="命令整理"><a href="#命令整理" class="headerlink" title="命令整理"></a>命令整理</h2><p>先贴出常用命令，方便以后复习</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">$ git config <span class="comment">--global user.name "Your Name"</span></div><div class="line">$ git config <span class="comment">--global user.email "email@example.com"</span></div><div class="line"></div><div class="line">$ git add readme.md</div><div class="line">$ git diff readme.md</div><div class="line">$ git <span class="keyword">commit</span> -m <span class="string">"add distribute"</span></div><div class="line">$ git <span class="keyword">log</span></div><div class="line">$ git <span class="keyword">reset</span> <span class="comment">--hard HEAD^</span></div><div class="line">$ git <span class="keyword">reset</span> <span class="keyword">HEAD</span> readme.md</div><div class="line">$ git <span class="keyword">status</span></div><div class="line">$ git rm test.txt</div><div class="line"></div><div class="line">$ ssh-keygen -t rsa -C <span class="string">"youremail@example.com"</span></div><div class="line">$ git remote <span class="keyword">add</span> origin git@github.com:ZahiZhou/GitTest.git</div><div class="line">$ git push -u origin <span class="keyword">master</span></div><div class="line">$ git <span class="keyword">clone</span> git@github.com:ZahiZhou/GitTest.git</div><div class="line">$ git branch</div><div class="line">$ git checkout -b dev</div><div class="line">$ git branch dev</div><div class="line">$ git checkout <span class="keyword">master</span></div><div class="line"></div><div class="line">$ git <span class="keyword">merge</span> feature1</div><div class="line">$ git <span class="keyword">log</span> -graph</div><div class="line">$ git checkout -b issue<span class="number">-101</span></div><div class="line">$ git stash pop</div></pre></td></tr></table></figure>
+<h2 id="在实战中学习Git"><a href="#在实战中学习Git" class="headerlink" title="在实战中学习Git"></a>在实战中学习Git</h2><h4 id="自报家门"><a href="#自报家门" class="headerlink" title="自报家门"></a>自报家门</h4><p>Git是版本控制系统，所以，每个机器都必须自报家门，在提交数据的时候回记录下来您的信息</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git config <span class="comment">--global user.name "Your Name"</span></div><div class="line">$ git config <span class="comment">--global user.email "email@example.com"</span></div></pre></td></tr></table></figure>
+<h4 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">-- 创建名为Github的文件夹</span></div><div class="line">$ mkdir Github</div><div class="line"><span class="comment">-- 进入此文件夹</span></div><div class="line">$ cd Github</div><div class="line"><span class="comment">-- 显示此文件夹的名称</span></div><div class="line">$ pwd</div><div class="line">/e/Github</div><div class="line"><span class="comment">-- 初始化此文件夹为git仓库</span></div><div class="line">$ git init</div><div class="line">Initialized empty Git repository in E:/Github/.git/</div></pre></td></tr></table></figure>
+<h4 id="把文件添加到仓库"><a href="#把文件添加到仓库" class="headerlink" title="把文件添加到仓库"></a>把文件添加到仓库</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git add readme.md</div></pre></td></tr></table></figure>
+<h3 id="提交文件到版本控制仓库"><a href="#提交文件到版本控制仓库" class="headerlink" title="提交文件到版本控制仓库"></a>提交文件到版本控制仓库</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git <span class="keyword">commit</span> -m <span class="string">"your message"</span></div><div class="line">[<span class="keyword">master</span> (root-<span class="keyword">commit</span>) <span class="number">3</span>a3f1de] wrote a readme.md <span class="keyword">file</span></div><div class="line"> <span class="number">1</span> <span class="keyword">file</span> <span class="keyword">changed</span>, <span class="number">2</span> insertions(+)</div><div class="line"> <span class="keyword">create</span> <span class="keyword">mode</span> <span class="number">100644</span> readme.md</div></pre></td></tr></table></figure>
+<h4 id="掌握仓库当前的状态"><a href="#掌握仓库当前的状态" class="headerlink" title="掌握仓库当前的状态"></a>掌握仓库当前的状态</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git status</div><div class="line">On branch master</div><div class="line">Changes not staged for <span class="keyword">commit</span>:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git add &lt;file&gt;..."</span> <span class="keyword">to</span> <span class="keyword">update</span> what will be committed)</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git checkout -- &lt;file&gt;..."</span> <span class="keyword">to</span> discard changes <span class="keyword">in</span> working <span class="keyword">directory</span>)</div><div class="line"></div><div class="line">        modified:   readme.md</div><div class="line"></div><div class="line"><span class="keyword">no</span> changes added <span class="keyword">to</span> <span class="keyword">commit</span> (<span class="keyword">use</span> <span class="string">"git add"</span> <span class="keyword">and</span>/<span class="keyword">or</span> <span class="string">"git commit -a"</span>)</div></pre></td></tr></table></figure>
+<h4 id="查看修改的内容"><a href="#查看修改的内容" class="headerlink" title="查看修改的内容"></a>查看修改的内容</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ git diff readme.md</div><div class="line">diff <span class="comment">--git a/readme.md b/readme.md</span></div><div class="line">index 629f6b7..be836b4 100644</div><div class="line"><span class="comment">--- a/readme.md</span></div><div class="line">+++ b/readme.md</div><div class="line">@@ -1,2 +1,2 @@</div><div class="line">-Git is a version control system</div><div class="line">+Git is a distributed version control system</div><div class="line"> Git is free software</div><div class="line">\ No newline at <span class="keyword">end</span> <span class="keyword">of</span> <span class="keyword">file</span></div></pre></td></tr></table></figure>
+<h4 id="确认修改-重复上文内容"><a href="#确认修改-重复上文内容" class="headerlink" title="确认修改(重复上文内容)"></a>确认修改(重复上文内容)</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ git add readme.md</div><div class="line">$ git <span class="keyword">commit</span> -m <span class="string">"add distribute"</span></div><div class="line">[<span class="keyword">master</span> f74f576] <span class="keyword">add</span> <span class="keyword">distribute</span></div><div class="line"><span class="number">1</span> <span class="keyword">file</span> <span class="keyword">changed</span>, <span class="number">1</span> insertion(+), <span class="number">1</span> deletion(-)</div><div class="line">$ git <span class="keyword">status</span></div><div class="line"><span class="keyword">On</span> branch <span class="keyword">master</span></div><div class="line"><span class="keyword">nothing</span> <span class="keyword">to</span> <span class="keyword">commit</span>, working tree clean</div></pre></td></tr></table></figure>
+<h4 id="观看版本历史记录"><a href="#观看版本历史记录" class="headerlink" title="观看版本历史记录"></a>观看版本历史记录</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">$ git log</div><div class="line"><span class="keyword">commit</span> <span class="number">1</span>d6bdb3287f465652c1ac836a6dce6e9bc4157c5</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Thu Nov <span class="number">24</span> <span class="number">14</span>:<span class="number">55</span>:<span class="number">31</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">    <span class="keyword">add</span> distributes <span class="keyword">under</span> the GPL</div><div class="line"></div><div class="line"><span class="keyword">commit</span> f74f576308a46e9dec6a7764605c2ebc80359246</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Thu Nov <span class="number">24</span> <span class="number">14</span>:<span class="number">52</span>:<span class="number">10</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">    <span class="keyword">add</span> <span class="keyword">distribute</span></div><div class="line"></div><div class="line"><span class="keyword">commit</span> <span class="number">3</span>a3f1deabccbce3aa8afba6d392bad24fba84cff</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Thu Nov <span class="number">24</span> <span class="number">14</span>:<span class="number">45</span>:<span class="number">15</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">    wrote a readme.md <span class="keyword">file</span></div></pre></td></tr></table></figure>
+<h4 id="版本回退"><a href="#版本回退" class="headerlink" title="版本回退"></a>版本回退</h4><p>回到以前的版本<br>首先，Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交3628164…882e1e0（注意我的提交ID和你的肯定不一样），上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git <span class="keyword">reset</span> <span class="comment">--hard HEAD^</span></div><div class="line"><span class="keyword">HEAD</span> <span class="keyword">is</span> <span class="keyword">now</span> <span class="keyword">at</span> f74f576 <span class="keyword">add</span> <span class="keyword">distribute</span></div></pre></td></tr></table></figure>
+<p>再回到回到过去之前的版本(解决第二天。。找不到head id)</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ git reflog</div><div class="line">f74f576 HEAD@&#123;0&#125;: reset: moving to HEAD^</div><div class="line">1d6bdb3 HEAD@&#123;1&#125;: reset: moving to 1d6bdb3287f465652c1ac836a6dce6e9bc4157c5</div><div class="line">f74f576 HEAD@&#123;2&#125;: reset: moving to HEAD^</div><div class="line">1d6bdb3 HEAD@&#123;3&#125;: commit: add distributes under the GPL</div><div class="line">f74f576 HEAD@&#123;4&#125;: commit: add distribute</div><div class="line">3a3f1de HEAD@&#123;5&#125;: commit (initial): wrote a readme.md file</div><div class="line">$ git reset --hard 1d6bdb3</div></pre></td></tr></table></figure>
+<p>回到git commit 或 git add之前的状态</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">$ git status</div><div class="line">On branch master</div><div class="line">Changes not staged for <span class="keyword">commit</span>:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git add &lt;file&gt;..."</span> <span class="keyword">to</span> <span class="keyword">update</span> what will be committed)</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git checkout -- &lt;file&gt;..."</span> <span class="keyword">to</span> discard changes <span class="keyword">in</span> working <span class="keyword">directory</span>)</div><div class="line"></div><div class="line">        modified:   readme.md</div><div class="line"></div><div class="line"><span class="keyword">no</span> changes added <span class="keyword">to</span> <span class="keyword">commit</span> (<span class="keyword">use</span> <span class="string">"git add"</span> <span class="keyword">and</span>/<span class="keyword">or</span> <span class="string">"git commit -a"</span>)</div><div class="line">$ git checkout <span class="comment">-- readme.md</span></div><div class="line"></div><div class="line">$ git <span class="keyword">status</span></div><div class="line"><span class="keyword">On</span> branch <span class="keyword">master</span></div><div class="line">Changes <span class="keyword">not</span> staged <span class="keyword">for</span> <span class="keyword">commit</span>:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git add &lt;file&gt;..."</span> <span class="keyword">to</span> <span class="keyword">update</span> what will be committed)</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git checkout -- &lt;file&gt;..."</span> <span class="keyword">to</span> discard changes <span class="keyword">in</span> working <span class="keyword">directory</span>)</div><div class="line"></div><div class="line">        modified:   readme.md</div><div class="line"></div><div class="line"><span class="keyword">no</span> changes added <span class="keyword">to</span> <span class="keyword">commit</span> (<span class="keyword">use</span> <span class="string">"git add"</span> <span class="keyword">and</span>/<span class="keyword">or</span> <span class="string">"git commit -a"</span>)</div><div class="line">$ git <span class="keyword">add</span> readme.md</div><div class="line">$ git <span class="keyword">status</span></div><div class="line"><span class="keyword">On</span> branch <span class="keyword">master</span></div><div class="line">Changes <span class="keyword">to</span> be committed:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git reset HEAD &lt;file&gt;..."</span> <span class="keyword">to</span> unstage)</div><div class="line"></div><div class="line">        modified:   readme.md</div><div class="line"></div><div class="line">$ git <span class="keyword">reset</span> <span class="keyword">HEAD</span> readme.md</div><div class="line"><span class="keyword">On</span> branch <span class="keyword">master</span></div><div class="line">Changes <span class="keyword">not</span> staged <span class="keyword">for</span> <span class="keyword">commit</span>:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git add &lt;file&gt;..."</span> <span class="keyword">to</span> <span class="keyword">update</span> what will be committed)</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git checkout -- &lt;file&gt;..."</span> <span class="keyword">to</span> discard changes <span class="keyword">in</span> working <span class="keyword">directory</span>)</div><div class="line"></div><div class="line">        modified:   readme.md</div><div class="line"></div><div class="line"><span class="keyword">no</span> changes added <span class="keyword">to</span> <span class="keyword">commit</span> (<span class="keyword">use</span> <span class="string">"git add"</span> <span class="keyword">and</span>/<span class="keyword">or</span> <span class="string">"git commit -a"</span>)</div><div class="line">$ git checkout <span class="comment">-- readme.md</span></div></pre></td></tr></table></figure>
+<h4 id="文件删除和恢复"><a href="#文件删除和恢复" class="headerlink" title="文件删除和恢复"></a>文件删除和恢复</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">$ git stauts</div><div class="line">On branch master</div><div class="line">Changes not staged for <span class="keyword">commit</span>:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git add/rm &lt;file&gt;..."</span> <span class="keyword">to</span> <span class="keyword">update</span> what will be committed)</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git checkout -- &lt;file&gt;..."</span> <span class="keyword">to</span> discard changes <span class="keyword">in</span> working <span class="keyword">directory</span>)</div><div class="line"></div><div class="line">        deleted:    test.txt</div><div class="line"></div><div class="line"><span class="keyword">no</span> changes added <span class="keyword">to</span> <span class="keyword">commit</span> (<span class="keyword">use</span> <span class="string">"git add"</span> <span class="keyword">and</span>/<span class="keyword">or</span> <span class="string">"git commit -a"</span>)</div><div class="line">$ git rm test.txt</div><div class="line">rm <span class="string">'test.txt'</span></div><div class="line">$ git <span class="keyword">commit</span> -m <span class="string">"remove test.txt"</span></div><div class="line">[<span class="keyword">master</span> <span class="number">1</span>af3dd5] remove test.txt</div><div class="line"> <span class="number">1</span> <span class="keyword">file</span> <span class="keyword">changed</span>, <span class="number">0</span> insertions(+), <span class="number">0</span> deletions(-)</div><div class="line"> <span class="keyword">delete</span> <span class="keyword">mode</span> <span class="number">100644</span> test.txt</div><div class="line">$ git checkout <span class="comment">-- test.txt     --如果是空文件</span></div><div class="line"><span class="keyword">error</span>: pathspec <span class="string">'test.txt'</span> did <span class="keyword">not</span> <span class="keyword">match</span> <span class="keyword">any</span> <span class="keyword">file</span>(s) known <span class="keyword">to</span> git.</div><div class="line">$ git checkout <span class="comment">-- test2.txt     --不是空文件文件成功恢复</span></div></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> 项目管理 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Git </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Git总结二]]></title>
+      <url>/2016/11/10/Git%E6%80%BB%E7%BB%93%E4%BA%8C/</url>
+      <content type="html"><![CDATA[<p>承接上文，继续我们的的Git之旅<br><a id="more"></a></p>
+<h2 id="远程仓库和分支"><a href="#远程仓库和分支" class="headerlink" title="远程仓库和分支"></a>远程仓库和分支</h2><h4 id="创建SSH-KEY"><a href="#创建SSH-KEY" class="headerlink" title="创建SSH KEY"></a>创建SSH KEY</h4><p>创建SSH KEY  (创建完成会在用户主目录的生成.ssh目录其中包含两个文件 id_rsa(私钥–&gt;保密)和id_rsa.pub(公钥 –&gt;可放心公开))</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen -t rsa -C "youremail@example.com"</div><div class="line">Generating public/private rsa key pair.</div><div class="line">Enter file in which to save the key (/c/Users/Administrator/.ssh/id_rsa):</div><div class="line">Created directory '/c/Users/Administrator/.ssh'.</div><div class="line">Enter passphrase (empty for no passphrase):</div><div class="line">Enter same passphrase again:</div><div class="line">Your identification has been saved in /c/Users/Administrator/.ssh/id_rsa.</div><div class="line">Your public key has been saved in /c/Users/Administrator/.ssh/id_rsa.pub.</div><div class="line">The key fingerprint is:</div><div class="line">SHA256:lloIlf4HBys6LZotg/uThRpos/PvHoT8LcTAt03T2IU singleorb@outlook.com</div><div class="line">The key's randomart image is:</div><div class="line">+---[RSA 2048]----+</div><div class="line">|      ..  ..     |</div><div class="line">|  .  .. =E.      |</div><div class="line">|   o.o + =       |</div><div class="line">|  . =.*.+..      |</div><div class="line">|.  + B.+So       |</div><div class="line">|oo. O o+. .      |</div><div class="line">|.+o* *.. .       |</div><div class="line">|ooB . o          |</div><div class="line">|.o+=++           |</div><div class="line">+----[SHA256]-----+</div></pre></td></tr></table></figure>
+<h4 id="配置到Github中，关联到自己的本地仓库"><a href="#配置到Github中，关联到自己的本地仓库" class="headerlink" title="配置到Github中，关联到自己的本地仓库"></a>配置到Github中，关联到自己的本地仓库</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git remote add origin git@github.com:ZahiZhou/GitTest.git</div></pre></td></tr></table></figure>
+<h4 id="推送本地文件"><a href="#推送本地文件" class="headerlink" title="推送本地文件"></a>推送本地文件</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">-- 把本地内容推送到远程库上(添加-u参数可以让github master和本地master关联起来，方便以后提交git push</span></div><div class="line"><span class="comment">-- origin master)</span></div><div class="line"></div><div class="line">$ git push -u origin master</div></pre></td></tr></table></figure>
+<h4 id="克隆本地库"><a href="#克隆本地库" class="headerlink" title="克隆本地库"></a>克隆本地库</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git clone git@github.com:ZahiZhou/GitTest.git</div></pre></td></tr></table></figure>
+<h4 id="创建分支"><a href="#创建分支" class="headerlink" title="创建分支"></a>创建分支</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git checkout -b dev     <span class="comment">-- -b表示创建并切换相当于$ git branch dev     $ git checkout dev</span></div><div class="line">Switched to a new branch 'dev'</div></pre></td></tr></table></figure>
+<h4 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h4><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">$ git branch</div><div class="line">* dev</div><div class="line">  master</div><div class="line"></div><div class="line">-- 用自己的分支提交修改(此时master分支没有改变)</div><div class="line"></div><div class="line">$ git add readme.md</div><div class="line">$ git commit -m "branch test"</div><div class="line">[dev 6806e4e] branch test</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"></div><div class="line">-- 将分支合并</div><div class="line"></div><div class="line">$ git checkout master</div><div class="line">Switched to branch 'master'</div><div class="line">Your branch is up-to-date with 'origin/master'.</div><div class="line">$ git merge dev</div><div class="line">Updating 91dd242..6806e4e</div><div class="line">Fast-forward</div><div class="line"> readme.md | 1 +</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"></div><div class="line">-- 合并完成之后放心删除分支</div><div class="line"></div><div class="line">$ git branch -d dev</div><div class="line">Deleted branch dev (was 6806e4e).</div><div class="line">$ git branch</div></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> 项目管理 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Git </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Git总结三]]></title>
+      <url>/2016/11/03/Git%E6%80%BB%E7%BB%93%E4%B8%89/</url>
+      <content type="html"><![CDATA[<p>承接上文,解决冲突和Bug分支的处理<br><a id="more"></a></p>
+<h2 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div></pre></td><td class="code"><pre><div class="line">$ git <span class="keyword">merge</span> feature1</div><div class="line"><span class="keyword">Auto</span>-merging readme.md</div><div class="line">CONFLICT (<span class="keyword">content</span>): <span class="keyword">Merge</span> conflict <span class="keyword">in</span> readme.md</div><div class="line"><span class="keyword">Automatic</span> <span class="keyword">merge</span> <span class="keyword">failed</span>; fix conflicts and then <span class="keyword">commit</span> the result.</div><div class="line">$ git <span class="keyword">status</span></div><div class="line"><span class="keyword">On</span> branch <span class="keyword">master</span></div><div class="line">Your branch <span class="keyword">is</span> ahead <span class="keyword">of</span> <span class="string">'origin/master'</span> <span class="keyword">by</span> <span class="number">2</span> commits.</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git push"</span> <span class="keyword">to</span> publish your <span class="keyword">local</span> commits)</div><div class="line">You have unmerged paths.</div><div class="line">  (fix conflicts <span class="keyword">and</span> run <span class="string">"git commit"</span>)</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git merge --abort"</span> <span class="keyword">to</span> <span class="keyword">abort</span> the <span class="keyword">merge</span>)</div><div class="line"></div><div class="line">Unmerged paths:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git add &lt;file&gt;..."</span> <span class="keyword">to</span> mark resolution)</div><div class="line"></div><div class="line">        <span class="keyword">both</span> modified:   readme.md</div><div class="line"></div><div class="line"><span class="keyword">no</span> changes added <span class="keyword">to</span> <span class="keyword">commit</span> (<span class="keyword">use</span> <span class="string">"git add"</span> <span class="keyword">and</span>/<span class="keyword">or</span> <span class="string">"git commit -a"</span>)</div><div class="line">=======================================================================================readme.md</div><div class="line">Git <span class="keyword">is</span> a <span class="keyword">distributed</span> <span class="keyword">version</span> control <span class="keyword">system</span></div><div class="line">Git <span class="keyword">is</span> free software distributes <span class="keyword">under</span> the GPL</div><div class="line"><span class="keyword">Create</span> a <span class="keyword">new</span> branch <span class="keyword">is</span> <span class="keyword">quick</span></div><div class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; <span class="keyword">HEAD</span></div><div class="line">Creating a <span class="keyword">new</span> branch <span class="keyword">is</span> <span class="keyword">new</span> &amp; simple</div><div class="line">=======</div><div class="line">Creating a <span class="keyword">new</span> branch <span class="keyword">is</span> <span class="keyword">new</span> <span class="keyword">and</span> simple</div><div class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature1</div><div class="line">=======================================================================================readme.md</div><div class="line">$ git <span class="keyword">add</span> readme.md</div><div class="line">$ git <span class="keyword">commit</span> -m <span class="string">"conflict fixed"</span></div><div class="line">[<span class="keyword">master</span> ede2552] conflict <span class="keyword">fixed</span></div><div class="line">$ git <span class="keyword">log</span></div><div class="line"><span class="keyword">commit</span> ede25527dd72c6c876f6ef6b79dd00921e6a16cd</div><div class="line"><span class="keyword">Merge</span>: a142647 <span class="number">59</span>f1f6b</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">10</span>:<span class="number">22</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">    conflict <span class="keyword">fixed</span></div><div class="line"></div><div class="line"><span class="keyword">commit</span> a142647b09b5109ef18703c5dfd1f71c696c74b4</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">05</span>:<span class="number">55</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">    &amp; simple</div><div class="line"></div><div class="line"><span class="keyword">commit</span> <span class="number">59</span>f1f6bf234fd893fb231af36098c8b1530f6953</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">04</span>:<span class="number">18</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">    <span class="keyword">AND</span> simple</div><div class="line"></div><div class="line"><span class="keyword">commit</span> <span class="number">6806e4</span>eca90d891a29858dc37c5a3cd1919ac8fc</div><div class="line">Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line"><span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">09</span>:<span class="number">54</span>:<span class="number">18</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line"></div><div class="line">:</div><div class="line"></div><div class="line">$ git <span class="keyword">log</span> -graph</div><div class="line">*   <span class="keyword">commit</span> ede25527dd72c6c876f6ef6b79dd00921e6a16cd</div><div class="line">|\  <span class="keyword">Merge</span>: a142647 <span class="number">59</span>f1f6b</div><div class="line">| | Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line">| | <span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">10</span>:<span class="number">22</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line">| |</div><div class="line">| |     conflict <span class="keyword">fixed</span></div><div class="line">| |</div><div class="line">| * <span class="keyword">commit</span> <span class="number">59</span>f1f6bf234fd893fb231af36098c8b1530f6953</div><div class="line">| | Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line">| | <span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">04</span>:<span class="number">18</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line">| |</div><div class="line">| |     <span class="keyword">AND</span> simple</div><div class="line">| |</div><div class="line">* | <span class="keyword">commit</span> a142647b09b5109ef18703c5dfd1f71c696c74b4</div><div class="line">|/  Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line">|   <span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">10</span>:<span class="number">05</span>:<span class="number">55</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line">|</div><div class="line">|       &amp; simple</div><div class="line">|</div><div class="line">* <span class="keyword">commit</span> <span class="number">6806e4</span>eca90d891a29858dc37c5a3cd1919ac8fc</div><div class="line">| Author: Andy &lt;singleorb@outlook.com&gt;</div><div class="line">| <span class="built_in">Date</span>:   Fri Nov <span class="number">25</span> <span class="number">09</span>:<span class="number">54</span>:<span class="number">18</span> <span class="number">2016</span> +<span class="number">0800</span></div><div class="line">|</div><div class="line">:</div></pre></td></tr></table></figure>
+<h2 id="Bug分支"><a href="#Bug分支" class="headerlink" title="Bug分支"></a>Bug分支</h2><h4 id="当你不想提交的时候快速修复bug"><a href="#当你不想提交的时候快速修复bug" class="headerlink" title="当你不想提交的时候快速修复bug"></a>当你不想提交的时候快速修复bug</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">$ git status</div><div class="line">On branch master</div><div class="line">Your branch is ahead of 'origin/master' by 3 commits.</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git push"</span> <span class="keyword">to</span> publish your <span class="keyword">local</span> commits)</div><div class="line">Changes <span class="keyword">not</span> staged <span class="keyword">for</span> <span class="keyword">commit</span>:</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git add &lt;file&gt;..."</span> <span class="keyword">to</span> <span class="keyword">update</span> what will be committed)</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git checkout -- &lt;file&gt;..."</span> <span class="keyword">to</span> discard changes <span class="keyword">in</span> working <span class="keyword">directory</span>)</div><div class="line"></div><div class="line">        modified:   readme.md</div><div class="line"></div><div class="line"><span class="keyword">no</span> changes added <span class="keyword">to</span> <span class="keyword">commit</span> (<span class="keyword">use</span> <span class="string">"git add"</span> <span class="keyword">and</span>/<span class="keyword">or</span> <span class="string">"git commit -a"</span>)</div><div class="line"></div><div class="line">$ git stash</div><div class="line">Saved working <span class="keyword">directory</span> <span class="keyword">and</span> <span class="keyword">index</span> state WIP <span class="keyword">on</span> <span class="keyword">master</span>: a3b3f7d <span class="keyword">delete</span> <span class="keyword">no</span>-<span class="keyword">off</span> <span class="built_in">text</span></div><div class="line"><span class="keyword">HEAD</span> <span class="keyword">is</span> <span class="keyword">now</span> <span class="keyword">at</span> a3b3f7d <span class="keyword">delete</span> <span class="keyword">no</span>-<span class="keyword">off</span> <span class="built_in">text</span></div><div class="line"></div><div class="line">得到</div><div class="line">$ git <span class="keyword">status</span></div><div class="line"><span class="keyword">On</span> branch <span class="keyword">master</span></div><div class="line">Your branch <span class="keyword">is</span> ahead <span class="keyword">of</span> <span class="string">'origin/master'</span> <span class="keyword">by</span> <span class="number">3</span> commits.</div><div class="line">  (<span class="keyword">use</span> <span class="string">"git push"</span> <span class="keyword">to</span> publish your <span class="keyword">local</span> commits)</div><div class="line"><span class="keyword">nothing</span> <span class="keyword">to</span> <span class="keyword">commit</span>, working tree clean</div><div class="line"></div><div class="line">创建bug分支</div><div class="line">$ git checkout -b issue<span class="number">-101</span></div><div class="line">Switched <span class="keyword">to</span> a <span class="keyword">new</span> branch <span class="string">'issue-101'</span></div><div class="line"></div><div class="line">$ git stash pop</div></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> 项目管理 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Git </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[学会学习]]></title>
+      <url>/2016/11/01/%E5%AD%A6%E4%BC%9A%E5%AD%A6%E4%B9%A0/</url>
+      <content type="html"><![CDATA[<a id="more"></a>
+<h2 id="大脑"><a href="#大脑" class="headerlink" title="大脑"></a>大脑</h2><p>我们的大脑神秘而又复杂，了解自己的大脑是如何运作的，哪怕只是了解很少的一部分，就会使我们的学习更轻松，对事物的理解更深入。</p>
+<h3 id="大脑的思考模式"><a href="#大脑的思考模式" class="headerlink" title="大脑的思考模式"></a>大脑的思考模式</h3><ul>
+<li>专注模式(Fucused)</li>
+<li>发散模式(Diffuse)</li>
+</ul>
+<p>当我们学习新东西的时候比喻和类比是很有用的方法<br>专注模式和发散模式只能单独存在<br>学习困难的东西需要花很长的时间，我们的大脑要转变学习方式，以此努力来面对和消化新的事物</p>
+<p>专注做一件事情25分钟，然后休息一下。Pomodoro<br>实践即永久</p>
+<h2 id="记忆"><a href="#记忆" class="headerlink" title="记忆"></a>记忆</h2><h3 id="记忆的模式"><a href="#记忆的模式" class="headerlink" title="记忆的模式"></a>记忆的模式</h3><ul>
+<li>长期记忆</li>
+<li>工作记忆</li>
+</ul>
+<p>长期记忆极其重要，我们要把工作记忆转换成长期记忆，最好的方法是间隔记忆法。比如记忆一个单词，我们今天重复记忆二十次的效果比不上我们花几天时间，每天看一次效果好。</p>
+<h2 id="睡眠"><a href="#睡眠" class="headerlink" title="睡眠"></a>睡眠</h2><p>绝对清醒会让我们的大脑产生有毒物质，我们的大脑细胞在睡觉的时候回收缩，这样细胞间的间隔就会变大，大脑内的流体就会把有毒物质冲走。所以睡觉有时候看起来是浪费时间，但却是大脑保持清洁和健康的一种方式</p>
+<h2 id="特伦斯·谢诺沃斯基-Terrence-Sejnowski-的学习方法"><a href="#特伦斯·谢诺沃斯基-Terrence-Sejnowski-的学习方法" class="headerlink" title="特伦斯·谢诺沃斯基 (Terrence Sejnowski)的学习方法"></a>特伦斯·谢诺沃斯基 (Terrence Sejnowski)的学习方法</h2><ul>
+<li>学习新事物的方法就是单刀直入，大量的阅读不会有太大的帮助</li>
+<li>应对一场乏味的演讲，参与进去会让你收获良多</li>
+<li>锻炼可以增加神经元的数量，在锻炼中可以获得很多的好点子</li>
+<li>在一个具有创造力的环境中可以激发你的创造力</li>
+<li>成功多半来自于激情和努力,坚持到底，永不放弃。</li>
+</ul>
+<hr>
+<h2 id="组块-chunk"><a href="#组块-chunk" class="headerlink" title="组块(chunk)"></a>组块(chunk)</h2><p>通过使用或意义链接在一起的信息碎片</p>
+<h3 id="如何建立组块"><a href="#如何建立组块" class="headerlink" title="如何建立组块"></a>如何建立组块</h3><ul>
+<li>对你要组块化的信息全神贯注</li>
+<li>对你的要建立的组块进行理解</li>
+</ul>
+<blockquote>
+<p>自己实际操作和完全掌握的情况下才能建立起神经模型</p>
+</blockquote>
+<ul>
+<li>获取背景知识</li>
+</ul>
+<blockquote>
+<p>学会如何什么时候使用或不使用这个组块</p>
+</blockquote>
+<ul>
+<li>练习能帮你扩宽组块连接的神经网络</li>
+</ul>
+<h2 id="学习能力方面的误解"><a href="#学习能力方面的误解" class="headerlink" title="学习能力方面的误解"></a>学习能力方面的误解</h2><p>当我们学习的时候多数会采用找一本学习资料反复阅读的方法，不过心里学家Jeffrey Karpicke证明，这种学习方法远不及另一种简单的技巧，回顾recall。阅读一个材料之后，移开视线，看你能回忆多少</p>
+<h3 id="学习时对能力的错觉"><a href="#学习时对能力的错觉" class="headerlink" title="学习时对能力的错觉"></a>学习时对能力的错觉</h3><p>学生们喜欢重读笔记或课本的原因是：当他们面前打开着课本或谷歌时，当他们面前打开着课本或谷歌时 会误以为这些知识同样在他们的脑海里。然而事实却并非如此，因为看书比回顾做起来简单，但学生们会陷入 (一种自欺欺人的) 错觉 这种学习方式效率很低</p>
+<h3 id="在学习场所外回顾会帮助你更好的理解和学习"><a href="#在学习场所外回顾会帮助你更好的理解和学习" class="headerlink" title="在学习场所外回顾会帮助你更好的理解和学习"></a>在学习场所外回顾会帮助你更好的理解和学习</h3><p>当你学习新事物的时候 你通常会把最开始接触材料的地方 当作潜意识中的提示，但一到考试就乱了阵脚， 因为考试与学习场所通常不同 通过在不同物理环境下回顾和思考学习资料，你会脱离对给定场所的依赖 这会帮助你避免由于考试与学习场所的不同而产生的问题。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 杂谈 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Learn How to Learn </tag>
+            
+        </tags>
+        
+    </entry>
+    
+  
+  
+</search>
