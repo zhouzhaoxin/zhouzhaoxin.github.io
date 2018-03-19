@@ -3,193 +3,6 @@
   
     
     <entry>
-      <title><![CDATA[微信公众号-被动回复消息与鹦鹉学舌]]></title>
-      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E8%A2%AB%E5%8A%A8%E5%9B%9E%E5%A4%8D%E6%B6%88%E6%81%AF%E4%B8%8E%E9%B9%A6%E9%B9%89%E5%AD%A6%E8%88%8C/</url>
-      <content type="html"></content>
-      
-        <categories>
-            
-            <category> 前端 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> 微信公众号 </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[微信公众号-接收与发送消息]]></title>
-      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%8E%A5%E5%8F%97%E4%B8%8E%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/</url>
-      <content type="html"><![CDATA[<p>验证URL有效性成功后即接入生效，成为开发者。如果公众号类型为服务号（订阅号只能使用普通消息接口），可以在公众平台网站中申请认证，认证成功的服务号将获得众多接口权限，以满足开发者需求。</p>
-<p>此后用户每次向公众号发送消息、或者产生自定义菜单点击事件时，开发者填写的服务器配置URL将得到微信服务器推送过来的消息和事件，然后开发者可以依据自身业务逻辑进行响应，例如回复消息等。</p>
-<p>用户向公众号发送消息时，公众号方收到的消息发送者是一个OpenID，是使用用户微信号加密后的结果，每个用户对每个公众号有一个唯一的OpenID。<br><a id="more"></a></p>
-<h1 id="接收普通消息"><a href="#接收普通消息" class="headerlink" title="接收普通消息"></a>接收普通消息</h1><p>当普通微信用户向公众账号发消息时，微信服务器将POST消息的XML数据包到开发者填写的URL上。</p>
-<p>微信服务器在五秒内收不到响应会断掉连接，并且重新发起请求，总共重试三次。假如服务器无法保证在五秒内处理并回复，可以直接回复空串，微信服务器不会对此作任何处理，并且不会发起重试。</p>
-<p>各消息类型的推送使用XML数据包结构，如：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;xml&gt;</div><div class="line">&lt;ToUserName&gt;&lt;![CDATA[gh_866835093fea]]&gt;&lt;/ToUserName&gt;</div><div class="line">&lt;FromUserName&gt;&lt;![CDATA[ogdotwSc_MmEEsJs9-ABZ1QL_4r4]]&gt;&lt;/FromUserName&gt;</div><div class="line">&lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;</div><div class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">&lt;Content&gt;&lt;![CDATA[你好]]&gt;&lt;/Content&gt;</div><div class="line">&lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;</div><div class="line">&lt;/xml&gt;</div></pre></td></tr></table></figure></p>
-<h1 id="xmltodict-模块基本用法"><a href="#xmltodict-模块基本用法" class="headerlink" title="xmltodict 模块基本用法"></a>xmltodict 模块基本用法</h1><p>xmltodict 是一个用来处理xml数据的很方便的模块。包含两个常用方法parse和unparse</p>
-<h2 id="parse"><a href="#parse" class="headerlink" title="parse"></a>parse</h2><p>xmltodict.parse()方法可以将xml数据转为python中的dict字典数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import xmltodict</div><div class="line">&gt;&gt;&gt; xml_str = &quot;&quot;&quot;</div><div class="line">... &lt;xml&gt;</div><div class="line">... &lt;ToUserName&gt;&lt;![CDATA[gh_866835093fea]]&gt;&lt;/ToUserName&gt;</div><div class="line">... &lt;FromUserName&gt;&lt;![CDATA[ogdotwSc_MmEEsJs9-ABZ1QL_4r4]]&gt;&lt;/FromUserName&gt;</div><div class="line">... &lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;</div><div class="line">... &lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">... &lt;Content&gt;&lt;![CDATA[你好]]&gt;&lt;/Content&gt;</div><div class="line">... &lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;</div><div class="line">... &lt;/xml&gt;</div><div class="line">... &quot;&quot;&quot;</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_dict = xmltodict.parse(xml_str)</div><div class="line">&gt;&gt;&gt; type(xml_dict)</div><div class="line">&lt;class &apos;collections.OrderedDict&apos;&gt;  # 类字典型，可以按照字典方法操作</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_dict</div><div class="line">OrderedDict([(u&apos;xml&apos;, OrderedDict([(u&apos;ToUserName&apos;, u&apos;gh_866835093fea&apos;), (u&apos;FromUserName&apos;, u&apos;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&apos;), (u&apos;CreateTime&apos;, u&apos;1478317060&apos;), (u&apos;MsgType&apos;, u&apos;text&apos;), (u&apos;Content&apos;, u&apos;\u4f60\u597d&apos;), (u&apos;MsgId&apos;, u&apos;6349323426230210995&apos;)]))])</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_dict[&apos;xml&apos;]</div><div class="line">OrderedDict([(u&apos;ToUserName&apos;, u&apos;gh_866835093fea&apos;), (u&apos;FromUserName&apos;, u&apos;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&apos;), (u&apos;CreateTime&apos;, u&apos;1478317060&apos;), (u&apos;MsgType&apos;, u&apos;text&apos;), (u&apos;Content&apos;, u&apos;\u4f60\u597d&apos;), (u&apos;MsgId&apos;, u&apos;6349323426230210995&apos;)])</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; for key, val in xml_dict[&apos;xml&apos;].items():</div><div class="line">...     print key, &quot;=&quot;, val</div><div class="line">... </div><div class="line">ToUserName = gh_866835093fea</div><div class="line">FromUserName = ogdotwSc_MmEEsJs9-ABZ1QL_4r4</div><div class="line">CreateTime = 1478317060</div><div class="line">MsgType = text</div><div class="line">Content = 你好</div><div class="line">MsgId = 6349323426230210995</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
-<h2 id="unparse"><a href="#unparse" class="headerlink" title="unparse"></a>unparse</h2><p>xmltodict.unparse()方法可以将字典转换为xml字符串：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">xml_dict = &#123;</div><div class="line">    &quot;xml&quot;: &#123;</div><div class="line">        &quot;ToUserName&quot; : &quot;gh_866835093fea&quot;,</div><div class="line">        &quot;FromUserName&quot; : &quot;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&quot;,</div><div class="line">        &quot;CreateTime&quot; : &quot;1478317060&quot;,</div><div class="line">        &quot;MsgType&quot; : &quot;text&quot;,</div><div class="line">        &quot;Content&quot; : u&quot;你好&quot;,</div><div class="line">        &quot;MsgId&quot; : &quot;6349323426230210995&quot;,</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&gt;&gt;&gt; xml_str = xmltodict.unparse(xml_dict)</div><div class="line">&gt;&gt;&gt; print xml_str</div><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;xml&gt;&lt;FromUserName&gt;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&lt;/FromUserName&gt;&lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;&lt;ToUserName&gt;gh_866835093fea&lt;/ToUserName&gt;&lt;Content&gt;你好&lt;/Content&gt;&lt;MsgType&gt;text&lt;/MsgType&gt;&lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;&lt;/xml&gt;</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_str = xmltodict.unparse(xml_dict, pretty=True) # pretty表示友好输出</div><div class="line">&gt;&gt;&gt; print xml_str</div><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;xml&gt;</div><div class="line">    &lt;FromUserName&gt;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&lt;/FromUserName&gt;</div><div class="line">    &lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;</div><div class="line">    &lt;ToUserName&gt;gh_866835093fea&lt;/ToUserName&gt;</div><div class="line">    &lt;Content&gt;你好&lt;/Content&gt;</div><div class="line">    &lt;MsgType&gt;text&lt;/MsgType&gt;</div><div class="line">    &lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;</div><div class="line">&lt;/xml&gt;</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
-<h1 id="普通消息类别"><a href="#普通消息类别" class="headerlink" title="普通消息类别"></a>普通消息类别</h1><ul>
-<li>文本消息</li>
-<li>图片消息</li>
-<li>语音消息</li>
-<li>视频消息</li>
-<li>小视频消息</li>
-<li>地理位置消息</li>
-<li>链接消息</li>
-</ul>
-<h1 id="文本消息"><a href="#文本消息" class="headerlink" title="文本消息"></a>文本消息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;xml&gt;</div><div class="line">&lt;ToUserName&gt;&lt;![CDATA[toUser]]&gt;&lt;/ToUserName&gt;</div><div class="line">&lt;FromUserName&gt;&lt;![CDATA[fromUser]]&gt;&lt;/FromUserName&gt; </div><div class="line">&lt;CreateTime&gt;1348831860&lt;/CreateTime&gt;</div><div class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">&lt;Content&gt;&lt;![CDATA[this is a test]]&gt;&lt;/Content&gt;</div><div class="line">&lt;MsgId&gt;1234567890123456&lt;/MsgId&gt;</div><div class="line">&lt;/xml&gt;</div></pre></td></tr></table></figure>
-<p><img src="/images/wechat/receive_text_msg.png" alt="receive_text_msg.png"><br><img src="/images/wechat/" alt=""></p>
-]]></content>
-      
-        <categories>
-            
-            <category> 前端 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> 微信公众号 </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[微信公众号-接入公众平台（二）]]></title>
-      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%8E%A5%E5%85%A5%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0%E4%BA%8C/</url>
-      <content type="html"><![CDATA[<h1 id="填写服务器配置"><a href="#填写服务器配置" class="headerlink" title="填写服务器配置"></a>填写服务器配置</h1><a id="more"></a>
-<p>登录微信公众平台官网后，在公众平台后台管理页面 - 开发者中心页，点击“修改配置”按钮，填写服务器地址（URL）、Token和EncodingAESKey，其中URL是开发者用来接收微信消息和事件的接口URL。Token可由开发者可以任意填写，用作生成签名（该Token会和接口URL中包含的Token进行比对，从而验证安全性）。EncodingAESKey由开发者手动填写或随机生成，将用作消息体加解密密钥。</p>
-<p>同时，开发者可选择消息加解密方式：明文模式、兼容模式和安全模式。模式的选择与服务器配置在提交后都会立即生效，请开发者谨慎填写及选择。加解密方式的默认状态为明文模式，选择兼容模式和安全模式需要提前配置好相关加解密代码，详情请参考消息体签名及加解密部分的文档。</p>
-<p>微信公众号接口只支持80接口。<br>公众平台页面<br><img src="/images/wechat/fill_server_config.png" alt="fill_server_config.png"></p>
-<h2 id="利用测试平台"><a href="#利用测试平台" class="headerlink" title="利用测试平台"></a>利用测试平台</h2><p>测试平台登陆地址 <a href="http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login" target="_blank" rel="noopener">http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login</a><br><img src="/images/wechat/wechat_sandbox.png" alt="wechat_sandbox.png"><br><img src="/images/wechat/fill_server_config_sandbox.png" alt="fill_server_config_sandbox.png"></p>
-<h1 id="验证服务器地址的有效性"><a href="#验证服务器地址的有效性" class="headerlink" title="验证服务器地址的有效性"></a>验证服务器地址的有效性</h1><p>开发者提交信息后，微信服务器将发送GET请求到填写的服务器地址URL上，GET请求携带四个参数：<br><img src="/images/wechat/valid_server.png" alt="valid_server.png"><br>开发者通过检验signature对请求进行校验。若确认此次GET请求来自微信服务器，请原样返回echostr参数内容，则接入生效，成为开发者成功，否则接入失败。</p>
-<p>校验流程：</p>
-<ul>
-<li>将token、timestamp、nonce三个参数进行字典序排序</li>
-<li>将三个参数字符串拼接成一个字符串进行sha1加密</li>
-<li>开发者获得加密后的字符串可与signature对比，标识该请求来源于微信<br>Python代码实现：<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WechatHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="string">"""微信接入接口"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""开发者验证接口"""</span></div><div class="line">        signature = self.get_argument(<span class="string">"signature"</span>, <span class="string">""</span>)</div><div class="line">        timestamp = self.get_argument(<span class="string">"timestamp"</span>, <span class="string">""</span>)</div><div class="line">        nonce = self.get_argument(<span class="string">"nonce"</span>, <span class="string">""</span>)</div><div class="line">        echostr = self.get_argument(<span class="string">"echostr"</span>, <span class="string">""</span>)</div><div class="line">        tmp = [WECHAT_TOKEN, timestamp, nonce]</div><div class="line">        tmp.sort()</div><div class="line">        tmp = <span class="string">""</span>.join(tmp)</div><div class="line">        tmp = hashlib.sha1(tmp).hexdigest()</div><div class="line">        <span class="keyword">if</span> tmp == signature:</div><div class="line">            self.write(echostr)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.write(<span class="string">"error"</span>)</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p><img src="/images/wechat/" alt=""></p>
-]]></content>
-      
-        <categories>
-            
-            <category> 前端 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> 微信公众号 </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[微信公众号-接入公众平台（一）]]></title>
-      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%8E%A5%E5%85%A5%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</url>
-      <content type="html"><![CDATA[<p>接入微信公众平台开发，开发者需要按照如下步骤完成：</p>
-<ul>
-<li>填写服务器配置</li>
-<li>验证服务器地址的有效性</li>
-<li>依据接口文档实现业务逻辑<a id="more"></a>
-</li>
-</ul>
-<h1 id="无扩展应用模型"><a href="#无扩展应用模型" class="headerlink" title="无扩展应用模型"></a>无扩展应用模型</h1><h2 id="公众号消息会话"><a href="#公众号消息会话" class="headerlink" title="公众号消息会话"></a>公众号消息会话</h2><p><img src="/images/wechat/无扩展会话应用模型.png" alt="无扩展会话应用模型.png"></p>
-<h2 id="公众号内网页"><a href="#公众号内网页" class="headerlink" title="公众号内网页"></a>公众号内网页</h2><p><img src="/images/wechat/无扩展内网页应用模型.png" alt="无扩展内网页应用模型.png"></p>
-<h1 id="有扩展应用模型"><a href="#有扩展应用模型" class="headerlink" title="有扩展应用模型"></a>有扩展应用模型</h1><h2 id="公众号消息会话-1"><a href="#公众号消息会话-1" class="headerlink" title="公众号消息会话"></a>公众号消息会话</h2><p><img src="/images/wechat/有扩展会话应用模型.png" alt="有扩展会话应用模型.png"></p>
-<h2 id="公众号内网页-1"><a href="#公众号内网页-1" class="headerlink" title="公众号内网页"></a>公众号内网页</h2><p><img src="/images/wechat/有扩展内网页应用模型.png" alt="有扩展内网页应用模型.png"></p>
-<h1 id="公众号接口"><a href="#公众号接口" class="headerlink" title="公众号接口"></a>公众号接口</h1><h2 id="公众号消息会话-2"><a href="#公众号消息会话-2" class="headerlink" title="公众号消息会话"></a>公众号消息会话</h2><p>目前公众号内主要有这样几类消息服务的类型，分别用于不同的场景。</p>
-<h2 id="群发消息"><a href="#群发消息" class="headerlink" title="群发消息"></a>群发消息</h2><p>公众号可以以一定频次（订阅号为每天1次，服务号为每月4次），向用户群发消息，包括文字消息、图文消息、图片、视频、语音等。</p>
-<h2 id="被动回复消息"><a href="#被动回复消息" class="headerlink" title="被动回复消息"></a>被动回复消息</h2><p>在用户给公众号发消息后，微信服务器会将消息发到开发者预先在开发者中心设置的服务器地址（开发者需要进行消息真实性验证），公众号可以在5秒内做出回复，可以回复一个消息，也可以回复命令告诉微信服务器这条消息暂不回复。被动回复消息可以设置加密（在公众平台官网的开发者中心处设置，设置后，按照消息加解密文档来进行处理。其他3种消息的调用因为是API调用而不是对请求的返回，所以不需要加解密）。</p>
-<h2 id="客服消息"><a href="#客服消息" class="headerlink" title="客服消息"></a>客服消息</h2><p>在用户给公众号发消息后的48小时内，公众号可以给用户发送不限数量的消息，主要用于客服场景。用户的行为会触发事件推送，某些事件推送是支持公众号据此发送客服消息的，详见微信推送消息与事件说明文档。</p>
-<h2 id="模板消息"><a href="#模板消息" class="headerlink" title="模板消息"></a>模板消息</h2><p>在需要对用户发送服务通知（如刷卡提醒、服务预约成功通知等）时，公众号可以用特定内容模板，主动向用户发送消息。</p>
-<h2 id="公众号内网页-2"><a href="#公众号内网页-2" class="headerlink" title="公众号内网页"></a>公众号内网页</h2><p>对于公众号内网页，提供以下场景接口：</p>
-<p>网页授权获取用户基本信息<br>通过该接口，可以获取用户的基本信息</p>
-<p>微信JS-SDK<br>是开发者在网页上通过JavaScript代码使用微信原生功能的工具包，开发者可以使用它在网页上录制和播放微信语音、监听微信分享、上传手机本地图片、拍照等许多能力。</p>
-<h2 id="微信开发者文档"><a href="#微信开发者文档" class="headerlink" title="微信开发者文档"></a>微信开发者文档</h2><p>微信开发者文档网址 <a href="https://mp.weixin.qq.com/wiki/home/index.html" target="_blank" rel="noopener">https://mp.weixin.qq.com/wiki/home/index.html</a><br><img src="/images/wechat/wechat_dev_doc.png" alt="wechat_dev_doc.png"></p>
-]]></content>
-      
-        <categories>
-            
-            <category> 前端 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> 微信公众号 </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[微信公众号-公众号与公众平台]]></title>
-      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E5%85%AC%E4%BC%97%E5%8F%B7%E4%B8%8E%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</url>
-      <content type="html"><![CDATA[<ul>
-<li>个人号</li>
-<li>公众号<ul>
-<li>订阅号</li>
-<li>服务号</li>
-</ul>
-</li>
-<li>企业号<a id="more"></a>
-<h1 id="公众号"><a href="#公众号" class="headerlink" title="公众号"></a>公众号</h1>微信公众号主要面向名人、政府、媒体、企业等机构推出的合作推广业务。在这里可以通过微信渠道将品牌推广给上亿的微信用户，减少宣传成本，提高品牌知名度，打造更具影响力的品牌形象。</li>
-</ul>
-<h1 id="公众平台"><a href="#公众平台" class="headerlink" title="公众平台"></a>公众平台</h1><p>微信公众平台是运营者通过公众号为微信用户提供资讯和服务的平台，而公众平台开发接口则是提供服务的基础，开发者在公众平台网站中创建公众号、获取接口权限后，可以通过阅读公众平台开发接口文档来帮助开发。</p>
-<p>微信公众平台可以用来注册、管理公众号和企业号。</p>
-<p>登陆网址 <a href="https://mp.weixin.qq.com/" target="_blank" rel="noopener">https://mp.weixin.qq.com/</a> </p>
-<p><img src="/images/wechat/login.png" alt="login.png"></p>
-<h1 id="公众号与个人号的区别"><a href="#公众号与个人号的区别" class="headerlink" title="公众号与个人号的区别"></a>公众号与个人号的区别</h1><p>微信公众号和个人号是完全不同的。</p>
-<p>微信对个人号的定位是普通用户之间的交流和通讯，微信并不鼓励和支持使用个人号进行营销推广(微信曾经大规模封杀好友过多的营销个人号）。</p>
-<p>而公众号则完全是为品牌推广、信息推送等服务而定制的。使用公众号，可以向关注者（即粉丝)群发图文消息，粉丝在对话界面看到消息后，可以点击跳转到一个图文页面。公众号还提供关键词自动回复等基础功能，以此可以随时、自动的和粉丝进行互动。</p>
-<p>除了这些基础功能之外，更大的区别是，微信针对公众号开放了很多程序接口。在这些接口的基础上，可以向粉丝提供更多的服务。此外，认证的服务号还可以申请微信支付。粉丝可以使用微信支付向进行付款（订购服务或购买商品）。所有这些，都是个人号不具备的。</p>
-<p>微信公众号的注册几乎是没有门槛的。不过针对不同类型的公众号，微信提供的功能不同，资质要求也不一样。</p>
-<h1 id="订阅号"><a href="#订阅号" class="headerlink" title="订阅号"></a>订阅号</h1><p>主要偏向于为用户传达资讯，（功能类似报纸杂志，为用户提供新闻信息或娱乐趣事），每天可群发1条消息；</p>
-<p>适用人群：个人、媒体、企业、政府或其他组织。</p>
-<h1 id="服务号"><a href="#服务号" class="headerlink" title="服务号"></a>服务号</h1><p>主要偏向于服务交互（功能类似12315，114，银行，提供绑定信息，服务交互），每月可群发4条消息；</p>
-<p>适用人群：媒体、企业、政府或其他组织。</p>
-<h1 id="微信认证"><a href="#微信认证" class="headerlink" title="微信认证"></a>微信认证</h1><p>微信认证是微信公众平台为了确保公众帐号的信息的真实性、安全性，目前提供给微信公众服务号进行微信认证的服务。</p>
-<ul>
-<li>微信认证后，获得更丰富的高级接口，向用户提供更有价值的个性化服务。</li>
-<li>微信认证后，用户将在微信中看到微信认证特有的标识（公众帐号资料中“认证详情”中会展示认证资料、以及微信认证特有的标识，暂不支持取消。）。<br><img src="/images/wechat/authentication.png" alt="authentication.png"></li>
-</ul>
-<h1 id="账号类型区别"><a href="#账号类型区别" class="headerlink" title="账号类型区别"></a>账号类型区别</h1><p><img src="/images/wechat/differences.png" alt="differences.png"></p>
-<h1 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h1><h2 id="注册网址"><a href="#注册网址" class="headerlink" title="注册网址"></a>注册网址</h2><p><a href="https://mp.weixin.qq.com/cgi-bin/readtemplate?t=register/step1_tmpl&amp;lang=zh_CN" target="_blank" rel="noopener">https://mp.weixin.qq.com/cgi-bin/readtemplate?t=register/step1_tmpl&amp;lang=zh_CN</a></p>
-<h2 id="注册页面"><a href="#注册页面" class="headerlink" title="注册页面"></a>注册页面</h2><p><img src="/images/wechat/register.png" alt="register.png"></p>
-<h2 id="账号类型选择页面"><a href="#账号类型选择页面" class="headerlink" title="账号类型选择页面"></a>账号类型选择页面</h2><p><img src="/images/wechat/type_select.png" alt="type_select.png"></p>
-<h2 id="注册主体资料"><a href="#注册主体资料" class="headerlink" title="注册主体资料"></a>注册主体资料</h2><p><img src="/images/wechat/type_select.png" alt="type_select.png"></p>
-]]></content>
-      
-        <categories>
-            
-            <category> 前端 </category>
-            
-        </categories>
-        
-        
-        <tags>
-            
-            <tag> 微信公众号 </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
       <title><![CDATA[数据结构与算法-二叉树]]></title>
       <url>/2018/03/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
       <content type="html"><![CDATA[<p>二叉树是每个节点最多有两个子树的树结构。通常子树被称作“左子树”（left subtree）和“右子树”（right subtree）<br><a id="more"></a></p>
@@ -1155,6 +968,192 @@
     </entry>
     
     <entry>
+      <title><![CDATA[微信公众号-被动回复消息与鹦鹉学舌]]></title>
+      <url>/2017/07/25/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E8%A2%AB%E5%8A%A8%E5%9B%9E%E5%A4%8D%E6%B6%88%E6%81%AF%E4%B8%8E%E9%B9%A6%E9%B9%89%E5%AD%A6%E8%88%8C/</url>
+      <content type="html"></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信公众号-接收与发送消息]]></title>
+      <url>/2017/07/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%8E%A5%E5%8F%97%E4%B8%8E%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/</url>
+      <content type="html"><![CDATA[<p>验证URL有效性成功后即接入生效，成为开发者。如果公众号类型为服务号（订阅号只能使用普通消息接口），可以在公众平台网站中申请认证，认证成功的服务号将获得众多接口权限，以满足开发者需求。</p>
+<p>此后用户每次向公众号发送消息、或者产生自定义菜单点击事件时，开发者填写的服务器配置URL将得到微信服务器推送过来的消息和事件，然后开发者可以依据自身业务逻辑进行响应，例如回复消息等。</p>
+<p>用户向公众号发送消息时，公众号方收到的消息发送者是一个OpenID，是使用用户微信号加密后的结果，每个用户对每个公众号有一个唯一的OpenID。<br><a id="more"></a></p>
+<h1 id="接收普通消息"><a href="#接收普通消息" class="headerlink" title="接收普通消息"></a>接收普通消息</h1><p>当普通微信用户向公众账号发消息时，微信服务器将POST消息的XML数据包到开发者填写的URL上。</p>
+<p>微信服务器在五秒内收不到响应会断掉连接，并且重新发起请求，总共重试三次。假如服务器无法保证在五秒内处理并回复，可以直接回复空串，微信服务器不会对此作任何处理，并且不会发起重试。</p>
+<p>各消息类型的推送使用XML数据包结构，如：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;xml&gt;</div><div class="line">&lt;ToUserName&gt;&lt;![CDATA[gh_866835093fea]]&gt;&lt;/ToUserName&gt;</div><div class="line">&lt;FromUserName&gt;&lt;![CDATA[ogdotwSc_MmEEsJs9-ABZ1QL_4r4]]&gt;&lt;/FromUserName&gt;</div><div class="line">&lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;</div><div class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">&lt;Content&gt;&lt;![CDATA[你好]]&gt;&lt;/Content&gt;</div><div class="line">&lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;</div><div class="line">&lt;/xml&gt;</div></pre></td></tr></table></figure></p>
+<h1 id="xmltodict-模块基本用法"><a href="#xmltodict-模块基本用法" class="headerlink" title="xmltodict 模块基本用法"></a>xmltodict 模块基本用法</h1><p>xmltodict 是一个用来处理xml数据的很方便的模块。包含两个常用方法parse和unparse</p>
+<h2 id="parse"><a href="#parse" class="headerlink" title="parse"></a>parse</h2><p>xmltodict.parse()方法可以将xml数据转为python中的dict字典数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import xmltodict</div><div class="line">&gt;&gt;&gt; xml_str = &quot;&quot;&quot;</div><div class="line">... &lt;xml&gt;</div><div class="line">... &lt;ToUserName&gt;&lt;![CDATA[gh_866835093fea]]&gt;&lt;/ToUserName&gt;</div><div class="line">... &lt;FromUserName&gt;&lt;![CDATA[ogdotwSc_MmEEsJs9-ABZ1QL_4r4]]&gt;&lt;/FromUserName&gt;</div><div class="line">... &lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;</div><div class="line">... &lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">... &lt;Content&gt;&lt;![CDATA[你好]]&gt;&lt;/Content&gt;</div><div class="line">... &lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;</div><div class="line">... &lt;/xml&gt;</div><div class="line">... &quot;&quot;&quot;</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_dict = xmltodict.parse(xml_str)</div><div class="line">&gt;&gt;&gt; type(xml_dict)</div><div class="line">&lt;class &apos;collections.OrderedDict&apos;&gt;  # 类字典型，可以按照字典方法操作</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_dict</div><div class="line">OrderedDict([(u&apos;xml&apos;, OrderedDict([(u&apos;ToUserName&apos;, u&apos;gh_866835093fea&apos;), (u&apos;FromUserName&apos;, u&apos;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&apos;), (u&apos;CreateTime&apos;, u&apos;1478317060&apos;), (u&apos;MsgType&apos;, u&apos;text&apos;), (u&apos;Content&apos;, u&apos;\u4f60\u597d&apos;), (u&apos;MsgId&apos;, u&apos;6349323426230210995&apos;)]))])</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_dict[&apos;xml&apos;]</div><div class="line">OrderedDict([(u&apos;ToUserName&apos;, u&apos;gh_866835093fea&apos;), (u&apos;FromUserName&apos;, u&apos;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&apos;), (u&apos;CreateTime&apos;, u&apos;1478317060&apos;), (u&apos;MsgType&apos;, u&apos;text&apos;), (u&apos;Content&apos;, u&apos;\u4f60\u597d&apos;), (u&apos;MsgId&apos;, u&apos;6349323426230210995&apos;)])</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; for key, val in xml_dict[&apos;xml&apos;].items():</div><div class="line">...     print key, &quot;=&quot;, val</div><div class="line">... </div><div class="line">ToUserName = gh_866835093fea</div><div class="line">FromUserName = ogdotwSc_MmEEsJs9-ABZ1QL_4r4</div><div class="line">CreateTime = 1478317060</div><div class="line">MsgType = text</div><div class="line">Content = 你好</div><div class="line">MsgId = 6349323426230210995</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="unparse"><a href="#unparse" class="headerlink" title="unparse"></a>unparse</h2><p>xmltodict.unparse()方法可以将字典转换为xml字符串：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">xml_dict = &#123;</div><div class="line">    &quot;xml&quot;: &#123;</div><div class="line">        &quot;ToUserName&quot; : &quot;gh_866835093fea&quot;,</div><div class="line">        &quot;FromUserName&quot; : &quot;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&quot;,</div><div class="line">        &quot;CreateTime&quot; : &quot;1478317060&quot;,</div><div class="line">        &quot;MsgType&quot; : &quot;text&quot;,</div><div class="line">        &quot;Content&quot; : u&quot;你好&quot;,</div><div class="line">        &quot;MsgId&quot; : &quot;6349323426230210995&quot;,</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&gt;&gt;&gt; xml_str = xmltodict.unparse(xml_dict)</div><div class="line">&gt;&gt;&gt; print xml_str</div><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;xml&gt;&lt;FromUserName&gt;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&lt;/FromUserName&gt;&lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;&lt;ToUserName&gt;gh_866835093fea&lt;/ToUserName&gt;&lt;Content&gt;你好&lt;/Content&gt;&lt;MsgType&gt;text&lt;/MsgType&gt;&lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;&lt;/xml&gt;</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_str = xmltodict.unparse(xml_dict, pretty=True) # pretty表示友好输出</div><div class="line">&gt;&gt;&gt; print xml_str</div><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;xml&gt;</div><div class="line">    &lt;FromUserName&gt;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&lt;/FromUserName&gt;</div><div class="line">    &lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;</div><div class="line">    &lt;ToUserName&gt;gh_866835093fea&lt;/ToUserName&gt;</div><div class="line">    &lt;Content&gt;你好&lt;/Content&gt;</div><div class="line">    &lt;MsgType&gt;text&lt;/MsgType&gt;</div><div class="line">    &lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;</div><div class="line">&lt;/xml&gt;</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
+<h1 id="普通消息类别"><a href="#普通消息类别" class="headerlink" title="普通消息类别"></a>普通消息类别</h1><ul>
+<li>文本消息</li>
+<li>图片消息</li>
+<li>语音消息</li>
+<li>视频消息</li>
+<li>小视频消息</li>
+<li>地理位置消息</li>
+<li>链接消息</li>
+</ul>
+<h1 id="文本消息"><a href="#文本消息" class="headerlink" title="文本消息"></a>文本消息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;xml&gt;</div><div class="line">&lt;ToUserName&gt;&lt;![CDATA[toUser]]&gt;&lt;/ToUserName&gt;</div><div class="line">&lt;FromUserName&gt;&lt;![CDATA[fromUser]]&gt;&lt;/FromUserName&gt; </div><div class="line">&lt;CreateTime&gt;1348831860&lt;/CreateTime&gt;</div><div class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">&lt;Content&gt;&lt;![CDATA[this is a test]]&gt;&lt;/Content&gt;</div><div class="line">&lt;MsgId&gt;1234567890123456&lt;/MsgId&gt;</div><div class="line">&lt;/xml&gt;</div></pre></td></tr></table></figure>
+<p><img src="/images/wechat/receive_text_msg.png" alt="receive_text_msg.png"><br><img src="/images/wechat/" alt=""></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信公众号-接入公众平台（二）]]></title>
+      <url>/2017/07/06/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%8E%A5%E5%85%A5%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0%E4%BA%8C/</url>
+      <content type="html"><![CDATA[<h1 id="填写服务器配置"><a href="#填写服务器配置" class="headerlink" title="填写服务器配置"></a>填写服务器配置</h1><a id="more"></a>
+<p>登录微信公众平台官网后，在公众平台后台管理页面 - 开发者中心页，点击“修改配置”按钮，填写服务器地址（URL）、Token和EncodingAESKey，其中URL是开发者用来接收微信消息和事件的接口URL。Token可由开发者可以任意填写，用作生成签名（该Token会和接口URL中包含的Token进行比对，从而验证安全性）。EncodingAESKey由开发者手动填写或随机生成，将用作消息体加解密密钥。</p>
+<p>同时，开发者可选择消息加解密方式：明文模式、兼容模式和安全模式。模式的选择与服务器配置在提交后都会立即生效，请开发者谨慎填写及选择。加解密方式的默认状态为明文模式，选择兼容模式和安全模式需要提前配置好相关加解密代码，详情请参考消息体签名及加解密部分的文档。</p>
+<p>微信公众号接口只支持80接口。<br>公众平台页面<br><img src="/images/wechat/fill_server_config.png" alt="fill_server_config.png"></p>
+<h2 id="利用测试平台"><a href="#利用测试平台" class="headerlink" title="利用测试平台"></a>利用测试平台</h2><p>测试平台登陆地址 <a href="http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login" target="_blank" rel="noopener">http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login</a><br><img src="/images/wechat/wechat_sandbox.png" alt="wechat_sandbox.png"><br><img src="/images/wechat/fill_server_config_sandbox.png" alt="fill_server_config_sandbox.png"></p>
+<h1 id="验证服务器地址的有效性"><a href="#验证服务器地址的有效性" class="headerlink" title="验证服务器地址的有效性"></a>验证服务器地址的有效性</h1><p>开发者提交信息后，微信服务器将发送GET请求到填写的服务器地址URL上，GET请求携带四个参数：<br><img src="/images/wechat/valid_server.png" alt="valid_server.png"><br>开发者通过检验signature对请求进行校验。若确认此次GET请求来自微信服务器，请原样返回echostr参数内容，则接入生效，成为开发者成功，否则接入失败。</p>
+<p>校验流程：</p>
+<ul>
+<li>将token、timestamp、nonce三个参数进行字典序排序</li>
+<li>将三个参数字符串拼接成一个字符串进行sha1加密</li>
+<li>开发者获得加密后的字符串可与signature对比，标识该请求来源于微信<br>Python代码实现：<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WechatHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="string">"""微信接入接口"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""开发者验证接口"""</span></div><div class="line">        signature = self.get_argument(<span class="string">"signature"</span>, <span class="string">""</span>)</div><div class="line">        timestamp = self.get_argument(<span class="string">"timestamp"</span>, <span class="string">""</span>)</div><div class="line">        nonce = self.get_argument(<span class="string">"nonce"</span>, <span class="string">""</span>)</div><div class="line">        echostr = self.get_argument(<span class="string">"echostr"</span>, <span class="string">""</span>)</div><div class="line">        tmp = [WECHAT_TOKEN, timestamp, nonce]</div><div class="line">        tmp.sort()</div><div class="line">        tmp = <span class="string">""</span>.join(tmp)</div><div class="line">        tmp = hashlib.sha1(tmp).hexdigest()</div><div class="line">        <span class="keyword">if</span> tmp == signature:</div><div class="line">            self.write(echostr)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.write(<span class="string">"error"</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信公众号-接入公众平台（一）]]></title>
+      <url>/2017/07/05/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%8E%A5%E5%85%A5%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</url>
+      <content type="html"><![CDATA[<p>接入微信公众平台开发，开发者需要按照如下步骤完成：</p>
+<ul>
+<li>填写服务器配置</li>
+<li>验证服务器地址的有效性</li>
+<li>依据接口文档实现业务逻辑<a id="more"></a>
+</li>
+</ul>
+<h1 id="无扩展应用模型"><a href="#无扩展应用模型" class="headerlink" title="无扩展应用模型"></a>无扩展应用模型</h1><h2 id="公众号消息会话"><a href="#公众号消息会话" class="headerlink" title="公众号消息会话"></a>公众号消息会话</h2><p><img src="/images/wechat/无扩展会话应用模型.png" alt="无扩展会话应用模型.png"></p>
+<h2 id="公众号内网页"><a href="#公众号内网页" class="headerlink" title="公众号内网页"></a>公众号内网页</h2><p><img src="/images/wechat/无扩展内网页应用模型.png" alt="无扩展内网页应用模型.png"></p>
+<h1 id="有扩展应用模型"><a href="#有扩展应用模型" class="headerlink" title="有扩展应用模型"></a>有扩展应用模型</h1><h2 id="公众号消息会话-1"><a href="#公众号消息会话-1" class="headerlink" title="公众号消息会话"></a>公众号消息会话</h2><p><img src="/images/wechat/有扩展会话应用模型.png" alt="有扩展会话应用模型.png"></p>
+<h2 id="公众号内网页-1"><a href="#公众号内网页-1" class="headerlink" title="公众号内网页"></a>公众号内网页</h2><p><img src="/images/wechat/有扩展内网页应用模型.png" alt="有扩展内网页应用模型.png"></p>
+<h1 id="公众号接口"><a href="#公众号接口" class="headerlink" title="公众号接口"></a>公众号接口</h1><h2 id="公众号消息会话-2"><a href="#公众号消息会话-2" class="headerlink" title="公众号消息会话"></a>公众号消息会话</h2><p>目前公众号内主要有这样几类消息服务的类型，分别用于不同的场景。</p>
+<h2 id="群发消息"><a href="#群发消息" class="headerlink" title="群发消息"></a>群发消息</h2><p>公众号可以以一定频次（订阅号为每天1次，服务号为每月4次），向用户群发消息，包括文字消息、图文消息、图片、视频、语音等。</p>
+<h2 id="被动回复消息"><a href="#被动回复消息" class="headerlink" title="被动回复消息"></a>被动回复消息</h2><p>在用户给公众号发消息后，微信服务器会将消息发到开发者预先在开发者中心设置的服务器地址（开发者需要进行消息真实性验证），公众号可以在5秒内做出回复，可以回复一个消息，也可以回复命令告诉微信服务器这条消息暂不回复。被动回复消息可以设置加密（在公众平台官网的开发者中心处设置，设置后，按照消息加解密文档来进行处理。其他3种消息的调用因为是API调用而不是对请求的返回，所以不需要加解密）。</p>
+<h2 id="客服消息"><a href="#客服消息" class="headerlink" title="客服消息"></a>客服消息</h2><p>在用户给公众号发消息后的48小时内，公众号可以给用户发送不限数量的消息，主要用于客服场景。用户的行为会触发事件推送，某些事件推送是支持公众号据此发送客服消息的，详见微信推送消息与事件说明文档。</p>
+<h2 id="模板消息"><a href="#模板消息" class="headerlink" title="模板消息"></a>模板消息</h2><p>在需要对用户发送服务通知（如刷卡提醒、服务预约成功通知等）时，公众号可以用特定内容模板，主动向用户发送消息。</p>
+<h2 id="公众号内网页-2"><a href="#公众号内网页-2" class="headerlink" title="公众号内网页"></a>公众号内网页</h2><p>对于公众号内网页，提供以下场景接口：</p>
+<p>网页授权获取用户基本信息<br>通过该接口，可以获取用户的基本信息</p>
+<p>微信JS-SDK<br>是开发者在网页上通过JavaScript代码使用微信原生功能的工具包，开发者可以使用它在网页上录制和播放微信语音、监听微信分享、上传手机本地图片、拍照等许多能力。</p>
+<h2 id="微信开发者文档"><a href="#微信开发者文档" class="headerlink" title="微信开发者文档"></a>微信开发者文档</h2><p>微信开发者文档网址 <a href="https://mp.weixin.qq.com/wiki/home/index.html" target="_blank" rel="noopener">https://mp.weixin.qq.com/wiki/home/index.html</a><br><img src="/images/wechat/wechat_dev_doc.png" alt="wechat_dev_doc.png"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信公众号-公众号与公众平台]]></title>
+      <url>/2017/06/26/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E5%85%AC%E4%BC%97%E5%8F%B7%E4%B8%8E%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</url>
+      <content type="html"><![CDATA[<ul>
+<li>个人号</li>
+<li>公众号<ul>
+<li>订阅号</li>
+<li>服务号</li>
+</ul>
+</li>
+<li>企业号<a id="more"></a>
+<h1 id="公众号"><a href="#公众号" class="headerlink" title="公众号"></a>公众号</h1>微信公众号主要面向名人、政府、媒体、企业等机构推出的合作推广业务。在这里可以通过微信渠道将品牌推广给上亿的微信用户，减少宣传成本，提高品牌知名度，打造更具影响力的品牌形象。</li>
+</ul>
+<h1 id="公众平台"><a href="#公众平台" class="headerlink" title="公众平台"></a>公众平台</h1><p>微信公众平台是运营者通过公众号为微信用户提供资讯和服务的平台，而公众平台开发接口则是提供服务的基础，开发者在公众平台网站中创建公众号、获取接口权限后，可以通过阅读公众平台开发接口文档来帮助开发。</p>
+<p>微信公众平台可以用来注册、管理公众号和企业号。</p>
+<p>登陆网址 <a href="https://mp.weixin.qq.com/" target="_blank" rel="noopener">https://mp.weixin.qq.com/</a> </p>
+<p><img src="/images/wechat/login.png" alt="login.png"></p>
+<h1 id="公众号与个人号的区别"><a href="#公众号与个人号的区别" class="headerlink" title="公众号与个人号的区别"></a>公众号与个人号的区别</h1><p>微信公众号和个人号是完全不同的。</p>
+<p>微信对个人号的定位是普通用户之间的交流和通讯，微信并不鼓励和支持使用个人号进行营销推广(微信曾经大规模封杀好友过多的营销个人号）。</p>
+<p>而公众号则完全是为品牌推广、信息推送等服务而定制的。使用公众号，可以向关注者（即粉丝)群发图文消息，粉丝在对话界面看到消息后，可以点击跳转到一个图文页面。公众号还提供关键词自动回复等基础功能，以此可以随时、自动的和粉丝进行互动。</p>
+<p>除了这些基础功能之外，更大的区别是，微信针对公众号开放了很多程序接口。在这些接口的基础上，可以向粉丝提供更多的服务。此外，认证的服务号还可以申请微信支付。粉丝可以使用微信支付向进行付款（订购服务或购买商品）。所有这些，都是个人号不具备的。</p>
+<p>微信公众号的注册几乎是没有门槛的。不过针对不同类型的公众号，微信提供的功能不同，资质要求也不一样。</p>
+<h1 id="订阅号"><a href="#订阅号" class="headerlink" title="订阅号"></a>订阅号</h1><p>主要偏向于为用户传达资讯，（功能类似报纸杂志，为用户提供新闻信息或娱乐趣事），每天可群发1条消息；</p>
+<p>适用人群：个人、媒体、企业、政府或其他组织。</p>
+<h1 id="服务号"><a href="#服务号" class="headerlink" title="服务号"></a>服务号</h1><p>主要偏向于服务交互（功能类似12315，114，银行，提供绑定信息，服务交互），每月可群发4条消息；</p>
+<p>适用人群：媒体、企业、政府或其他组织。</p>
+<h1 id="微信认证"><a href="#微信认证" class="headerlink" title="微信认证"></a>微信认证</h1><p>微信认证是微信公众平台为了确保公众帐号的信息的真实性、安全性，目前提供给微信公众服务号进行微信认证的服务。</p>
+<ul>
+<li>微信认证后，获得更丰富的高级接口，向用户提供更有价值的个性化服务。</li>
+<li>微信认证后，用户将在微信中看到微信认证特有的标识（公众帐号资料中“认证详情”中会展示认证资料、以及微信认证特有的标识，暂不支持取消。）。<br><img src="/images/wechat/authentication.png" alt="authentication.png"></li>
+</ul>
+<h1 id="账号类型区别"><a href="#账号类型区别" class="headerlink" title="账号类型区别"></a>账号类型区别</h1><p><img src="/images/wechat/differences.png" alt="differences.png"></p>
+<h1 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h1><h2 id="注册网址"><a href="#注册网址" class="headerlink" title="注册网址"></a>注册网址</h2><p><a href="https://mp.weixin.qq.com/cgi-bin/readtemplate?t=register/step1_tmpl&amp;lang=zh_CN" target="_blank" rel="noopener">https://mp.weixin.qq.com/cgi-bin/readtemplate?t=register/step1_tmpl&amp;lang=zh_CN</a></p>
+<h2 id="注册页面"><a href="#注册页面" class="headerlink" title="注册页面"></a>注册页面</h2><p><img src="/images/wechat/register.png" alt="register.png"></p>
+<h2 id="账号类型选择页面"><a href="#账号类型选择页面" class="headerlink" title="账号类型选择页面"></a>账号类型选择页面</h2><p><img src="/images/wechat/type_select.png" alt="type_select.png"></p>
+<h2 id="注册主体资料"><a href="#注册主体资料" class="headerlink" title="注册主体资料"></a>注册主体资料</h2><p><img src="/images/wechat/type_select.png" alt="type_select.png"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Spring事务处理]]></title>
       <url>/2017/03/11/%E6%A1%86%E6%9E%B6%E8%A1%A5%E5%85%85/</url>
       <content type="html"><![CDATA[<p>基础复习</p>
@@ -1486,9 +1485,9 @@
         
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> Maven </tag>
+            
+            <tag> Java </tag>
             
         </tags>
         
@@ -1533,9 +1532,9 @@
         
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> Maven </tag>
+            
+            <tag> Java </tag>
             
         </tags>
         
@@ -1629,9 +1628,9 @@
         
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> Maven </tag>
+            
+            <tag> Java </tag>
             
         </tags>
         
@@ -1893,7 +1892,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">appcan.button(<span class="string">"#submit"</span>, <span class="string">"ani-act"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">           login();</div><div class="line">       &#125;)</div><div class="line">       <span class="function"><span class="keyword">function</span> <span class="title">login</span>(<span class="params"></span>) </span>&#123;</div><div class="line">           <span class="keyword">var</span> name = $(<span class="string">"#username"</span>).val();</div><div class="line">           <span class="keyword">var</span> pwd = $(<span class="string">"#password"</span>).val();</div><div class="line">           <span class="built_in">console</span>.log(name + <span class="string">":"</span> + pwd);</div><div class="line">           appcan.ajax(&#123;</div><div class="line">               <span class="attr">url</span> : <span class="string">"http://testmas.appcan.cn:9000/ODBC/login?uName="</span> + name + <span class="string">"&amp;pwd="</span> + pwd,</div><div class="line">               <span class="attr">type</span> : <span class="string">'get'</span>,</div><div class="line">               <span class="attr">dateType</span> : <span class="string">'json'</span>,</div><div class="line">               <span class="attr">success</span> : <span class="function"><span class="keyword">function</span>(<span class="params">data, status, xhr</span>) </span>&#123;</div><div class="line">                   <span class="keyword">var</span> obj = <span class="built_in">eval</span>(<span class="string">'('</span> + data + <span class="string">')'</span>);</div><div class="line">                   alert(obj.status);</div><div class="line">                   <span class="keyword">if</span>(obj.status == <span class="string">"0"</span>)&#123;</div><div class="line">                       alert(<span class="string">"登录成功"</span>);</div><div class="line">                   &#125;<span class="keyword">else</span>&#123;</div><div class="line">                       alert(<span class="string">"用户名或密码不正确"</span>);</div><div class="line">                   &#125;</div><div class="line"></div><div class="line">               &#125;,</div><div class="line">               <span class="attr">error</span> : <span class="function"><span class="keyword">function</span>(<span class="params">xhr, status, errMessage</span>) </span>&#123;</div><div class="line">                   alert(<span class="string">"errMessage"</span>);</div><div class="line">               &#125;</div><div class="line">           &#125;);</div><div class="line">       &#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>html代码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">&lt;body <span class="class"><span class="keyword">class</span></span>=<span class="string">"um-vp bc-bg"</span> ontouchstart&gt;</div><div class="line">        &lt;div class="ub ub-ver uinn-a3 ub-fv"&gt;</div><div class="line">            &lt;div class="ub ub-ver uinn uinn-at1"&gt;</div><div class="line">                &lt;div class="umar-a uba bc-border c-wh"&gt;</div><div class="line">                    &lt;div class="ub ub-ac ubb umh5 bc-border "&gt;</div><div class="line">                        &lt;div class=" uinput ub ub-f1"&gt;</div><div class="line">                            &lt;div class="uinn fa fa-user sc-text"&gt;&lt;/div&gt;</div><div class="line">                            &lt;input id="username" placeholder="手机/邮箱/用户名" type="text" class="ub-f1"&gt;</div><div class="line">                        &lt;/div&gt;</div><div class="line">                    &lt;/div&gt;</div><div class="line">                    &lt;div class="ub ub-ac umh5 bc-border "&gt;</div><div class="line">                        &lt;div class=" uinput ub ub-f1"&gt;</div><div class="line">                            &lt;div class="uinn fa fa-lock sc-text"&gt;&lt;/div&gt;</div><div class="line">                            &lt;input id="password" placeholder="密码" type="password" class="umw4 ub-f1"&gt;</div><div class="line"></div><div class="line">                        &lt;/div&gt;</div><div class="line">                    &lt;/div&gt;</div><div class="line">                &lt;/div&gt;</div><div class="line">                &lt;div class="ub ub-ver"&gt;</div><div class="line">                    &lt;div class="ub ub-pe uinn-a6 sc-text-active ulev-4"&gt;</div><div class="line">                        忘记密码</div><div class="line">                    &lt;/div&gt;</div><div class="line">                    &lt;div class="uinn-at1"&gt;</div><div class="line">                        &lt;div class="btn ub ub-ac bc-text-head ub-pc bc-btn uc-a1" id="submit"&gt;</div><div class="line">                            登录</div><div class="line">                        &lt;/div&gt;</div><div class="line">                    &lt;/div&gt;</div><div class="line">                    &lt;div class="uinn-at2 ub sc-text-active ulev-4"&gt;</div><div class="line">                    &lt;/div&gt;</div><div class="line">                &lt;/div&gt;</div><div class="line">                &lt;button type="submit"class="uinvisible"&gt;&lt;/button&gt;</div><div class="line"></div><div class="line">            &lt;/div&gt;</div><div class="line"></div><div class="line">        &lt;/div&gt;</div><div class="line">        &lt;script src="js/appcan.js"&gt;&lt;/script&gt;</div><div class="line">        &lt;script src="js/appcan.control.js"&gt;&lt;/script&gt;</div><div class="line">    &lt;/body&gt;</div></pre></td></tr></table></figure></li>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">&lt;body <span class="class"><span class="keyword">class</span></span>=<span class="string">"um-vp bc-bg"</span> ontouchstart&gt;</div><div class="line">        <span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"ub ub-ver uinn-a3 ub-fv"</span>&gt;</span></span></div><div class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"ub ub-ver uinn uinn-at1"</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"umar-a uba bc-border c-wh"</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"ub ub-ac ubb umh5 bc-border "</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">" uinput ub ub-f1"</span>&gt;</span></div><div class="line">                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"uinn fa fa-user sc-text"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                            <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"username"</span> <span class="attr">placeholder</span>=<span class="string">"手机/邮箱/用户名"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">class</span>=<span class="string">"ub-f1"</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"ub ub-ac umh5 bc-border "</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">" uinput ub ub-f1"</span>&gt;</span></div><div class="line">                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"uinn fa fa-lock sc-text"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                            <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"password"</span> <span class="attr">placeholder</span>=<span class="string">"密码"</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">class</span>=<span class="string">"umw4 ub-f1"</span>&gt;</span></div><div class="line"></div><div class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"ub ub-ver"</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"ub ub-pe uinn-a6 sc-text-active ulev-4"</span>&gt;</span></div><div class="line">                        忘记密码</div><div class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"uinn-at1"</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"btn ub ub-ac bc-text-head ub-pc bc-btn uc-a1"</span> <span class="attr">id</span>=<span class="string">"submit"</span>&gt;</span></div><div class="line">                            登录</div><div class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"uinn-at2 ub sc-text-active ulev-4"</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span><span class="attr">class</span>=<span class="string">"uinvisible"</span>&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line"></div><div class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/appcan.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/appcan.control.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div></pre></td></tr></table></figure></li>
 </ul>
 ]]></content>
       
