@@ -84,18 +84,20 @@
 
 
 
-<meta name="description" content="All Roads Lead to Rome">
+<meta name="description" content="当用户发送消息给公众号时（或某些特定的用户操作引发的事件推送时），会产生一个POST请求，开发者可以在响应包中返回特定XML结构，来对该消息进行响应（现支持回复文本、图片、图文、语音、视频、音乐）。严格来说，发送被动响应消息其实并不是一种接口，而是对微信服务器发过来消息的一次回复。 假如服务器无法保证在五秒内处理并回复">
 <meta name="keywords" content="微信公众号">
 <meta property="og:type" content="article">
 <meta property="og:title" content="微信公众号-被动回复消息与鹦鹉学舌">
 <meta property="og:url" content="http://yoursite.com/2017/07/25/微信公众号-被动回复消息与鹦鹉学舌/index.html">
 <meta property="og:site_name" content="天边一钩残月带三星">
-<meta property="og:description" content="All Roads Lead to Rome">
+<meta property="og:description" content="当用户发送消息给公众号时（或某些特定的用户操作引发的事件推送时），会产生一个POST请求，开发者可以在响应包中返回特定XML结构，来对该消息进行响应（现支持回复文本、图片、图文、语音、视频、音乐）。严格来说，发送被动响应消息其实并不是一种接口，而是对微信服务器发过来消息的一次回复。 假如服务器无法保证在五秒内处理并回复，必须做出下述回复，这样微信服务器才不会对此作任何处理，并且不会发起重试（这种情">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-19T09:35:21.484Z">
+<meta property="og:image" content="http://yoursite.com/images/wechat/reply_text_msg.png">
+<meta property="og:updated_time" content="2018-03-19T09:57:16.522Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="微信公众号-被动回复消息与鹦鹉学舌">
-<meta name="twitter:description" content="All Roads Lead to Rome">
+<meta name="twitter:description" content="当用户发送消息给公众号时（或某些特定的用户操作引发的事件推送时），会产生一个POST请求，开发者可以在响应包中返回特定XML结构，来对该消息进行响应（现支持回复文本、图片、图文、语音、视频、音乐）。严格来说，发送被动响应消息其实并不是一种接口，而是对微信服务器发过来消息的一次回复。 假如服务器无法保证在五秒内处理并回复，必须做出下述回复，这样微信服务器才不会对此作任何处理，并且不会发起重试（这种情">
+<meta name="twitter:image" content="http://yoursite.com/images/wechat/reply_text_msg.png">
 
 
 
@@ -392,7 +394,30 @@
       
 
       
-        
+        <p>当用户发送消息给公众号时（或某些特定的用户操作引发的事件推送时），会产生一个POST请求，开发者可以在响应包中返回特定XML结构，来对该消息进行响应（现支持回复文本、图片、图文、语音、视频、音乐）。严格来说，发送被动响应消息其实并不是一种接口，而是对微信服务器发过来消息的一次回复。</p>
+<p>假如服务器无法保证在五秒内处理并回复，必须做出下述回复，这样微信服务器才不会对此作任何处理，并且不会发起重试（这种情况下，可以使用客服消息接口进行异步回复），否则，将出现严重的错误提示。详见下面说明：</p>
+<ul>
+<li>（推荐方式）直接回复success</li>
+<li><p>直接回复空串（指字节长度为0的空字符串，而不是XML结构体中content字段的内容为空）<br>一旦遇到以下情况，微信都会在公众号会话中，向用户下发系统提示“该公众号暂时无法提供服务，请稍后再试”：</p>
+</li>
+<li><p>开发者在5秒内未回复任何内容</p>
+</li>
+<li>开发者回复了异常数据，比如JSON数据等</li>
+</ul>
+<h1 id="回复的消息类型"><a href="#回复的消息类型" class="headerlink" title="回复的消息类型"></a>回复的消息类型</h1><ul>
+<li>文本消息</li>
+<li>图片消息</li>
+<li>语音消息</li>
+<li>视频消息</li>
+<li>音乐消息</li>
+<li>图文消息</li>
+</ul>
+<h1 id="回复文本消息"><a href="#回复文本消息" class="headerlink" title="回复文本消息"></a>回复文本消息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;xml&gt;</div><div class="line">&lt;ToUserName&gt;&lt;![CDATA[toUser]]&gt;&lt;/ToUserName&gt;</div><div class="line">&lt;FromUserName&gt;&lt;![CDATA[fromUser]]&gt;&lt;/FromUserName&gt;</div><div class="line">&lt;CreateTime&gt;12345678&lt;/CreateTime&gt;</div><div class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">&lt;Content&gt;&lt;![CDATA[你好]]&gt;&lt;/Content&gt;</div><div class="line">&lt;/xml&gt;</div></pre></td></tr></table></figure>
+<p><img src="/images/wechat/reply_text_msg.png" alt="reply_text_msg.png"></p>
+<h1 id="鹦鹉学舌代码实现"><a href="#鹦鹉学舌代码实现" class="headerlink" title="鹦鹉学舌代码实现"></a>鹦鹉学舌代码实现</h1><p>我们现在来实现一个针对文本消息的收发程序。实现的业务逻辑类似与“鹦鹉学舌”，粉丝发什么内容，我们就传回给粉丝什么内容。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div></pre></td><td class="code"><pre><div class="line"># coding:utf-8</div><div class="line"></div><div class="line">import tornado.web</div><div class="line">import tornado.httpserver</div><div class="line">import tornado.ioloop</div><div class="line">import tornado.options</div><div class="line">import hashlib</div><div class="line">import xmltodict</div><div class="line">import time</div><div class="line"></div><div class="line">from tornado.web import RequestHandler</div><div class="line">from tornado.options import define, options</div><div class="line"></div><div class="line">WECHAT_TOKEN = &quot;itcast&quot;</div><div class="line"></div><div class="line">define(&quot;port&quot;, default=8080, type=int)</div><div class="line"></div><div class="line">class WeChatHandler(RequestHandler):</div><div class="line">    &quot;&quot;&quot;微信接入接口&quot;&quot;&quot;</div><div class="line">    def get(self):</div><div class="line">        &quot;&quot;&quot;开发者验证接口&quot;&quot;&quot;</div><div class="line">        signature = self.get_argument(&quot;signature&quot;)</div><div class="line">        timestamp = self.get_argument(&quot;timestamp&quot;)</div><div class="line">        nonce = self.get_argument(&quot;nonce&quot;)</div><div class="line">        echostr = self.get_argument(&quot;echostr&quot;)</div><div class="line">        tmp = [WECHAT_TOKEN, timestamp, nonce]</div><div class="line">        tmp.sort()</div><div class="line">        tmp = &quot;&quot;.join(tmp)</div><div class="line">        tmp = hashlib.sha1(tmp).hexdigest()</div><div class="line">        if tmp == signature:</div><div class="line">            self.write(echostr)</div><div class="line">        else:</div><div class="line">            self.write(&quot;error&quot;)</div><div class="line"></div><div class="line">    def post(self):</div><div class="line">        &quot;&quot;&quot;收发消息接口&quot;&quot;&quot;</div><div class="line">        req_xml = self.request.body</div><div class="line">        req = xmltodict.parse(req_xml)[&apos;xml&apos;]</div><div class="line">        if &quot;text&quot; == req.get(&quot;MsgType&quot;):</div><div class="line">            resp = &#123;</div><div class="line">                &quot;ToUserName&quot;:req.get(&quot;FromUserName&quot;, &quot;&quot;),</div><div class="line">                &quot;FromUserName&quot;:req.get(&quot;ToUserName&quot;, &quot;&quot;),</div><div class="line">                &quot;CreateTime&quot;:int(time.time()),</div><div class="line">                &quot;MsgType&quot;:&quot;text&quot;,</div><div class="line">                &quot;Content&quot;:req.get(&quot;Content&quot;, &quot;&quot;)</div><div class="line">            &#125;</div><div class="line">        else:</div><div class="line">            resp = &#123;</div><div class="line">                &quot;ToUserName&quot;:req.get(&quot;FromUserName&quot;, &quot;&quot;),</div><div class="line">                &quot;FromUserName&quot;:req.get(&quot;ToUserName&quot;, &quot;&quot;),</div><div class="line">                &quot;CreateTime&quot;:int(time.time()),</div><div class="line">                &quot;MsgType&quot;:&quot;text&quot;,</div><div class="line">                &quot;Content&quot;:&quot;I love you, itcast!&quot;</div><div class="line">            &#125;</div><div class="line">        resp_xml = xmltodict.unparse(&#123;&quot;xml&quot;:resp&#125;)</div><div class="line">        self.write(resp_xml)</div><div class="line"></div><div class="line"></div><div class="line">def main():</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application([</div><div class="line">            (r&quot;/wechat&quot;, WeChatHandler),</div><div class="line">        ])</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.current().start()</div><div class="line"></div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    main()</div></pre></td></tr></table></figure>
+<h1 id="改写代码"><a href="#改写代码" class="headerlink" title="改写代码"></a>改写代码</h1><p>微信发送的请求中会携带签名验证信息，我们需要对收到的请求进行验证是否来自微信服务器，所以在处理请求前都要按照验证算法进行检验。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">class WeChatBaseHandler(RequestHandler):</div><div class="line">    def prepare(self):</div><div class="line">        &quot;&quot;&quot;验证请求是否来自微信服务器&quot;&quot;&quot;</div><div class="line">        signature = self.get_argument(&quot;signature&quot;)</div><div class="line">        timestamp = self.get_argument(&quot;timestamp&quot;)</div><div class="line">        nonce = self.get_argument(&quot;nonce&quot;)</div><div class="line">        tmp = [WECHAT_TOKEN, timestamp, nonce]</div><div class="line">        tmp.sort()</div><div class="line">        tmp = &quot;&quot;.join(tmp)</div><div class="line">        tmp = hashlib.sha1(tmp).hexdigest()</div><div class="line">        if tmp != signature:</div><div class="line">            self.send_error(403) # 若是非法请求，返回403错误</div><div class="line"></div><div class="line">class WeChatHandler(WeChatBaseHandler):</div><div class="line">    &quot;&quot;&quot;微信接入接口&quot;&quot;&quot;</div><div class="line">    def get(self):</div><div class="line">        &quot;&quot;&quot;开发者验证接口&quot;&quot;&quot;</div><div class="line">        echostr = self.get_argument(&quot;echostr&quot;)</div><div class="line">        self.write(echostr)</div><div class="line"></div><div class="line">    def post(self):</div><div class="line">        &quot;&quot;&quot;收发消息接口&quot;&quot;&quot;</div><div class="line">        req_xml = self.request.body</div><div class="line">        req = xmltodict.parse(req_xml)[&apos;xml&apos;]</div><div class="line">        if &quot;text&quot; == req.get(&quot;MsgType&quot;):</div><div class="line">            resp = &#123;</div><div class="line">                &quot;ToUserName&quot;:req.get(&quot;FromUserName&quot;, &quot;&quot;),</div><div class="line">                &quot;FromUserName&quot;:req.get(&quot;ToUserName&quot;, &quot;&quot;),</div><div class="line">                &quot;CreateTime&quot;:int(time.time()),</div><div class="line">                &quot;MsgType&quot;:&quot;text&quot;,</div><div class="line">                &quot;Content&quot;:req.get(&quot;Content&quot;, &quot;&quot;)</div><div class="line">            &#125;</div><div class="line">        else:</div><div class="line">            resp = &#123;</div><div class="line">                &quot;ToUserName&quot;:req.get(&quot;FromUserName&quot;, &quot;&quot;),</div><div class="line">                &quot;FromUserName&quot;:req.get(&quot;ToUserName&quot;, &quot;&quot;),</div><div class="line">                &quot;CreateTime&quot;:int(time.time()),</div><div class="line">                &quot;MsgType&quot;:&quot;text&quot;,</div><div class="line">                &quot;Content&quot;:&quot;I love you, itcast!&quot;</div><div class="line">            &#125;</div><div class="line">        resp_xml = xmltodict.unparse(&#123;&quot;xml&quot;:resp&#125;)</div><div class="line">        self.write(resp_xml)</div></pre></td></tr></table></figure>
       
     </div>
 
@@ -487,8 +512,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -544,6 +578,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#回复的消息类型"><span class="nav-number">1.</span> <span class="nav-text">回复的消息类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#回复文本消息"><span class="nav-number">2.</span> <span class="nav-text">回复文本消息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#鹦鹉学舌代码实现"><span class="nav-number">3.</span> <span class="nav-text">鹦鹉学舌代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#改写代码"><span class="nav-number">4.</span> <span class="nav-text">改写代码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
