@@ -3,8 +3,436 @@
   
     
     <entry>
+      <title><![CDATA[微信公众号-被动回复消息与鹦鹉学舌]]></title>
+      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E8%A2%AB%E5%8A%A8%E5%9B%9E%E5%A4%8D%E6%B6%88%E6%81%AF%E4%B8%8E%E9%B9%A6%E9%B9%89%E5%AD%A6%E8%88%8C/</url>
+      <content type="html"></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信公众号-接收与发送消息]]></title>
+      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%8E%A5%E5%8F%97%E4%B8%8E%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/</url>
+      <content type="html"><![CDATA[<p>验证URL有效性成功后即接入生效，成为开发者。如果公众号类型为服务号（订阅号只能使用普通消息接口），可以在公众平台网站中申请认证，认证成功的服务号将获得众多接口权限，以满足开发者需求。</p>
+<p>此后用户每次向公众号发送消息、或者产生自定义菜单点击事件时，开发者填写的服务器配置URL将得到微信服务器推送过来的消息和事件，然后开发者可以依据自身业务逻辑进行响应，例如回复消息等。</p>
+<p>用户向公众号发送消息时，公众号方收到的消息发送者是一个OpenID，是使用用户微信号加密后的结果，每个用户对每个公众号有一个唯一的OpenID。<br><a id="more"></a></p>
+<h1 id="接收普通消息"><a href="#接收普通消息" class="headerlink" title="接收普通消息"></a>接收普通消息</h1><p>当普通微信用户向公众账号发消息时，微信服务器将POST消息的XML数据包到开发者填写的URL上。</p>
+<p>微信服务器在五秒内收不到响应会断掉连接，并且重新发起请求，总共重试三次。假如服务器无法保证在五秒内处理并回复，可以直接回复空串，微信服务器不会对此作任何处理，并且不会发起重试。</p>
+<p>各消息类型的推送使用XML数据包结构，如：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;xml&gt;</div><div class="line">&lt;ToUserName&gt;&lt;![CDATA[gh_866835093fea]]&gt;&lt;/ToUserName&gt;</div><div class="line">&lt;FromUserName&gt;&lt;![CDATA[ogdotwSc_MmEEsJs9-ABZ1QL_4r4]]&gt;&lt;/FromUserName&gt;</div><div class="line">&lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;</div><div class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">&lt;Content&gt;&lt;![CDATA[你好]]&gt;&lt;/Content&gt;</div><div class="line">&lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;</div><div class="line">&lt;/xml&gt;</div></pre></td></tr></table></figure></p>
+<h1 id="xmltodict-模块基本用法"><a href="#xmltodict-模块基本用法" class="headerlink" title="xmltodict 模块基本用法"></a>xmltodict 模块基本用法</h1><p>xmltodict 是一个用来处理xml数据的很方便的模块。包含两个常用方法parse和unparse</p>
+<h2 id="parse"><a href="#parse" class="headerlink" title="parse"></a>parse</h2><p>xmltodict.parse()方法可以将xml数据转为python中的dict字典数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; import xmltodict</div><div class="line">&gt;&gt;&gt; xml_str = &quot;&quot;&quot;</div><div class="line">... &lt;xml&gt;</div><div class="line">... &lt;ToUserName&gt;&lt;![CDATA[gh_866835093fea]]&gt;&lt;/ToUserName&gt;</div><div class="line">... &lt;FromUserName&gt;&lt;![CDATA[ogdotwSc_MmEEsJs9-ABZ1QL_4r4]]&gt;&lt;/FromUserName&gt;</div><div class="line">... &lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;</div><div class="line">... &lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">... &lt;Content&gt;&lt;![CDATA[你好]]&gt;&lt;/Content&gt;</div><div class="line">... &lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;</div><div class="line">... &lt;/xml&gt;</div><div class="line">... &quot;&quot;&quot;</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_dict = xmltodict.parse(xml_str)</div><div class="line">&gt;&gt;&gt; type(xml_dict)</div><div class="line">&lt;class &apos;collections.OrderedDict&apos;&gt;  # 类字典型，可以按照字典方法操作</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_dict</div><div class="line">OrderedDict([(u&apos;xml&apos;, OrderedDict([(u&apos;ToUserName&apos;, u&apos;gh_866835093fea&apos;), (u&apos;FromUserName&apos;, u&apos;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&apos;), (u&apos;CreateTime&apos;, u&apos;1478317060&apos;), (u&apos;MsgType&apos;, u&apos;text&apos;), (u&apos;Content&apos;, u&apos;\u4f60\u597d&apos;), (u&apos;MsgId&apos;, u&apos;6349323426230210995&apos;)]))])</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_dict[&apos;xml&apos;]</div><div class="line">OrderedDict([(u&apos;ToUserName&apos;, u&apos;gh_866835093fea&apos;), (u&apos;FromUserName&apos;, u&apos;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&apos;), (u&apos;CreateTime&apos;, u&apos;1478317060&apos;), (u&apos;MsgType&apos;, u&apos;text&apos;), (u&apos;Content&apos;, u&apos;\u4f60\u597d&apos;), (u&apos;MsgId&apos;, u&apos;6349323426230210995&apos;)])</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; for key, val in xml_dict[&apos;xml&apos;].items():</div><div class="line">...     print key, &quot;=&quot;, val</div><div class="line">... </div><div class="line">ToUserName = gh_866835093fea</div><div class="line">FromUserName = ogdotwSc_MmEEsJs9-ABZ1QL_4r4</div><div class="line">CreateTime = 1478317060</div><div class="line">MsgType = text</div><div class="line">Content = 你好</div><div class="line">MsgId = 6349323426230210995</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
+<h2 id="unparse"><a href="#unparse" class="headerlink" title="unparse"></a>unparse</h2><p>xmltodict.unparse()方法可以将字典转换为xml字符串：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">xml_dict = &#123;</div><div class="line">    &quot;xml&quot;: &#123;</div><div class="line">        &quot;ToUserName&quot; : &quot;gh_866835093fea&quot;,</div><div class="line">        &quot;FromUserName&quot; : &quot;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&quot;,</div><div class="line">        &quot;CreateTime&quot; : &quot;1478317060&quot;,</div><div class="line">        &quot;MsgType&quot; : &quot;text&quot;,</div><div class="line">        &quot;Content&quot; : u&quot;你好&quot;,</div><div class="line">        &quot;MsgId&quot; : &quot;6349323426230210995&quot;,</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&gt;&gt;&gt; xml_str = xmltodict.unparse(xml_dict)</div><div class="line">&gt;&gt;&gt; print xml_str</div><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;xml&gt;&lt;FromUserName&gt;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&lt;/FromUserName&gt;&lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;&lt;ToUserName&gt;gh_866835093fea&lt;/ToUserName&gt;&lt;Content&gt;你好&lt;/Content&gt;&lt;MsgType&gt;text&lt;/MsgType&gt;&lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;&lt;/xml&gt;</div><div class="line">&gt;&gt;&gt;</div><div class="line">&gt;&gt;&gt; xml_str = xmltodict.unparse(xml_dict, pretty=True) # pretty表示友好输出</div><div class="line">&gt;&gt;&gt; print xml_str</div><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;xml&gt;</div><div class="line">    &lt;FromUserName&gt;ogdotwSc_MmEEsJs9-ABZ1QL_4r4&lt;/FromUserName&gt;</div><div class="line">    &lt;MsgId&gt;6349323426230210995&lt;/MsgId&gt;</div><div class="line">    &lt;ToUserName&gt;gh_866835093fea&lt;/ToUserName&gt;</div><div class="line">    &lt;Content&gt;你好&lt;/Content&gt;</div><div class="line">    &lt;MsgType&gt;text&lt;/MsgType&gt;</div><div class="line">    &lt;CreateTime&gt;1478317060&lt;/CreateTime&gt;</div><div class="line">&lt;/xml&gt;</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure></p>
+<h1 id="普通消息类别"><a href="#普通消息类别" class="headerlink" title="普通消息类别"></a>普通消息类别</h1><ul>
+<li>文本消息</li>
+<li>图片消息</li>
+<li>语音消息</li>
+<li>视频消息</li>
+<li>小视频消息</li>
+<li>地理位置消息</li>
+<li>链接消息</li>
+</ul>
+<h1 id="文本消息"><a href="#文本消息" class="headerlink" title="文本消息"></a>文本消息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;xml&gt;</div><div class="line">&lt;ToUserName&gt;&lt;![CDATA[toUser]]&gt;&lt;/ToUserName&gt;</div><div class="line">&lt;FromUserName&gt;&lt;![CDATA[fromUser]]&gt;&lt;/FromUserName&gt; </div><div class="line">&lt;CreateTime&gt;1348831860&lt;/CreateTime&gt;</div><div class="line">&lt;MsgType&gt;&lt;![CDATA[text]]&gt;&lt;/MsgType&gt;</div><div class="line">&lt;Content&gt;&lt;![CDATA[this is a test]]&gt;&lt;/Content&gt;</div><div class="line">&lt;MsgId&gt;1234567890123456&lt;/MsgId&gt;</div><div class="line">&lt;/xml&gt;</div></pre></td></tr></table></figure>
+<p><img src="/images/wechat/receive_text_msg.png" alt="receive_text_msg.png"><br><img src="/images/wechat/" alt=""></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信公众号-接入公众平台（二）]]></title>
+      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%8E%A5%E5%85%A5%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0%E4%BA%8C/</url>
+      <content type="html"><![CDATA[<h1 id="填写服务器配置"><a href="#填写服务器配置" class="headerlink" title="填写服务器配置"></a>填写服务器配置</h1><a id="more"></a>
+<p>登录微信公众平台官网后，在公众平台后台管理页面 - 开发者中心页，点击“修改配置”按钮，填写服务器地址（URL）、Token和EncodingAESKey，其中URL是开发者用来接收微信消息和事件的接口URL。Token可由开发者可以任意填写，用作生成签名（该Token会和接口URL中包含的Token进行比对，从而验证安全性）。EncodingAESKey由开发者手动填写或随机生成，将用作消息体加解密密钥。</p>
+<p>同时，开发者可选择消息加解密方式：明文模式、兼容模式和安全模式。模式的选择与服务器配置在提交后都会立即生效，请开发者谨慎填写及选择。加解密方式的默认状态为明文模式，选择兼容模式和安全模式需要提前配置好相关加解密代码，详情请参考消息体签名及加解密部分的文档。</p>
+<p>微信公众号接口只支持80接口。<br>公众平台页面<br><img src="/images/wechat/fill_server_config.png" alt="fill_server_config.png"></p>
+<h2 id="利用测试平台"><a href="#利用测试平台" class="headerlink" title="利用测试平台"></a>利用测试平台</h2><p>测试平台登陆地址 <a href="http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login" target="_blank" rel="noopener">http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login</a><br><img src="/images/wechat/wechat_sandbox.png" alt="wechat_sandbox.png"><br><img src="/images/wechat/fill_server_config_sandbox.png" alt="fill_server_config_sandbox.png"></p>
+<h1 id="验证服务器地址的有效性"><a href="#验证服务器地址的有效性" class="headerlink" title="验证服务器地址的有效性"></a>验证服务器地址的有效性</h1><p>开发者提交信息后，微信服务器将发送GET请求到填写的服务器地址URL上，GET请求携带四个参数：<br><img src="/images/wechat/valid_server.png" alt="valid_server.png"><br>开发者通过检验signature对请求进行校验。若确认此次GET请求来自微信服务器，请原样返回echostr参数内容，则接入生效，成为开发者成功，否则接入失败。</p>
+<p>校验流程：</p>
+<ul>
+<li>将token、timestamp、nonce三个参数进行字典序排序</li>
+<li>将三个参数字符串拼接成一个字符串进行sha1加密</li>
+<li>开发者获得加密后的字符串可与signature对比，标识该请求来源于微信<br>Python代码实现：<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WechatHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="string">"""微信接入接口"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""开发者验证接口"""</span></div><div class="line">        signature = self.get_argument(<span class="string">"signature"</span>, <span class="string">""</span>)</div><div class="line">        timestamp = self.get_argument(<span class="string">"timestamp"</span>, <span class="string">""</span>)</div><div class="line">        nonce = self.get_argument(<span class="string">"nonce"</span>, <span class="string">""</span>)</div><div class="line">        echostr = self.get_argument(<span class="string">"echostr"</span>, <span class="string">""</span>)</div><div class="line">        tmp = [WECHAT_TOKEN, timestamp, nonce]</div><div class="line">        tmp.sort()</div><div class="line">        tmp = <span class="string">""</span>.join(tmp)</div><div class="line">        tmp = hashlib.sha1(tmp).hexdigest()</div><div class="line">        <span class="keyword">if</span> tmp == signature:</div><div class="line">            self.write(echostr)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.write(<span class="string">"error"</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="/images/wechat/" alt=""></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信公众号-接入公众平台（一）]]></title>
+      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E6%8E%A5%E5%85%A5%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</url>
+      <content type="html"><![CDATA[<p>接入微信公众平台开发，开发者需要按照如下步骤完成：</p>
+<ul>
+<li>填写服务器配置</li>
+<li>验证服务器地址的有效性</li>
+<li>依据接口文档实现业务逻辑<a id="more"></a>
+</li>
+</ul>
+<h1 id="无扩展应用模型"><a href="#无扩展应用模型" class="headerlink" title="无扩展应用模型"></a>无扩展应用模型</h1><h2 id="公众号消息会话"><a href="#公众号消息会话" class="headerlink" title="公众号消息会话"></a>公众号消息会话</h2><p><img src="/images/wechat/无扩展会话应用模型.png" alt="无扩展会话应用模型.png"></p>
+<h2 id="公众号内网页"><a href="#公众号内网页" class="headerlink" title="公众号内网页"></a>公众号内网页</h2><p><img src="/images/wechat/无扩展内网页应用模型.png" alt="无扩展内网页应用模型.png"></p>
+<h1 id="有扩展应用模型"><a href="#有扩展应用模型" class="headerlink" title="有扩展应用模型"></a>有扩展应用模型</h1><h2 id="公众号消息会话-1"><a href="#公众号消息会话-1" class="headerlink" title="公众号消息会话"></a>公众号消息会话</h2><p><img src="/images/wechat/有扩展会话应用模型.png" alt="有扩展会话应用模型.png"></p>
+<h2 id="公众号内网页-1"><a href="#公众号内网页-1" class="headerlink" title="公众号内网页"></a>公众号内网页</h2><p><img src="/images/wechat/有扩展内网页应用模型.png" alt="有扩展内网页应用模型.png"></p>
+<h1 id="公众号接口"><a href="#公众号接口" class="headerlink" title="公众号接口"></a>公众号接口</h1><h2 id="公众号消息会话-2"><a href="#公众号消息会话-2" class="headerlink" title="公众号消息会话"></a>公众号消息会话</h2><p>目前公众号内主要有这样几类消息服务的类型，分别用于不同的场景。</p>
+<h2 id="群发消息"><a href="#群发消息" class="headerlink" title="群发消息"></a>群发消息</h2><p>公众号可以以一定频次（订阅号为每天1次，服务号为每月4次），向用户群发消息，包括文字消息、图文消息、图片、视频、语音等。</p>
+<h2 id="被动回复消息"><a href="#被动回复消息" class="headerlink" title="被动回复消息"></a>被动回复消息</h2><p>在用户给公众号发消息后，微信服务器会将消息发到开发者预先在开发者中心设置的服务器地址（开发者需要进行消息真实性验证），公众号可以在5秒内做出回复，可以回复一个消息，也可以回复命令告诉微信服务器这条消息暂不回复。被动回复消息可以设置加密（在公众平台官网的开发者中心处设置，设置后，按照消息加解密文档来进行处理。其他3种消息的调用因为是API调用而不是对请求的返回，所以不需要加解密）。</p>
+<h2 id="客服消息"><a href="#客服消息" class="headerlink" title="客服消息"></a>客服消息</h2><p>在用户给公众号发消息后的48小时内，公众号可以给用户发送不限数量的消息，主要用于客服场景。用户的行为会触发事件推送，某些事件推送是支持公众号据此发送客服消息的，详见微信推送消息与事件说明文档。</p>
+<h2 id="模板消息"><a href="#模板消息" class="headerlink" title="模板消息"></a>模板消息</h2><p>在需要对用户发送服务通知（如刷卡提醒、服务预约成功通知等）时，公众号可以用特定内容模板，主动向用户发送消息。</p>
+<h2 id="公众号内网页-2"><a href="#公众号内网页-2" class="headerlink" title="公众号内网页"></a>公众号内网页</h2><p>对于公众号内网页，提供以下场景接口：</p>
+<p>网页授权获取用户基本信息<br>通过该接口，可以获取用户的基本信息</p>
+<p>微信JS-SDK<br>是开发者在网页上通过JavaScript代码使用微信原生功能的工具包，开发者可以使用它在网页上录制和播放微信语音、监听微信分享、上传手机本地图片、拍照等许多能力。</p>
+<h2 id="微信开发者文档"><a href="#微信开发者文档" class="headerlink" title="微信开发者文档"></a>微信开发者文档</h2><p>微信开发者文档网址 <a href="https://mp.weixin.qq.com/wiki/home/index.html" target="_blank" rel="noopener">https://mp.weixin.qq.com/wiki/home/index.html</a><br><img src="/images/wechat/wechat_dev_doc.png" alt="wechat_dev_doc.png"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信公众号-公众号与公众平台]]></title>
+      <url>/2018/03/19/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7-%E5%85%AC%E4%BC%97%E5%8F%B7%E4%B8%8E%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0/</url>
+      <content type="html"><![CDATA[<ul>
+<li>个人号</li>
+<li>公众号<ul>
+<li>订阅号</li>
+<li>服务号</li>
+</ul>
+</li>
+<li>企业号<a id="more"></a>
+<h1 id="公众号"><a href="#公众号" class="headerlink" title="公众号"></a>公众号</h1>微信公众号主要面向名人、政府、媒体、企业等机构推出的合作推广业务。在这里可以通过微信渠道将品牌推广给上亿的微信用户，减少宣传成本，提高品牌知名度，打造更具影响力的品牌形象。</li>
+</ul>
+<h1 id="公众平台"><a href="#公众平台" class="headerlink" title="公众平台"></a>公众平台</h1><p>微信公众平台是运营者通过公众号为微信用户提供资讯和服务的平台，而公众平台开发接口则是提供服务的基础，开发者在公众平台网站中创建公众号、获取接口权限后，可以通过阅读公众平台开发接口文档来帮助开发。</p>
+<p>微信公众平台可以用来注册、管理公众号和企业号。</p>
+<p>登陆网址 <a href="https://mp.weixin.qq.com/" target="_blank" rel="noopener">https://mp.weixin.qq.com/</a> </p>
+<p><img src="/images/wechat/login.png" alt="login.png"></p>
+<h1 id="公众号与个人号的区别"><a href="#公众号与个人号的区别" class="headerlink" title="公众号与个人号的区别"></a>公众号与个人号的区别</h1><p>微信公众号和个人号是完全不同的。</p>
+<p>微信对个人号的定位是普通用户之间的交流和通讯，微信并不鼓励和支持使用个人号进行营销推广(微信曾经大规模封杀好友过多的营销个人号）。</p>
+<p>而公众号则完全是为品牌推广、信息推送等服务而定制的。使用公众号，可以向关注者（即粉丝)群发图文消息，粉丝在对话界面看到消息后，可以点击跳转到一个图文页面。公众号还提供关键词自动回复等基础功能，以此可以随时、自动的和粉丝进行互动。</p>
+<p>除了这些基础功能之外，更大的区别是，微信针对公众号开放了很多程序接口。在这些接口的基础上，可以向粉丝提供更多的服务。此外，认证的服务号还可以申请微信支付。粉丝可以使用微信支付向进行付款（订购服务或购买商品）。所有这些，都是个人号不具备的。</p>
+<p>微信公众号的注册几乎是没有门槛的。不过针对不同类型的公众号，微信提供的功能不同，资质要求也不一样。</p>
+<h1 id="订阅号"><a href="#订阅号" class="headerlink" title="订阅号"></a>订阅号</h1><p>主要偏向于为用户传达资讯，（功能类似报纸杂志，为用户提供新闻信息或娱乐趣事），每天可群发1条消息；</p>
+<p>适用人群：个人、媒体、企业、政府或其他组织。</p>
+<h1 id="服务号"><a href="#服务号" class="headerlink" title="服务号"></a>服务号</h1><p>主要偏向于服务交互（功能类似12315，114，银行，提供绑定信息，服务交互），每月可群发4条消息；</p>
+<p>适用人群：媒体、企业、政府或其他组织。</p>
+<h1 id="微信认证"><a href="#微信认证" class="headerlink" title="微信认证"></a>微信认证</h1><p>微信认证是微信公众平台为了确保公众帐号的信息的真实性、安全性，目前提供给微信公众服务号进行微信认证的服务。</p>
+<ul>
+<li>微信认证后，获得更丰富的高级接口，向用户提供更有价值的个性化服务。</li>
+<li>微信认证后，用户将在微信中看到微信认证特有的标识（公众帐号资料中“认证详情”中会展示认证资料、以及微信认证特有的标识，暂不支持取消。）。<br><img src="/images/wechat/authentication.png" alt="authentication.png"></li>
+</ul>
+<h1 id="账号类型区别"><a href="#账号类型区别" class="headerlink" title="账号类型区别"></a>账号类型区别</h1><p><img src="/images/wechat/differences.png" alt="differences.png"></p>
+<h1 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h1><h2 id="注册网址"><a href="#注册网址" class="headerlink" title="注册网址"></a>注册网址</h2><p><a href="https://mp.weixin.qq.com/cgi-bin/readtemplate?t=register/step1_tmpl&amp;lang=zh_CN" target="_blank" rel="noopener">https://mp.weixin.qq.com/cgi-bin/readtemplate?t=register/step1_tmpl&amp;lang=zh_CN</a></p>
+<h2 id="注册页面"><a href="#注册页面" class="headerlink" title="注册页面"></a>注册页面</h2><p><img src="/images/wechat/register.png" alt="register.png"></p>
+<h2 id="账号类型选择页面"><a href="#账号类型选择页面" class="headerlink" title="账号类型选择页面"></a>账号类型选择页面</h2><p><img src="/images/wechat/type_select.png" alt="type_select.png"></p>
+<h2 id="注册主体资料"><a href="#注册主体资料" class="headerlink" title="注册主体资料"></a>注册主体资料</h2><p><img src="/images/wechat/type_select.png" alt="type_select.png"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 前端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 微信公众号 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-二叉树]]></title>
+      <url>/2018/03/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+      <content type="html"><![CDATA[<p>二叉树是每个节点最多有两个子树的树结构。通常子树被称作“左子树”（left subtree）和“右子树”（right subtree）<br><a id="more"></a></p>
+<h1 id="二叉树的性质-特性"><a href="#二叉树的性质-特性" class="headerlink" title="二叉树的性质(特性)"></a>二叉树的性质(特性)</h1><p>性质1: 在二叉树的第i层上至多有2^(i-1)个结点（i&gt;0）<br>性质2: 深度为k的二叉树至多有2^k - 1个结点（k&gt;0）<br>性质3: 对于任意一棵二叉树，如果其叶结点数为N0，而度数为2的结点总数为N2，则N0=N2+1;<br>性质4:具有n个结点的完全二叉树的深度必为 log2(n+1)<br>性质5:对完全二叉树，若从上至下、从左至右编号，则编号为i 的结点，其左孩子编号必为2i，其右孩子编号必为2i＋1；其双亲的编号必为i/2（i＝1 时为根,除外）</p>
+<h2 id="完全二叉树"><a href="#完全二叉树" class="headerlink" title="完全二叉树"></a>完全二叉树</h2><p>若设二叉树的高度为h，除第 h 层外，其它各层 (1～h-1) 的结点数都达到最大个数，第h层有叶子结点，并且叶子结点都是从左到右依次排布，这就是完全二叉树。<br><img src="/images/algorithm/完全二叉树.png" alt="完全二叉树.png"></p>
+<h2 id="满二叉树"><a href="#满二叉树" class="headerlink" title="满二叉树"></a>满二叉树</h2><p>除了叶结点外每一个结点都有左右子叶且叶子结点都处在最底层的二叉树。<br><img src="/images/algorithm/满二叉树.png" alt="满二叉树.png"></p>
+<h1 id="二叉树的节点表示以及树的创建"><a href="#二叉树的节点表示以及树的创建" class="headerlink" title="二叉树的节点表示以及树的创建"></a>二叉树的节点表示以及树的创建</h1><p>通过使用Node类中定义三个属性，分别为elem本身的值，还有lchild左孩子和rchild右孩子<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""节点类"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, elem=<span class="number">-1</span>, lchild=None, rchild=None)</span>:</span></div><div class="line">        self.elem = elem</div><div class="line">        self.lchild = lchild</div><div class="line">        self.rchild = rchild</div></pre></td></tr></table></figure></p>
+<p>树的创建,创建一个树的类，并给一个root根节点，一开始为空，随后添加节点<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tree</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""树类"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, root=None)</span>:</span></div><div class="line">        self.root = root</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self, elem)</span>:</span></div><div class="line">        <span class="string">"""为树添加节点"""</span></div><div class="line">        node = Node(elem)</div><div class="line">        <span class="comment">#如果树是空的，则对根节点赋值</span></div><div class="line">        <span class="keyword">if</span> self.root == <span class="keyword">None</span>:</div><div class="line">            self.root = node</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            queue = []</div><div class="line">            queue.append(self.root)</div><div class="line">            <span class="comment">#对已有的节点进行层次遍历</span></div><div class="line">            <span class="keyword">while</span> queue:</div><div class="line">                <span class="comment">#弹出队列的第一个元素</span></div><div class="line">                cur = queue.pop(<span class="number">0</span>)</div><div class="line">                <span class="keyword">if</span> cur.lchild == <span class="keyword">None</span>:</div><div class="line">                    cur.lchild = node</div><div class="line">                    <span class="keyword">return</span></div><div class="line">                <span class="keyword">elif</span> cur.rchild == <span class="keyword">None</span>:</div><div class="line">                    cur.rchild = node</div><div class="line">                    <span class="keyword">return</span></div><div class="line">                <span class="keyword">else</span>:</div><div class="line">                    <span class="comment">#如果左右子树都不为空，加入队列继续判断</span></div><div class="line">                    queue.append(cur.lchild)</div><div class="line">                    queue.append(cur.rchild)</div></pre></td></tr></table></figure></p>
+<h1 id="二叉树的遍历"><a href="#二叉树的遍历" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h1><p>树的遍历是树的一种重要的运算。所谓遍历是指对树中所有结点的信息的访问，即依次对树中每个结点访问一次且仅访问一次，我们把这种对所有节点的访问称为遍历（traversal）。那么树的两种重要的遍历模式是深度优先遍历和广度优先遍历,深度优先一般用递归，广度优先一般用队列。一般情况下能用递归实现的算法大部分也能用堆栈来实现。</p>
+<h2 id="深度优先遍历"><a href="#深度优先遍历" class="headerlink" title="深度优先遍历"></a>深度优先遍历</h2><p>对于一颗二叉树，深度优先搜索(Depth First Search)是沿着树的深度遍历树的节点，尽可能深的搜索树的分支。<br>那么深度遍历有重要的三种方法。这三种方式常被用于访问树的节点，它们之间的不同在于访问每个节点的次序不同。这三种遍历分别叫做先序遍历（preorder），中序遍历（inorder）和后序遍历（postorder）。我们来给出它们的详细定义，然后举例看看它们的应用。</p>
+<ul>
+<li><p>先序遍历 在先序遍历中，我们先访问根节点，然后递归使用先序遍历访问左子树，再递归使用先序遍历访问右子树<br>  根节点-&gt;左子树-&gt;右子树</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">preorder</span><span class="params">(self, root)</span>:</span></div><div class="line">      <span class="string">"""递归实现先序遍历"""</span></div><div class="line">      <span class="keyword">if</span> root == <span class="keyword">None</span>:</div><div class="line">          <span class="keyword">return</span></div><div class="line">      <span class="keyword">print</span> root.elem</div><div class="line">      self.preorder(root.lchild)</div><div class="line">      self.preorder(root.rchild)</div></pre></td></tr></table></figure>
+</li>
+<li><p>中序遍历 在中序遍历中，我们递归使用中序遍历访问左子树，然后访问根节点，最后再递归使用中序遍历访问右子树<br>  左子树-&gt;根节点-&gt;右子树</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">inorder</span><span class="params">(self, root)</span>:</span></div><div class="line">      <span class="string">"""递归实现中序遍历"""</span></div><div class="line">      <span class="keyword">if</span> root == <span class="keyword">None</span>:</div><div class="line">          <span class="keyword">return</span></div><div class="line">      self.inorder(root.lchild)</div><div class="line">      <span class="keyword">print</span> root.elem</div><div class="line">      self.inorder(root.rchild)</div></pre></td></tr></table></figure>
+</li>
+<li><p>后序遍历 在后序遍历中，我们先递归使用后序遍历访问左子树和右子树，最后访问根节点<br>  左子树-&gt;右子树-&gt;根节点</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">postorder</span><span class="params">(self, root)</span>:</span></div><div class="line">      <span class="string">"""递归实现后续遍历"""</span></div><div class="line">      <span class="keyword">if</span> root == <span class="keyword">None</span>:</div><div class="line">          <span class="keyword">return</span></div><div class="line">      self.postorder(root.lchild)</div><div class="line">      self.postorder(root.rchild)</div><div class="line">      <span class="keyword">print</span> root.elem</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="/images/algorithm/三种遍历结果.jpg" alt="三种遍历结果.jpg"></p>
+<h2 id="广度优先遍历-层次遍历"><a href="#广度优先遍历-层次遍历" class="headerlink" title="广度优先遍历(层次遍历)"></a>广度优先遍历(层次遍历)</h2><p>从树的root开始，从上到下从从左到右遍历整个树的节点<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">breadth_travel</span><span class="params">(self, root)</span>:</span></div><div class="line">        <span class="string">"""利用队列实现树的层次遍历"""</span></div><div class="line">        <span class="keyword">if</span> root == <span class="keyword">None</span>:</div><div class="line">            <span class="keyword">return</span></div><div class="line">        queue = []</div><div class="line">        queue.append(root)</div><div class="line">        <span class="keyword">while</span> queue:</div><div class="line">            node = queue.pop(<span class="number">0</span>)</div><div class="line">            <span class="keyword">print</span> node.elem,</div><div class="line">            <span class="keyword">if</span> node.lchild != <span class="keyword">None</span>:</div><div class="line">                queue.append(node.lchild)</div><div class="line">            <span class="keyword">if</span> node.rchild != <span class="keyword">None</span>:</div><div class="line">                queue.append(node.rchild)</div></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-树与树算法]]></title>
+      <url>/2018/03/08/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%A0%91%E4%B8%8E%E6%A0%91%E7%AE%97%E6%B3%95/</url>
+      <content type="html"><![CDATA[<p>树（英语：tree）是一种抽象数据类型（ADT）或是实作这种抽象数据类型的数据结构，用来模拟具有树状结构性质的数据集合。它是由n（n&gt;=1）个有限节点组成一个具有层次关系的集合。把它叫做“树”是因为它看起来像一棵倒挂的树，也就是说它是根朝上，而叶朝下的。它具有以下的特点：<br><a id="more"></a></p>
+<ul>
+<li>每个节点有零个或多个子节点；</li>
+<li>没有父节点的节点称为根节点；</li>
+<li>每一个非根节点有且只有一个父节点；</li>
+<li>除了根节点外，每个子节点可以分为多个不相交的子树；<br>比如说：<br><img src="/images/algorithm/tree.png" alt="tree.png"><br><img src="/images/algorithm/Treedatastructure.png" alt="Treedatastructure.png"></li>
+</ul>
+<h1 id="树的术语"><a href="#树的术语" class="headerlink" title="树的术语"></a>树的术语</h1><ul>
+<li>节点的度：一个节点含有的子树的个数称为该节点的度；</li>
+<li>树的度：一棵树中，最大的节点的度称为树的度；</li>
+<li>叶节点或终端节点：度为零的节点；</li>
+<li>父亲节点或父节点：若一个节点含有子节点，则这个节点称为其子节点的父节点；</li>
+<li>孩子节点或子节点：一个节点含有的子树的根节点称为该节点的子节点；</li>
+<li>兄弟节点：具有相同父节点的节点互称为兄弟节点；</li>
+<li>节点的层次：从根开始定义起，根为第1层，根的子节点为第2层，以此类推；</li>
+<li>树的高度或深度：树中节点的最大层次；</li>
+<li>堂兄弟节点：父节点在同一层的节点互为堂兄弟；</li>
+<li>节点的祖先：从根到该节点所经分支上的所有节点；</li>
+<li>子孙：以某节点为根的子树中任一节点都称为该节点的子孙。</li>
+<li>森林：由m（m&gt;=0）棵互不相交的树的集合称为森林；</li>
+</ul>
+<h1 id="树的种类"><a href="#树的种类" class="headerlink" title="树的种类"></a>树的种类</h1><ul>
+<li>无序树：树中任意节点的子节点之间没有顺序关系，这种树称为无序树，也称为自由树；</li>
+<li>有序树：树中任意节点的子节点之间有顺序关系，这种树称为有序树；<ul>
+<li>二叉树：每个节点最多含有两个子树的树称为二叉树；</li>
+<li>完全二叉树：对于一颗二叉树，假设其深度为d(d&gt;1)。除了第d层外，其它各层的节点数目均已达最大值，且第d层所有节点从左向右连续地紧密排列，这样的二叉树被称为完全二叉树，其中满二叉树的定义是所有叶节点都在最底层的完全二叉树;</li>
+<li>平衡二叉树（AVL树）：当且仅当任何节点的两棵子树的高度差不大于1的二叉树；</li>
+<li>排序二叉树（二叉查找树（英语：Binary Search Tree），也称二叉搜索树、有序二叉树）；</li>
+<li>霍夫曼树（用于信息编码）：带权路径最短的二叉树称为哈夫曼树或最优二叉树；</li>
+<li>B树：一种对读写操作进行优化的自平衡的二叉查找树，能够保持数据有序，拥有多余两个子树。</li>
+</ul>
+</li>
+</ul>
+<h1 id="树的存储与表示"><a href="#树的存储与表示" class="headerlink" title="树的存储与表示"></a>树的存储与表示</h1><p>顺序存储：将数据结构存储在固定的数组中，然在遍历速度上有一定的优势，但因所占空间比较大，是非主流二叉树。二叉树通常以链式存储。<br><img src="/images/algorithm/树的顺序存储.png" alt="树的顺序存储.png"><br>链式存储：<br><img src="/images/algorithm/树的链式存储.png" alt="树的链式存储.png"><br>由于对节点的个数无法掌握，常见树的存储表示都转换成二叉树进行处理，子节点个数最多为2</p>
+<h1 id="常见的一些树的应用场景"><a href="#常见的一些树的应用场景" class="headerlink" title="常见的一些树的应用场景"></a>常见的一些树的应用场景</h1><ol>
+<li>xml，html等，那么编写这些东西的解析器的时候，不可避免用到树</li>
+<li>路由协议就是使用了树的算法</li>
+<li>mysql数据库索引</li>
+<li>文件系统的目录结构</li>
+<li>所以很多经典的AI算法其实都是树搜索，此外机器学习中的decision tree也是树结构<br><img src="/images/algorithm/网页结构.jpg" alt="网页结构.jpg"></li>
+</ol>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[nginx-反向代理和负载均衡]]></title>
+      <url>/2018/03/03/nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</url>
+      <content type="html"><![CDATA[<p>正向代理，也就是传说中的代理,他的工作原理就像一个跳板，简单的说，我是一个用户，我访问不了某网站，但是我能访问一个代理服务器，这个代理服务器呢，他能访问那个我不能访问的网站，于是我先连上代理服务器，告诉他我需要那个无法访问网站的内容，代理服务器去取回来，然后返回给我。 从网站的角度，只在代理服务器来取内容的时候有一次记录，有时候并不知道是用户的请求，也隐藏了用户的资料，这取决于代理告不告诉网站。结论就是，正向代理 是一个位于客户端和原始服务器(origin server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服务器)，然后代理向原始服务器转交请求并将获得的内容返回给客户端。客户端必须要进行一些特别的设置才能使用正向代理。</p>
+<p>反向代理（Reverse Proxy）方式是指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。<br><a id="more"></a><br>从用途上来讲：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">正向代理的典型用途是为在防火墙内的局域网客户端提供访问Internet的途径。</div><div class="line">正向代理还可以使用缓冲特性减少网络使用率。反向代理的典型用途是将防火墙后面的服务器提供给Internet用户访问。</div><div class="line">反向代理还可以为后端的多台服务器提供负载平衡，或为后端较慢的服务器提供缓冲服务。</div><div class="line">另外，反向代理还可以启用高级URL策略和管理技术，从而使处于不同web服务器系统的web页面同时存在于同一个URL空间下。</div></pre></td></tr></table></figure></p>
+<h1 id="反向代理服务器的基本配置"><a href="#反向代理服务器的基本配置" class="headerlink" title="反向代理服务器的基本配置"></a>反向代理服务器的基本配置</h1><h2 id="proxy-pass"><a href="#proxy-pass" class="headerlink" title="proxy_pass"></a>proxy_pass</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">proxy_pass URL;</div><div class="line">  配置块 location if</div><div class="line">  此配置将当前请求代理到URL参数指定的服务器上,URL可以是主机名或者IP地址加PORT的形式</div><div class="line">  proxy_pass http://localhost:8000;</div><div class="line">  也可以结合负载均衡实用&lt;负载均衡会说明这种情况&gt;</div><div class="line">  也可以吧HTTP转换成HTTPS</div><div class="line">  proxy_pass http://192.168.0.1;</div><div class="line">  默认情况反向代理不转发请求中的Host头部,如果需呀设置抓发头部</div><div class="line">      则 proxy_set_header Host $host;</div></pre></td></tr></table></figure>
+<h2 id="proxy-hide-header"><a href="#proxy-hide-header" class="headerlink" title="proxy_hide_header"></a>proxy_hide_header</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">proxy_hide_header header1;</div><div class="line">配置块 http server location;</div><div class="line">Nginx会将上游服务器的响应转发给客户端,但默认不转发HTTP头部字段(Date Server X-Pad X-Accel-* )</div><div class="line">使用proxy_hide_header可以指定任意头部不能被转发</div><div class="line">proxy_hide_header Cache-Control;</div><div class="line">proxy_hide_header MicrosoftOfficeWebServer;</div></pre></td></tr></table></figure>
+<h2 id="proxy-pass-header"><a href="#proxy-pass-header" class="headerlink" title="proxy_pass_header"></a>proxy_pass_header</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">proxy_pass_header header1;</div><div class="line">配置块 http server location</div><div class="line">功能与 proxy_hide_header相反,是设置哪些头部允许转发.</div><div class="line">proxy_pass_header X-Accel-Redirect;</div></pre></td></tr></table></figure>
+<h2 id="proxy-pass-request-body"><a href="#proxy-pass-request-body" class="headerlink" title="proxy_pass_request_body"></a>proxy_pass_request_body</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">proxy_pass_request_body off|on;</div><div class="line">默认 on</div><div class="line">配置块 http server location;</div><div class="line">确定上游服务器是否向上游服务器转发HTTP包体</div></pre></td></tr></table></figure>
+<h2 id="proxy-pass-request-header"><a href="#proxy-pass-request-header" class="headerlink" title="proxy_pass_request_header"></a>proxy_pass_request_header</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">proxy_pass_request_header on | off;</div><div class="line">默认on</div><div class="line">配置块 http server location</div><div class="line">确定是否转发HTTP头部</div></pre></td></tr></table></figure>
+<h2 id="proxy-redirect"><a href="#proxy-redirect" class="headerlink" title="proxy_redirect"></a>proxy_redirect</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">proxy_redirect [default | off |redirect |replacement]</div><div class="line">    默认default</div><div class="line">    配置块 http server location</div><div class="line">    当上游服务响应时重定向或刷新(HTTP 301 302),proxy_redirect可以重设HTTP头部的location或refresh字段</div><div class="line"></div><div class="line">    proxy_redirect http://locahost:8000/two/ http://frontend/one/;</div><div class="line">    上游响应302,location是URI是http://locahost:8000/two/some/uri/</div><div class="line">    那是实际转发给客户端的是 http://frontend/one/some/uri/;</div><div class="line">    可以使用前面提到的ngx_http_core_module模块提供的变量 </div><div class="line">    proxy_redirect http://locahost:8000/two/ http://$host:server_port/;</div><div class="line">    可以省略replacement参数的主机名部分,这时候用虚拟主机名填充</div><div class="line">    proxy_redirect http://locahost:8000/two/ /one/;</div><div class="line"></div><div class="line">    使用off参数的时候,将使location和refresh的字段维持不变</div><div class="line">    proxy_redirect off;</div><div class="line"></div><div class="line">    如果使用的 proxy_redirect default;</div><div class="line">    下面两种配置是等效的</div><div class="line">        location /&#123;</div><div class="line">            proxy_pass http://upstream:port/two/;</div><div class="line">            proxy_redirect default;</div><div class="line">        &#125;</div><div class="line">        location /&#123;</div><div class="line">            proxy_pass http://upstream:port/two/;</div><div class="line">            proxy_redirect http://upstream:port/two/ /one/;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<h1 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h1><p>负载均衡是由多台服务器以对称的方式组成一个服务器集合，每台服务器都具有等价的地位，都可以单独对外提供服务而无须其他服务器的辅助。通过某种负载分担技术，将外部发送来的请求按照事先设定分配算法分配到对称结构中的某一台服务器上，而接收到请求的服务器独立地回应客户的请求。</p>
+<p>均衡负载能够平均分配客户请求到服务器列阵，籍此提供快速获取重要数据，解决大量并发访问服务问题。</p>
+<h2 id="upstream块"><a href="#upstream块" class="headerlink" title="upstream块"></a>upstream块</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">upstream name &#123;...&#125;</div><div class="line">配置块 http</div><div class="line">upstream块定义一个上游服务器的集群,便于反向代理中的proxy_pass使用</div><div class="line"></div><div class="line">upstream mynet&#123;</div><div class="line">    server www.wopai1.com;</div><div class="line">    server www.wopai2.com;</div><div class="line">    server www.wopai3.com;</div><div class="line">&#125;</div><div class="line">server &#123;</div><div class="line">    location /&#123;</div><div class="line">        proxy_pass http://mynet;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="server"><a href="#server" class="headerlink" title="server"></a>server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">server name [paramenters]</div><div class="line">配置块upstream</div><div class="line">server配置项指定了一台上游服务器的名字,可以是域名 IP地址端口 UNIX句柄</div><div class="line">weight= number;设置向这台服务器转发的权重,默认为1</div><div class="line">max_fails=number;该选项域fail_timeout配合使用</div><div class="line">        指在fail_timeout时间段内如果转发上游失败超过number次就认为当前的fail_timeout时间内</div><div class="line">        这台服务器不可用,max_fails默认为1 如果设置为0 表示不检查失败次数</div><div class="line">fail_timeout=time; fail_timeout表示该时间内转发多少次失败后就认为上游不可用.默认10s</div><div class="line">down    表示上游服务器永久下线,只能在ip_hash配置时才有效</div><div class="line">backup  在ip_hash配置时无效.只有所有非备份机都失败,才向上游备份服务器转发请求.</div><div class="line">upstream mynet&#123;</div><div class="line">    server www.wopai1.com weight=5;</div><div class="line">    server www.wopai2.com:8081 max_fails=3 fail_timeout=300s;</div><div class="line">    server www.wopai2.com down;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="ip-hash"><a href="#ip-hash" class="headerlink" title="ip_hash"></a>ip_hash</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">配置块 upstream</div><div class="line">希望来自某一个用户的请求始终落在固定的一台服务器上进行处理.</div><div class="line">根据客户端的IP散列计算出一个key,将key按照upstream集群中的上游服务器进行取模,求得的值对应的主机接收转发请求.</div><div class="line">ip_hash不可以与weight同时使用</div><div class="line">如果upstream配置中有一台服务器暂时不可用,不能直接删除该配置,而应该使用down标识.</div><div class="line">upstream mynet&#123;</div><div class="line">    ip_hash;</div><div class="line">    server www.wowpai1.top;</div><div class="line">    server www.wowpai2.top;  </div><div class="line">    server www.wowpai3.top down;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>例子,服务器负载均衡基本配置,nginx中可以进行负载均衡的相关设置:    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">upstream my.net&#123;    #my.net是自定义的命名 在server结构中引用即可</div><div class="line"></div><div class="line">        #代理服务器为 两台机器192.168.22.136 192.168.22.147做负载均衡操作 </div><div class="line">        #两台机器上 可以跑apache负载功能更为强大的网页相关任务</div><div class="line"></div><div class="line">        #max_fails 表示尝试出错最大次数 即可认为该服务器 在fail_timeout时间内不可用</div><div class="line">        # server servername:port   servername可以写主机名 或者点分式IP</div><div class="line">        server 192.168.22.136:80 max_fails=1 fail_timeout=300s;</div><div class="line">        server 192.168.22.147:80 max_fails=1 fail_timeout=300s;  </div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">        server &#123;</div><div class="line">        listen       80;</div><div class="line">        server_name  localhost; </div><div class="line">        location / &#123;</div><div class="line">            #upstream 块名</div><div class="line">            proxy_pass http://my.net;</div><div class="line">            root   html;</div><div class="line">            index  index.html index.htm;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> 备份 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 备份 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[nginx]]></title>
+      <url>/2018/02/09/nginx/</url>
+      <content type="html"><![CDATA[<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>1.下载必要组件<br><a id="more"></a></p>
+<ul>
+<li><p>nginx下载地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://nginx.org/en/download.html</div></pre></td></tr></table></figure>
+</li>
+<li><p>pcre库下载地址，nginx需要</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://sourceforge.net/projects/pcre/files/pcre/</div></pre></td></tr></table></figure>
+</li>
+<li><p>zlib下载地址，nginx需要</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://www.zlib.net/</div></pre></td></tr></table></figure>
+</li>
+<li><p>openssl下载地址，nginx需要</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https://github.com/openssl/openssl</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>2.在同级目录下,解压安装zlib、openssl、pcre</p>
+<p>3.进入nginx目录，进行配置安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">./configure \</div><div class="line"> --prefix=/usr/local/nginx \</div><div class="line"> --with-http_ssl_module \</div><div class="line"> --with-http_flv_module \</div><div class="line"> --with-http_stub_status_module \</div><div class="line"> --with-http_gzip_static_module \</div><div class="line"> --with-pcre=../pcre-8.39 \</div><div class="line"> --with-zlib=../zlib-1.2.8 \ </div><div class="line"> --with-openssl=../openssl-master</div></pre></td></tr></table></figure></p>
+<p> 下面可直接复制粘贴<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-http_flv_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre=../pcre-8.39 --with-zlib=../zlib-1.2.8 --with-openssl=../openssl-master</div></pre></td></tr></table></figure></p>
+<p>4.编译安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ make &amp;&amp; sudo make install</div></pre></td></tr></table></figure></p>
+<p>Nginx会被安装在/usr/local/nginx目录下（也可以使用参数–prefix=指定自己需要的位置）， 安装成功后 /usr/local/nginx 目录下有四个子目录分别是：conf、html、logs、sbin 。 其中 Nginx 的配置文件存放于 conf/nginx.conf， bin文件是位于 sbin 目录下的 nginx 文件。 确保系统的 80 端口没被其他程序占用，运行 sbin/nginx 命令来启动 Nginx，</p>
+<p>5.启动nginx<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$sudo /usr/local/nginx/sbin/nginx</div><div class="line">    #netstat -ano|grep 80</div><div class="line">        tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      关闭 (0.00/0/0)</div><div class="line">        unix  17     [ ]         数据报                10801    /dev/log</div></pre></td></tr></table></figure></p>
+<p>6.打开浏览器访问此机器的 IP，如果浏览器出现 Welcome to nginx! 则表示 Nginx 已经安装并运行成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># 检查配置文件是否正确</div><div class="line"># /usr/local/sbin/nginx -t </div><div class="line"># 可以看到编译选项</div><div class="line"># /usr/local/sbin/nginx -V</div><div class="line">#重启Nginx</div><div class="line">#sudo /usr/local/sbin/nginx -s reload</div><div class="line">#关闭Nginx</div><div class="line">#sudo /usr/local/sbin/nginx -s stop</div><div class="line">#优雅停止服务</div><div class="line">#sudo /usr/local/sbin/nginx -s quit</div><div class="line">#kill -s SIGQUIT pid_master</div><div class="line">#kill -s SIGWINCH pid_master</div></pre></td></tr></table></figure></p>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>nginx.conf配置文件,基本就分为以下几块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">main</div><div class="line">events   &#123;</div><div class="line">  ....</div><div class="line">&#125;</div><div class="line">http        &#123;</div><div class="line">  ....</div><div class="line">  upstream myproject &#123;</div><div class="line">    .....</div><div class="line">  &#125;</div><div class="line">  server  &#123;</div><div class="line">    ....</div><div class="line">    location &#123;</div><div class="line">        ....</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  server  &#123;</div><div class="line">    ....</div><div class="line">    location &#123;</div><div class="line">        ....</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  ....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>nginx配置文件主要分为六个区域：</p>
+<ul>
+<li>main(全局设置)</li>
+<li>events(nginx工作模式)</li>
+<li>http(http设置)</li>
+<li>sever(主机设置)</li>
+<li>location(URL匹配)</li>
+<li>upstream(负载均衡服务器设置)</li>
+</ul>
+<h2 id="main模块"><a href="#main模块" class="headerlink" title="main模块"></a>main模块</h2><p>下面时一个main区域，他是一个全局的设置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">user nobody nobody;</div><div class="line">worker_processes 2;</div><div class="line">error_log  /usr/local/var/log/nginx/error.log  notice;</div><div class="line">pid        /usr/local/var/run/nginx/nginx.pid;</div><div class="line">worker_rlimit_nofile 1024;</div></pre></td></tr></table></figure></p>
+<p>user 来指定Nginx Worker进程运行用户以及用户组，默认由nobody账号运行。</p>
+<p>worker_processes来指定了Nginx要开启的子进程数。每个Nginx进程平均耗费10M~12M内存。根据经验，一般指定1个进程就足够了，如果是多核CPU，建议指定和CPU的数量一样的进程数即可。我这里写2，那么就会开启2个子进程，总共3个进程。</p>
+<p>error_log用来定义全局错误日志文件。日志输出级别有debug、info、notice、warn、error、crit可供选择，其中，debug输出日志最为最详细，而crit输出日志最少。</p>
+<p>pid用来指定进程id的存储文件位置。</p>
+<p>worker_rlimit_nofile用于指定一个nginx进程可以打开的最多文件描述符数目，这里是65535，需要使用命令“ulimit -n 65535”来设置。</p>
+<h2 id="events-模块"><a href="#events-模块" class="headerlink" title="events 模块"></a>events 模块</h2><p>events模块来用指定nginx的工作模式和工作模式及连接数上限，一般是这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">events &#123;</div><div class="line">    use epoll; #Linux平台</div><div class="line">    worker_connections  1024;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>use用来指定Nginx的工作模式。Nginx支持的工作模式有select、poll、kqueue、epoll、rtsig和/dev/poll。其中select和poll都是标准的工作模式，kqueue和epoll是高效的工作模式，不同的是epoll用在Linux平台上，而kqueue用在BSD系统中,对于Linux系统，epoll工作模式是首选。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">worker_connections用于定义Nginx每个进程的最大连接数，即接收前端的最大请求数，默认是1024。最大客户端连接数由worker_processes和worker_connections决定，即Max_clients=worker_processes*worker_connections，在作为反向代理时，Max_clients变为：Max_clients = worker_processes * worker_connections/4。 进程的最大连接数受Linux系统进程的最大打开文件数限制，在执行操作系统命令“ulimit -n 65536”后worker_connections的设置才能生效。</div></pre></td></tr></table></figure></p>
+<h2 id="http-模块"><a href="#http-模块" class="headerlink" title="http 模块"></a>http 模块</h2><p>http模块可以说是最核心的模块了，它负责HTTP服务器相关属性的配置，它里面的server和upstream子模块，至关重要<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">http&#123;</div><div class="line">    include       mime.types;</div><div class="line">    default_type  application/octet-stream;</div><div class="line">    log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</div><div class="line">                      &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</div><div class="line">                      &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</div><div class="line">    access_log  /usr/local/var/log/nginx/access.log  main;</div><div class="line">    sendfile        on;</div><div class="line">    tcp_nopush      on;</div><div class="line">    tcp_nodelay     on;</div><div class="line">    keepalive_timeout  10;</div><div class="line">    #gzip  on;</div><div class="line">    upstream myproject &#123;</div><div class="line">        .....</div><div class="line">    &#125;</div><div class="line">    server &#123;</div><div class="line">        ....</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>下面详细介绍下这段代码中每个配置选项的含义。</p>
+<p>include 来用设定文件的mime类型,类型在配置文件目录下的mime.type文件定义，来告诉nginx来识别文件类型。</p>
+<p>default_type设定了默认的类型为二进制流，也就是当文件类型未定义时使用这种方式，例如在没有配置asp 的locate 环境时，Nginx是不予解析的，此时，用浏览器访问asp文件就会出现下载了。</p>
+<p>log_format用于设置日志的格式，和记录哪些参数，这里设置为main，刚好用于access_log来纪录这种类型。</p>
+<p>access_log</p>
+<p>用来纪录每次的访问日志的文件地址，后面的main是日志的格式样式，对应于log_format的main。</p>
+<p>sendfile参数用于开启高效文件传输模式。将tcp_nopush和tcp_nodelay两个指令设置为on用于防止网络阻塞。</p>
+<p>keepalive_timeout设置客户端连接保持活动的超时时间。在超过这个时间之后，服务器会关闭该连接。</p>
+<h2 id="server-模块"><a href="#server-模块" class="headerlink" title="server 模块"></a>server 模块</h2><p>sever 模块是http的子模块，它用来定一个虚拟主机<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">        listen       8080;</div><div class="line">        server_name  localhost 192.168.12.10 www.yangyi.com;</div><div class="line">        # 全局定义，如果都是这一个目录，这样定义最简单。</div><div class="line">        root   /Users/yangyi/www;</div><div class="line">        index  index.php index.html index.htm; </div><div class="line">        charset utf-8;</div><div class="line">        access_log  usr/local/var/log/host.access.log  main;</div><div class="line">        aerror_log  usr/local/var/log/host.error.log  error;</div><div class="line">        ....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>server标志定义虚拟主机开始。</p>
+<p>listen用于指定虚拟主机的服务端口。</p>
+<p>server_name用来指定IP地址或者域名，多个域名之间用空格分开。</p>
+<p>root 表示在这整个server虚拟主机内，全部的root web根目录。注意要和locate {}下面定义的区分开来。</p>
+<p>index 全局定义访问的默认首页地址。注意要和locate {}下面定义的区分开来。</p>
+<p>charset用于设置网页的默认编码格式。</p>
+<p>access_log用来指定此虚拟主机的访问日志存放路径，最后的main用于指定访问日志的输出格式。</p>
+<h2 id="location-模块"><a href="#location-模块" class="headerlink" title="location 模块"></a>location 模块</h2><p>location模块是nginx中用的最多的，也是最重要的模块了，什么负载均衡啊、反向代理啊、虚拟域名啊都与它相关。慢慢来讲：</p>
+<p>location 根据它字面意思就知道是来定位的，定位URL，解析URL，所以，它也提供了强大的正则匹配功能，也支持条件判断匹配，用户可以通过location指令实现Nginx对动、静态网页进行过滤处理。像我们的php环境搭建就是用到了它。</p>
+<p>我们先来看这个，设定默认首页和虚拟机目录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">location / &#123;</div><div class="line">            root   /Users/yangyi/www;</div><div class="line">            index  index.php index.html index.htm;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>location /表示匹配访问根目录。</p>
+<p>root指令用于指定访问根目录时，虚拟主机的web目录，这个目录可以是相对路径（相对路径是相对于nginx的安装目录）。也可以是绝对路径。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">#反向代理配置</div><div class="line"> location /itcast/ &#123;</div><div class="line">            proxy_pass http://127.0.0.1:12345;</div><div class="line">            proxy_set_header X-real-ip $remote_addr;</div><div class="line">            proxy_set_header Host $http_host;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line"> #采用uwsgi方式</div><div class="line"> location /python/ &#123;</div><div class="line">            include uwsgi_params;</div><div class="line">            uwsgi_pass 127.0.0.1:33333;</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">   #访问nginx本机目录的文件</div><div class="line">   location / &#123;</div><div class="line">           root   /home/itcast/xwp/itcast/;</div><div class="line">           index  index.html index.htm;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">   location  /static/ &#123;</div><div class="line">            alias /var/static/;</div><div class="line">       &#125;</div></pre></td></tr></table></figure></p>
+<h2 id="upstram-模块"><a href="#upstram-模块" class="headerlink" title="upstram 模块"></a>upstram 模块</h2><p>upstream 模块负债负载均衡模块，通过一个简单的调度算法来实现客户端IP到后端服务器的负载均衡<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">upstream test.com&#123;</div><div class="line">    ip_hash;</div><div class="line">    server 192.168.123.1:80;</div><div class="line">    server 192.168.123.2:80 down;</div><div class="line">    server 192.168.123.3:8080  max_fails=3  fail_timeout=20s;</div><div class="line">    server 192.168.123.4:8080;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>里面是ip_hash这是其中的一种负载均衡调度算法。</p>
+<p>Nginx的负载均衡模块目前支持4种调度算法:</p>
+<ul>
+<li>weight 轮询（默认）。每个请求按时间顺序逐一分配到不同的后端服务器，如果后端某台服务器宕机，故障系统被自动剔除，使用户访问不受影响。weight。指定轮询权值，weight值越大，分配到的访问机率越高，主要用于后端每个服务器性能不均的情况下。</li>
+<li>ip_hash。每个请求按访问IP的hash结果分配，这样来自同一个IP的访客固定访问一个后端服务器，有效解决了动态网页存在的session共享问题。</li>
+<li>fair。比上面两个更加智能的负载均衡算法。此种算法可以依据页面大小和加载时间长短智能地进行负载均衡，也就是根据后端服务器的响应时间来分配请求，响应时间短的优先分配。Nginx本身是不支持fair的，如果需要使用这种调度算法，必须下载Nginx的upstream_fair模块。</li>
+<li>url_hash。按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，可以进一步提高后端缓存服务器的效率。Nginx本身是不支持url_hash的，如果需要使用这种调度算法，必须安装Nginx 的hash软件包。</li>
+</ul>
+<p>在HTTP Upstream模块中，可以通过server指令指定后端服务器的IP地址和端口，同时还可以设定每个后端服务器在负载均衡调度中的状态。常用的状态有：</p>
+<ul>
+<li><p>down，表示当前的server暂时不参与负载均衡。</p>
+</li>
+<li><p>backup，预留的备份机器。当其他所有的非backup机器出现故障或者忙的时候，才会请求backup机器，因此这台机器的压力最轻。</p>
+</li>
+<li><p>max_fails，允许请求失败的次数，默认为1。当超过最大次数时，返回proxy_next_upstream 模块定义的错误。</p>
+</li>
+<li><p>fail_timeout，在经历了max_fails次失败后，暂停服务的时间。max_fails可以和fail_timeout一起使用。</p>
+</li>
+</ul>
+<p>注意 当负载调度算法为ip_hash时，后端服务器在负载均衡调度中的状态不能是weight和backup。</p>
+<p>备注： nginx的worker_rlimit_nofile达到上限时，再有客户端链接报502错误. 用了log_format指令设置了日志格式之后，需要用access_log指令指定日志文件的存放路径.</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 备份 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 备份 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Soket基本概念]]></title>
-      <url>/2017/12/21/socket/</url>
+      <url>/2018/02/05/socket/</url>
       <content type="html"><![CDATA[<p>在计算机科学中，网络套接字（英语：Network socket），又译网络套接字、网络接口、网络插槽，是电脑网络中进程间数据流的端点。使用以网际协议（Internet Protocol）为通信基础的网络套接字，称为网际套接字（Internet socket）。因为网际协议的流行，现代绝大多数的网络套接字，都是属于网际套接字。</p>
 <p>socket是一种操作系统提供的进程间通信机制。<br><a id="more"></a></p>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>在操作系统中，通常会为应用程序提供一组应用程序接口（API），称为套接字接口（英语：socket API）。应用程序可以通过套接字接口，来使用网络套接字，以进行数据交换。最早的套接字接口来自于4.2 BSD，因此现代常见的套接字接口大多源自Berkeley套接字（Berkeley sockets）标准。</p>
@@ -26,6 +454,701 @@
         <tags>
             
             <tag> HTTP </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-队列]]></title>
+      <url>/2018/01/19/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%98%9F%E5%88%97/</url>
+      <content type="html"><![CDATA[<p>队列（queue）是只允许在一端进行插入操作，而在另一端进行删除操作的线性表。</p>
+<p>队列是一种先进先出的（First In First Out）的线性表，简称FIFO。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作！假设队列是q=（a1，a2，……，an），那么a1就是队头元素，而an是队尾元素。这样我们就可以删除时，总是从a1开始，而插入时，总是在队列最后。这也比较符合我们通常生活中的习惯，排在第一个的优先出列，最后来的当然排在队伍最后。</p>
+<p><img src="/images/algorithm/队列模型.png" alt="队列模型"><br><a id="more"></a></p>
+<h1 id="队列的实现"><a href="#队列的实现" class="headerlink" title="队列的实现"></a>队列的实现</h1><p>同栈一样，队列也可以用顺序表或者链表实现。</p>
+<h1 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h1><ul>
+<li>Queue() 创建一个空的队列</li>
+<li>enqueue(item) 往队列中添加一个item元素</li>
+<li>dequeue() 从队列头部删除一个元素</li>
+<li>is_empty() 判断一个队列是否为空</li>
+<li>size() 返回队列的大小<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Queue</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""队列"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self.items = []</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> self.items == []</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">enqueue</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""进队列"""</span></div><div class="line">        self.items.insert(<span class="number">0</span>,item)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dequeue</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""出队列"""</span></div><div class="line">        <span class="keyword">return</span> self.items.pop()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""返回大小"""</span></div><div class="line">        <span class="keyword">return</span> len(self.items)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    q = Queue()</div><div class="line">    q.enqueue(<span class="string">"hello"</span>)</div><div class="line">    q.enqueue(<span class="string">"world"</span>)</div><div class="line">    q.enqueue(<span class="string">"itcast"</span>)</div><div class="line">    <span class="keyword">print</span> q.size()</div><div class="line">    <span class="keyword">print</span> q.dequeue()</div><div class="line">    <span class="keyword">print</span> q.dequeue()</div><div class="line">    <span class="keyword">print</span> q.dequeue()</div></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-栈]]></title>
+      <url>/2018/01/16/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%A0%88/</url>
+      <content type="html"><![CDATA[<p>栈（stack），有些地方称为堆栈，是一种容器，可存入数据元素、访问元素、删除元素，它的特点在于只能允许在容器的一端（称为栈顶端指标，英语：top）进行加入数据（英语：push）和输出数据（英语：pop）的运算。没有了位置概念，保证任何时候可以访问、删除的元素都是此前最后存入的那个元素，确定了一种默认的访问顺序。</p>
+<p>由于栈数据结构只允许在一端进行操作，因而按照后进先出（LIFO, Last In First Out）的原理运作。<br><a id="more"></a><br><img src="/images/algorithm/栈.png" alt="栈"></p>
+<h1 id="栈结构实现"><a href="#栈结构实现" class="headerlink" title="栈结构实现"></a>栈结构实现</h1><p>栈可以用顺序表实现，也可以用链表实现。</p>
+<h1 id="栈的操作"><a href="#栈的操作" class="headerlink" title="栈的操作"></a>栈的操作</h1><ul>
+<li>Stack() 创建一个新的空栈</li>
+<li>push(item) 添加一个新的元素item到栈顶</li>
+<li>pop() 弹出栈顶元素</li>
+<li>peek() 返回栈顶元素</li>
+<li>is_empty() 判断栈是否为空</li>
+<li>size() 返回栈的元素个数</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Stack</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""栈"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">         self.items = []</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""判断是否为空"""</span></div><div class="line">        <span class="keyword">return</span> self.items == []</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">push</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""加入元素"""</span></div><div class="line">        self.items.append(item)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pop</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""弹出元素"""</span></div><div class="line">        <span class="keyword">return</span> self.items.pop()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">peek</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""返回栈顶元素"""</span></div><div class="line">        <span class="keyword">return</span> self.items[len(self.items)<span class="number">-1</span>]</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""返回栈的大小"""</span></div><div class="line">        <span class="keyword">return</span> len(self.items)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    stack = Stack()</div><div class="line">    stack.push(<span class="string">"hello"</span>)</div><div class="line">    stack.push(<span class="string">"world"</span>)</div><div class="line">    stack.push(<span class="string">"itcast"</span>)</div><div class="line">    <span class="keyword">print</span> stack.size()</div><div class="line">    <span class="keyword">print</span> stack.peek()</div><div class="line">    <span class="keyword">print</span> stack.pop()</div><div class="line">    <span class="keyword">print</span> stack.pop()</div><div class="line">    <span class="keyword">print</span> stack.pop()</div></pre></td></tr></table></figure>
+<p>执行过程如下：<br><img src="/images/algorithm/stack演示.gif" alt="stack演示"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-排序算法比较与搜索]]></title>
+      <url>/2018/01/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%AF%94%E8%BE%83%E4%B8%8E%E6%90%9C%E7%B4%A2/</url>
+      <content type="html"><![CDATA[<p><img src="/images/algorithm/排序比较.jpg" alt="排序比较.jpg"><br><a id="more"></a></p>
+<h1 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h1><p>搜索是在一个项目集合中找到一个特定项目的算法过程。搜索通常的答案是真的或假的，因为该项目是否存在。 搜索的几种常见方法：顺序查找、二分法查找、二叉树查找、哈希查找</p>
+<h1 id="二分法查找"><a href="#二分法查找" class="headerlink" title="二分法查找"></a>二分法查找</h1><p>二分查找又称折半查找，优点是比较次数少，查找速度快，平均性能好；其缺点是要求待查表为有序表，且插入删除困难。因此，折半查找方法适用于不经常变动而查找频繁的有序列表。首先，假设表中元素是按升序排列，将表中间位置记录的关键字与查找关键字比较，如果两者相等，则查找成功；否则利用中间位置记录将表分成前、后两个子表，如果中间位置记录的关键字大于查找关键字，则进一步查找前一子表，否则进一步查找后一子表。重复以上过程，直到找到满足条件的记录，使查找成功，或直到子表不存在为止，此时查找不成功。<br><img src="/images/algorithm/Binary_search_into_array.png" alt="Binary_search_into_array.png"></p>
+<h1 id="二分法查找实现"><a href="#二分法查找实现" class="headerlink" title="二分法查找实现"></a>二分法查找实现</h1><h2 id="非递归实现"><a href="#非递归实现" class="headerlink" title="非递归实现"></a>非递归实现</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span><span class="params">(alist, item)</span>:</span></div><div class="line">      first = <span class="number">0</span></div><div class="line">      last = len(alist)<span class="number">-1</span></div><div class="line">      <span class="keyword">while</span> first&lt;=last:</div><div class="line">          midpoint = (first + last)/<span class="number">2</span></div><div class="line">          <span class="keyword">if</span> alist[midpoint] == item:</div><div class="line">              <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">          <span class="keyword">elif</span> item &lt; alist[midpoint]:</div><div class="line">              last = midpoint<span class="number">-1</span></div><div class="line">          <span class="keyword">else</span>:</div><div class="line">              first = midpoint+<span class="number">1</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">testlist = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">32</span>, <span class="number">42</span>,]</div><div class="line">print(binary_search(testlist, <span class="number">3</span>))</div><div class="line">print(binary_search(testlist, <span class="number">13</span>))</div></pre></td></tr></table></figure>
+<h2 id="递归实现"><a href="#递归实现" class="headerlink" title="递归实现"></a>递归实现</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span><span class="params">(alist, item)</span>:</span></div><div class="line">    <span class="keyword">if</span> len(alist) == <span class="number">0</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        midpoint = len(alist)//<span class="number">2</span></div><div class="line">        <span class="keyword">if</span> alist[midpoint]==item:</div><div class="line">          <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">          <span class="keyword">if</span> item&lt;alist[midpoint]:</div><div class="line">            <span class="keyword">return</span> binary_search(alist[:midpoint],item)</div><div class="line">          <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">return</span> binary_search(alist[midpoint+<span class="number">1</span>:],item)</div><div class="line"></div><div class="line">testlist = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">13</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">32</span>, <span class="number">42</span>,]</div><div class="line">print(binary_search(testlist, <span class="number">3</span>))</div><div class="line">print(binary_search(testlist, <span class="number">13</span>))</div></pre></td></tr></table></figure>
+<h1 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h1><ul>
+<li>最优时间复杂度：O(1)</li>
+<li>最坏时间复杂度：O(logn)</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-归并排序]]></title>
+      <url>/2018/01/04/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/</url>
+      <content type="html"><![CDATA[<p>归并排序是采用分治法的一个非常典型的应用。归并排序的思想就是先递归分解数组，再合并数组。</p>
+<p>将数组分解最小之后，然后合并两个有序数组，基本思路是比较两个数组的最前面的数，谁小就先取谁，取了后相应的指针就往后移一位。然后再比较，直至一个数组为空，最后把另一个数组的剩余部分复制过来即可。<br><a id="more"></a></p>
+<h1 id="归并排序的分析"><a href="#归并排序的分析" class="headerlink" title="归并排序的分析"></a>归并排序的分析</h1><p><img src="/images/algorithm/Merge-sort-example.gif" alt="Merge-sort-example.gif"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_sort</span><span class="params">(alist)</span>:</span></div><div class="line">    <span class="keyword">if</span> len(alist) &lt;= <span class="number">1</span>:</div><div class="line">        <span class="keyword">return</span> alist</div><div class="line">    <span class="comment"># 二分分解</span></div><div class="line">    num = len(alist)/<span class="number">2</span></div><div class="line">    left = merge_sort(alist[:num])</div><div class="line">    right = merge_sort(alist[num:])</div><div class="line">    <span class="comment"># 合并</span></div><div class="line">    <span class="keyword">return</span> merge(left,right)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(left, right)</span>:</span></div><div class="line">    <span class="string">'''合并操作，将两个有序数组left[]和right[]合并成一个大的有序数组'''</span></div><div class="line">    <span class="comment">#left与right的下标指针</span></div><div class="line">    l, r = <span class="number">0</span>, <span class="number">0</span></div><div class="line">    result = []</div><div class="line">    <span class="keyword">while</span> l&lt;len(left) <span class="keyword">and</span> r&lt;len(right):</div><div class="line">        <span class="keyword">if</span> left[l] &lt; right[r]:</div><div class="line">            result.append(left[l])</div><div class="line">            l += <span class="number">1</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            result.append(right[r])</div><div class="line">            r += <span class="number">1</span></div><div class="line">    result += left[l:]</div><div class="line">    result += right[r:]</div><div class="line">    <span class="keyword">return</span> result</div><div class="line"></div><div class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</div><div class="line">sorted_alist = mergeSort(alist)</div><div class="line">print(sorted_alist)</div></pre></td></tr></table></figure></p>
+<h1 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h1><ul>
+<li>最优时间复杂度：O(nlogn)</li>
+<li>最坏时间复杂度：O(nlogn)</li>
+<li>稳定性：稳定</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-希尔排序]]></title>
+      <url>/2018/01/04/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F/</url>
+      <content type="html"><![CDATA[<p>希尔排序(Shell Sort)是插入排序的一种。也称缩小增量排序，是直接插入排序算法的一种更高效的改进版本。希尔排序是非稳定排序算法。该方法因DL．Shell于1959年提出而得名。 希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。<br><a id="more"></a></p>
+<h1 id="希尔排序过程"><a href="#希尔排序过程" class="headerlink" title="希尔排序过程"></a>希尔排序过程</h1><p>希尔排序的基本思想是：将数组列在一个表中并对列分别进行插入排序，重复这过程，不过每次用更长的列（步长更长了，列数更少了）来进行。最后整个表就只有一列了。将数组转换至表是为了更好地理解这算法，算法本身还是使用数组进行排序。</p>
+<p>例如，假设有这样一组数[ 13 14 94 33 82 25 59 94 65 23 45 27 73 25 39 10 ]，如果我们以步长为5开始进行排序，我们可以通过将这列表放在有5列的表中来更好地描述算法，这样他们就应该看起来是这样(竖着的元素是步长组成)：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">13</span> <span class="number">14</span> <span class="number">94</span> <span class="number">33</span> <span class="number">82</span></div><div class="line"><span class="number">25</span> <span class="number">59</span> <span class="number">94</span> <span class="number">65</span> <span class="number">23</span></div><div class="line"><span class="number">45</span> <span class="number">27</span> <span class="number">73</span> <span class="number">25</span> <span class="number">39</span></div><div class="line"><span class="number">10</span></div></pre></td></tr></table></figure></p>
+<p>然后我们对每列进行排序：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="number">10</span> <span class="number">14</span> <span class="number">73</span> <span class="number">25</span> <span class="number">23</span></div><div class="line"><span class="number">13</span> <span class="number">27</span> <span class="number">94</span> <span class="number">33</span> <span class="number">39</span></div><div class="line"><span class="number">25</span> <span class="number">59</span> <span class="number">94</span> <span class="number">65</span> <span class="number">82</span></div><div class="line"><span class="number">45</span></div></pre></td></tr></table></figure></p>
+<p>将上述四行数字，依序接在一起时我们得到：[ 10 14 73 25 23 13 27 94 33 39 25 59 94 65 82 45 ]。这时10已经移至正确位置了，然后再以3为步长进行排序：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="number">10</span> <span class="number">14</span> <span class="number">73</span></div><div class="line"><span class="number">25</span> <span class="number">23</span> <span class="number">13</span></div><div class="line"><span class="number">27</span> <span class="number">94</span> <span class="number">33</span></div><div class="line"><span class="number">39</span> <span class="number">25</span> <span class="number">59</span></div><div class="line"><span class="number">94</span> <span class="number">65</span> <span class="number">82</span></div><div class="line"><span class="number">45</span></div></pre></td></tr></table></figure>
+<p>排序之后变为：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="number">10</span> <span class="number">14</span> <span class="number">13</span></div><div class="line"><span class="number">25</span> <span class="number">23</span> <span class="number">33</span></div><div class="line"><span class="number">27</span> <span class="number">25</span> <span class="number">59</span></div><div class="line"><span class="number">39</span> <span class="number">65</span> <span class="number">73</span></div><div class="line"><span class="number">45</span> <span class="number">94</span> <span class="number">82</span></div><div class="line"><span class="number">94</span></div></pre></td></tr></table></figure></p>
+<p>最后以1步长进行排序（此时就是简单的插入排序了）</p>
+<h1 id="希尔排序的分析"><a href="#希尔排序的分析" class="headerlink" title="希尔排序的分析"></a>希尔排序的分析</h1><p><img src="/images/algorithm/shellsort.png" alt="shellsort.png"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">shell_sort</span><span class="params">(alist)</span>:</span></div><div class="line">    n = len(alist)</div><div class="line">    <span class="comment"># 初始步长</span></div><div class="line">    gap = n / <span class="number">2</span></div><div class="line">    <span class="keyword">while</span> gap &gt; <span class="number">0</span>:</div><div class="line">        <span class="comment"># 按步长进行插入排序</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(gap, n):</div><div class="line">            j = i</div><div class="line">            <span class="comment"># 插入排序</span></div><div class="line">            <span class="keyword">while</span> j&gt;=gap <span class="keyword">and</span> alist[j-gap] &gt; alist[j]:</div><div class="line">                alist[j-gap], alist[j] = alist[j], alist[j-gap]</div><div class="line">                j -= gap</div><div class="line">        <span class="comment"># 得到新的步长</span></div><div class="line">        gap = gap / <span class="number">2</span></div><div class="line"></div><div class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</div><div class="line">shell_sort(alist)</div><div class="line">print(alist)</div></pre></td></tr></table></figure></p>
+<h1 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h1><ul>
+<li>最优时间复杂度：根据步长序列的不同而不同</li>
+<li>最坏时间复杂度：O(n2)</li>
+<li>稳定想：不稳定</li>
+</ul>
+<h1 id="希尔排序演示"><a href="#希尔排序演示" class="headerlink" title="希尔排序演示"></a>希尔排序演示</h1><p><img src="/images/algorithm/shellsort.gif" alt="shellsort.gif"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-快速排序]]></title>
+      <url>/2017/12/24/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</url>
+      <content type="html"><![CDATA[<p>快速排序（英语：Quicksort），又称划分交换排序（partition-exchange sort），通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。<br><a id="more"></a><br>步骤为：</p>
+<ul>
+<li>从数列中挑出一个元素，称为”基准”（pivot），</li>
+<li>重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区结束之后，该基准就处于数列的中间位置。这个称为分区（partition）操作。</li>
+<li>递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序。</li>
+</ul>
+<p>递归的最底部情形，是数列的大小是零或一，也就是永远都已经被排序好了。虽然一直递归下去，但是这个算法总会结束，因为在每次的迭代（iteration）中，它至少会把一个元素摆到它最后的位置去。</p>
+<h1 id="快速排序的分析"><a href="#快速排序的分析" class="headerlink" title="快速排序的分析"></a>快速排序的分析</h1><p><img src="/images/algorithm/快速排序.jpg" alt="快速排序.jpg"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">quick_sort</span><span class="params">(alist, start, end)</span>:</span></div><div class="line">    <span class="string">"""快速排序"""</span></div><div class="line"></div><div class="line">    <span class="comment"># 递归的退出条件</span></div><div class="line">    <span class="keyword">if</span> start &gt;= end:</div><div class="line">        <span class="keyword">return</span></div><div class="line"></div><div class="line">    <span class="comment"># 设定起始元素为要寻找位置的基准元素</span></div><div class="line">    mid = alist[start]</div><div class="line"></div><div class="line">    <span class="comment"># low为序列左边的由左向右移动的游标</span></div><div class="line">    low = start</div><div class="line"></div><div class="line">    <span class="comment"># high为序列右边的由右向左移动的游标</span></div><div class="line">    high = end</div><div class="line"></div><div class="line">    <span class="keyword">while</span> low &lt; high:</div><div class="line">        <span class="comment"># 如果low与high未重合，high指向的元素不比基准元素小，则high向左移动</span></div><div class="line">        <span class="keyword">while</span> low &lt; high <span class="keyword">and</span> alist[high] &gt;= mid:</div><div class="line">            high -= <span class="number">1</span></div><div class="line">        <span class="comment"># 将high指向的元素放到low的位置上</span></div><div class="line">        alist[low] = alist[high]</div><div class="line"></div><div class="line">        <span class="comment"># 如果low与high未重合，low指向的元素比基准元素小，则low向右移动</span></div><div class="line">        <span class="keyword">while</span> low &lt; high <span class="keyword">and</span> alist[low] &lt; mid:</div><div class="line">            low += <span class="number">1</span></div><div class="line">        <span class="comment"># 将low指向的元素放到high的位置上</span></div><div class="line">        alist[high] = alist[low]</div><div class="line"></div><div class="line">    <span class="comment"># 退出循环后，low与high重合，此时所指位置为基准元素的正确位置</span></div><div class="line">    <span class="comment"># 将基准元素放到该位置</span></div><div class="line">    alist[low] = mid</div><div class="line"></div><div class="line">    <span class="comment"># 对基准元素左边的子序列进行快速排序</span></div><div class="line">    quick_sort(alist, start, low<span class="number">-1</span>)</div><div class="line"></div><div class="line">    <span class="comment"># 对基准元素右边的子序列进行快速排序</span></div><div class="line">    quick_sort(alist, low+<span class="number">1</span>, end)</div><div class="line"></div><div class="line"></div><div class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</div><div class="line">quick_sort(alist,<span class="number">0</span>,len(alist)<span class="number">-1</span>)</div><div class="line">print(alist)</div></pre></td></tr></table></figure></p>
+<h1 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h1><ul>
+<li>最优时间复杂度：O(nlogn)</li>
+<li>最坏时间复杂度：O(n2)</li>
+<li>稳定性：不稳定</li>
+</ul>
+<p>从一开始快速排序平均需要花费O(n log n)时间的描述并不明显。但是不难观察到的是分区运算，数组的元素都会在每次循环中走访过一次，使用O(n)的时间。在使用结合（concatenation）的版本中，这项运算也是O(n)。</p>
+<p>在最好的情况，每次我们运行一次分区，我们会把一个数列分为两个几近相等的片段。这个意思就是每次递归调用处理一半大小的数列。因此，在到达大小为一的数列前，我们只要作log n次嵌套的调用。这个意思就是调用树的深度是O(log n)。但是在同一层次结构的两个程序调用中，不会处理到原来数列的相同部分；因此，程序调用的每一层次结构总共全部仅需要O(n)的时间（每个调用有某些共同的额外耗费，但是因为在每一层次结构仅仅只有O(n)个调用，这些被归纳在O(n)系数中）。结果是这个算法仅需使用O(n log n)时间。</p>
+<h1 id="快速排序演示"><a href="#快速排序演示" class="headerlink" title="快速排序演示"></a>快速排序演示</h1><p><img src="/images/algorithm/quicksort.gif" alt="quicksort.gif"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-插入排序]]></title>
+      <url>/2017/12/15/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/</url>
+      <content type="html"><![CDATA[<p>插入排序（英语：Insertion Sort）是一种简单直观的排序算法。它的工作原理是通过构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。插入排序在实现上，在从后向前扫描过程中，需要反复把已排序元素逐步向后挪位，为最新元素提供插入空间。<br><a id="more"></a></p>
+<h1 id="插入排序分析"><a href="#插入排序分析" class="headerlink" title="插入排序分析"></a>插入排序分析</h1><p><img src="/images/algorithm/insert.png" alt="insert.png"><br><img src="/images/algorithm/Insertion-sort-example.gif" alt="Insertion-sort-example.gif"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert_sort</span><span class="params">(alist)</span>:</span></div><div class="line">    <span class="comment"># 从第二个位置，即下标为1的元素开始向前插入</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(alist)):</div><div class="line">        <span class="comment"># 从第i个元素开始向前比较，如果小于前一个元素，交换位置</span></div><div class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(i, <span class="number">0</span>, <span class="number">-1</span>):</div><div class="line">            <span class="keyword">if</span> alist[j] &lt; alist[j<span class="number">-1</span>]:</div><div class="line">                alist[j], alist[j<span class="number">-1</span>] = alist[j<span class="number">-1</span>], alist[j]</div><div class="line"></div><div class="line">alist = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</div><div class="line">insert_sort(alist)</div><div class="line">print(alist)</div></pre></td></tr></table></figure></p>
+<h1 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h1><ul>
+<li>最优时间复杂度：O(n) （升序排列，序列已经处于升序状态）</li>
+<li>最坏时间复杂度：O(n2)</li>
+<li>稳定性：稳定</li>
+</ul>
+<h1 id="插入排序演示"><a href="#插入排序演示" class="headerlink" title="插入排序演示"></a>插入排序演示</h1><p><img src="/images/algorithm/insert.gif" alt="insert.gif"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-冒泡排序]]></title>
+      <url>/2017/12/10/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/</url>
+      <content type="html"><![CDATA[<p>排序算法（英语：Sorting algorithm）是一种能将一串数据依照特定顺序进行排列的一种算法。<br><a id="more"></a></p>
+<h1 id="排序算法的稳定性"><a href="#排序算法的稳定性" class="headerlink" title="排序算法的稳定性"></a>排序算法的稳定性</h1><p>稳定性：稳定排序算法会让原本有相等键值的纪录维持相对次序。也就是如果一个排序算法是稳定的，当有两个相等键值的纪录R和S，且在原本的列表中R出现在S之前，在排序过的列表中R也将会是在S之前。</p>
+<p>当相等的元素是无法分辨的，比如像是整数，稳定性并不是一个问题。然而，假设以下的数对将要以他们的第一个数字来排序。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">(<span class="number">4</span>, <span class="number">1</span>)  (<span class="number">3</span>, <span class="number">1</span>)  (<span class="number">3</span>, <span class="number">7</span>)（<span class="number">5</span>, <span class="number">6</span>）</div></pre></td></tr></table></figure></p>
+<p>在这个状况下，有可能产生两种不同的结果，一个是让相等键值的纪录维持相对的次序，而另外一个则没有：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(<span class="number">3</span>, <span class="number">1</span>)  (<span class="number">3</span>, <span class="number">7</span>)  (<span class="number">4</span>, <span class="number">1</span>)  (<span class="number">5</span>, <span class="number">6</span>)  （维持次序）</div><div class="line">(<span class="number">3</span>, <span class="number">7</span>)  (<span class="number">3</span>, <span class="number">1</span>)  (<span class="number">4</span>, <span class="number">1</span>)  (<span class="number">5</span>, <span class="number">6</span>)  （次序被改变）</div></pre></td></tr></table></figure></p>
+<p>不稳定排序算法可能会在相等的键值中改变纪录的相对次序，但是稳定排序算法从来不会如此。不稳定排序算法可以被特别地实现为稳定。作这件事情的一个方式是人工扩充键值的比较，如此在其他方面相同键值的两个对象间之比较，（比如上面的比较中加入第二个标准：第二个键值的大小）就会被决定使用在原先数据次序中的条目，当作一个同分决赛。然而，要记住这种次序通常牵涉到额外的空间负担。</p>
+<h1 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h1><p>冒泡排序（英语：Bubble Sort）是一种简单的排序算法。它重复地遍历要排序的数列，一次比较两个元素，如果他们的顺序错误就把他们交换过来。遍历数列的工作是重复地进行直到没有再需要交换，也就是说该数列已经排序完成。这个算法的名字由来是因为越小的元素会经由交换慢慢“浮”到数列的顶端。</p>
+<p>冒泡排序算法的运作如下：</p>
+<ul>
+<li>比较相邻的元素。如果第一个比第二个大（升序），就交换他们两个。</li>
+<li>对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数。</li>
+<li>针对所有的元素重复以上的步骤，除了最后一个。</li>
+<li>持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。</li>
+</ul>
+<h2 id="冒泡排序的分析"><a href="#冒泡排序的分析" class="headerlink" title="冒泡排序的分析"></a>冒泡排序的分析</h2><p>交换过程图示(第一次)：<br><img src="/images/algorithm/bubblesort.jpg" alt="bubblesort"><br>那么我们需要进行n-1次冒泡过程，每次对应的比较次数如下图所示：<br><img src="/images/algorithm/compare.bmp" alt="compare"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">bubble_sort</span><span class="params">(alist)</span>:</span></div><div class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(len(alist)<span class="number">-1</span>,<span class="number">0</span>,<span class="number">-1</span>):</div><div class="line">        <span class="comment"># j表示每次遍历需要比较的次数，是逐渐减小的</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(j):</div><div class="line">            <span class="keyword">if</span> alist[i] &gt; alist[i+<span class="number">1</span>]:</div><div class="line">                alist[i], alist[i+<span class="number">1</span>] = alist[i+<span class="number">1</span>], alist[i]</div><div class="line"></div><div class="line">li = [<span class="number">54</span>,<span class="number">26</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</div><div class="line">bubble_sort(li)</div><div class="line">print(li)</div></pre></td></tr></table></figure></p>
+<h2 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h2><ul>
+<li>最优时间复杂度：O(n) （表示遍历一次发现没有任何可以交换的元素，排序结束。）</li>
+<li>最坏时间复杂度：O(n2)</li>
+<li>稳定性：稳定</li>
+</ul>
+<h2 id="冒泡排序的演示"><a href="#冒泡排序的演示" class="headerlink" title="冒泡排序的演示"></a>冒泡排序的演示</h2><p><img src="/images/algorithm/bubble.gif" alt="bubble.gif"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-选择排序]]></title>
+      <url>/2017/12/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/</url>
+      <content type="html"><![CDATA[<p>选择排序（Selection sort）是一种简单直观的排序算法。它的工作原理如下。首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置，然后，再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。以此类推，直到所有元素均排序完毕。<br><a id="more"></a><br>选择排序的主要优点与数据移动有关。如果某个元素位于正确的最终位置上，则它不会被移动。选择排序每次交换一对元素，它们当中至少有一个将被移到其最终位置上，因此对n个元素的表进行排序总共进行至多n-1次交换。在所有的完全依靠交换去移动元素的排序方法中，选择排序属于非常好的一种。</p>
+<h1 id="选择排序分析"><a href="#选择排序分析" class="headerlink" title="选择排序分析"></a>选择排序分析</h1><p>排序过程：<br><img src="/images/algorithm/selectionsort.jpg" alt="selectionsort.jpg"><br><img src="/images/algorithm/Selection-Sort-Animation.gif" alt="Selection-Sort-Animation.gif"><br>红色表示当前最小值，黄色表示已排序序列，蓝色表示当前位置。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">selection_sort</span><span class="params">(alist)</span>:</span></div><div class="line">    n = len(alist)</div><div class="line">    <span class="comment"># 需要进行n-1次选择操作</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n<span class="number">-1</span>):</div><div class="line">        <span class="comment"># 记录最小位置</span></div><div class="line">        min_index = i</div><div class="line">        <span class="comment"># 从i+1位置到末尾选择出最小数据</span></div><div class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(i+<span class="number">1</span>, n):</div><div class="line">            <span class="keyword">if</span> alist[j] &lt; alist[min_index]:</div><div class="line">                min_index = j</div><div class="line">        <span class="comment"># 如果选择出的数据不在正确位置，进行交换</span></div><div class="line">        <span class="keyword">if</span> min_index != i:</div><div class="line">            alist[i], alist[min_index] = alist[min_index], alist[i]</div><div class="line"></div><div class="line">alist = [<span class="number">54</span>,<span class="number">226</span>,<span class="number">93</span>,<span class="number">17</span>,<span class="number">77</span>,<span class="number">31</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">20</span>]</div><div class="line">selection_sort(alist)</div><div class="line">print(alist)</div></pre></td></tr></table></figure></p>
+<h1 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h1><ul>
+<li>最优时间复杂度：O(n2)</li>
+<li>最坏时间复杂度：O(n2)</li>
+<li>稳定性：不稳定（考虑升序每次选择最大的情况）</li>
+</ul>
+<h1 id="选择排序演示"><a href="#选择排序演示" class="headerlink" title="选择排序演示"></a>选择排序演示</h1><p><img src="/images/algorithm/selection.gif" alt="selection.gif"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-双端队列]]></title>
+      <url>/2017/12/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%8F%8C%E7%AB%AF%E9%98%9F%E5%88%97/</url>
+      <content type="html"><![CDATA[<p>双端队列（deque，全名double-ended queue），是一种具有队列和栈的性质的数据结构。</p>
+<p>双端队列中的元素可以从两端弹出，其限定插入和删除操作在表的两端进行。双端队列可以在队列任意一端入队和出队。<br><img src="/images/algorithm/双端队列.png" alt="双端队列"><br><a id="more"></a></p>
+<h1 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h1><ul>
+<li>Deque() 创建一个空的双端队列</li>
+<li>add_front(item) 从队头加入一个item元素</li>
+<li>add_rear(item) 从队尾加入一个item元素</li>
+<li>remove_front() 从队头删除一个item元素</li>
+<li>remove_rear() 从队尾删除一个item元素</li>
+<li>is_empty() 判断双端队列是否为空</li>
+<li>size() 返回队列的大小</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">class Deque(object):</div><div class="line">    &quot;&quot;&quot;双端队列&quot;&quot;&quot;</div><div class="line">    def __init__(self):</div><div class="line">        self.items = []</div><div class="line"></div><div class="line">    def is_empty(self):</div><div class="line">        &quot;&quot;&quot;判断队列是否为空&quot;&quot;&quot;</div><div class="line">        return self.items == []</div><div class="line"></div><div class="line">    def add_front(self, item):</div><div class="line">        &quot;&quot;&quot;在队头添加元素&quot;&quot;&quot;</div><div class="line">        self.items.insert(0,item)</div><div class="line"></div><div class="line">    def add_rear(self, item):</div><div class="line">        &quot;&quot;&quot;在队尾添加元素&quot;&quot;&quot;</div><div class="line">        self.items.append(item)</div><div class="line"></div><div class="line">    def remove_front(self):</div><div class="line">        &quot;&quot;&quot;从队头删除元素&quot;&quot;&quot;</div><div class="line">        return self.items.pop(0)</div><div class="line"></div><div class="line">    def remove_rear(self):</div><div class="line">        &quot;&quot;&quot;从队尾删除元素&quot;&quot;&quot;</div><div class="line">        return self.items.pop()</div><div class="line"></div><div class="line">    def size(self):</div><div class="line">        &quot;&quot;&quot;返回队列大小&quot;&quot;&quot;</div><div class="line">        return len(self.items)</div><div class="line"></div><div class="line"></div><div class="line">if __name__ == &quot;__main__&quot;:</div><div class="line">    deque = Deque()</div><div class="line">    deque.add_front(1)</div><div class="line">    deque.add_front(2)</div><div class="line">    deque.add_rear(3)</div><div class="line">    deque.add_rear(4)</div><div class="line">    print deque.size()</div><div class="line">    print deque.remove_front()</div><div class="line">    print deque.remove_front()</div><div class="line">    print deque.remove_rear()</div><div class="line">    print deque.remove_rear()</div></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-单向循环链表]]></title>
+      <url>/2017/11/19/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%8D%95%E5%90%91%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8/</url>
+      <content type="html"><![CDATA[<p>单链表的一个变形是单向循环链表，链表中最后一个节点的next域不再为None，而是指向链表的头节点。<br><img src="/images/algorithm/单向循环链表.png" alt="单向循环链表"><br><a id="more"></a></p>
+<h1 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h1><ul>
+<li>is_empty() 判断链表是否为空</li>
+<li>length() 返回链表的长度</li>
+<li>travel() 遍历</li>
+<li>add(item) 在头部添加一个节点</li>
+<li>append(item) 在尾部添加一个节点</li>
+<li>insert(pos, item) 在指定位置pos添加节点</li>
+<li>remove(item) 删除一个节点</li>
+<li>search(item) 查找节点是否存在</li>
+</ul>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""节点"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, item)</span>:</span></div><div class="line">        self.item = item</div><div class="line">        self.next = <span class="keyword">None</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SinCycLinkedlist</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""单向循环链表"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self._head = <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""判断链表是否为空"""</span></div><div class="line">        <span class="keyword">return</span> self._head == <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">length</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""返回链表的长度"""</span></div><div class="line">        <span class="comment"># 如果链表为空，返回长度0</span></div><div class="line">        <span class="keyword">if</span> self.is_empty():</div><div class="line">            <span class="keyword">return</span> <span class="number">0</span></div><div class="line">        count = <span class="number">1</span></div><div class="line">        cur = self._head</div><div class="line">        <span class="keyword">while</span> cur.next != self._head:</div><div class="line">            count += <span class="number">1</span></div><div class="line">            cur = cur.next</div><div class="line">        <span class="keyword">return</span> count</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">travel</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""遍历链表"""</span></div><div class="line">        <span class="keyword">if</span> self.is_empty():</div><div class="line">            <span class="keyword">return</span></div><div class="line">        cur = self._head</div><div class="line">        <span class="keyword">print</span> cur.item,</div><div class="line">        <span class="keyword">while</span> cur.next != self._head:</div><div class="line">            cur = cur.next</div><div class="line">            <span class="keyword">print</span> cur.item,</div><div class="line">        <span class="keyword">print</span> <span class="string">""</span></div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""头部添加节点"""</span></div><div class="line">        node = Node(item)</div><div class="line">        <span class="keyword">if</span> self.is_empty():</div><div class="line">            self._head = node</div><div class="line">            node.next = self._head</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="comment">#添加的节点指向_head</span></div><div class="line">            node.next = self._head</div><div class="line">            <span class="comment"># 移到链表尾部，将尾部节点的next指向node</span></div><div class="line">            cur = self._head</div><div class="line">            <span class="keyword">while</span> cur.next != self._head:</div><div class="line">                cur = cur.next</div><div class="line">            cur.next = node</div><div class="line">            <span class="comment">#_head指向添加node的</span></div><div class="line">            self._head = node</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">append</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""尾部添加节点"""</span></div><div class="line">        node = Node(item)</div><div class="line">        <span class="keyword">if</span> self.is_empty():</div><div class="line">            self._head = node</div><div class="line">            node.next = self._head</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="comment"># 移到链表尾部</span></div><div class="line">            cur = self._head</div><div class="line">            <span class="keyword">while</span> cur.next != self._head:</div><div class="line">                cur = cur.next</div><div class="line">            <span class="comment"># 将尾节点指向node</span></div><div class="line">            cur.next = node</div><div class="line">            <span class="comment"># 将node指向头节点_head</span></div><div class="line">            node.next = self._head</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, pos, item)</span>:</span></div><div class="line">        <span class="string">"""在指定位置添加节点"""</span></div><div class="line">        <span class="keyword">if</span> pos &lt;= <span class="number">0</span>:</div><div class="line">            self.add(item)</div><div class="line">        <span class="keyword">elif</span> pos &gt; (self.length()<span class="number">-1</span>):</div><div class="line">            self.append(item)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            node = Node(item)</div><div class="line">            cur = self._head</div><div class="line">            count = <span class="number">0</span></div><div class="line">            <span class="comment"># 移动到指定位置的前一个位置</span></div><div class="line">            <span class="keyword">while</span> count &lt; (pos<span class="number">-1</span>):</div><div class="line">                count += <span class="number">1</span></div><div class="line">                cur = cur.next</div><div class="line">            node.next = cur.next</div><div class="line">            cur.next = node</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""删除一个节点"""</span></div><div class="line">        <span class="comment"># 若链表为空，则直接返回</span></div><div class="line">        <span class="keyword">if</span> self.is_empty():</div><div class="line">            <span class="keyword">return</span></div><div class="line">        <span class="comment"># 将cur指向头节点</span></div><div class="line">        cur = self._head</div><div class="line">        pre = <span class="keyword">None</span></div><div class="line">        <span class="comment"># 若头节点的元素就是要查找的元素item</span></div><div class="line">        <span class="keyword">if</span> cur.item == item:</div><div class="line">            <span class="comment"># 如果链表不止一个节点</span></div><div class="line">            <span class="keyword">if</span> cur.next != self._head:</div><div class="line">                <span class="comment"># 先找到尾节点，将尾节点的next指向第二个节点</span></div><div class="line">                <span class="keyword">while</span> cur.next != self._head:</div><div class="line">                    cur = cur.next</div><div class="line">                <span class="comment"># cur指向了尾节点</span></div><div class="line">                cur.next = self._head.next</div><div class="line">                self._head = self._head.next</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                <span class="comment"># 链表只有一个节点</span></div><div class="line">                self._head = <span class="keyword">None</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            pre = self._head</div><div class="line">            <span class="comment"># 第一个节点不是要删除的</span></div><div class="line">            <span class="keyword">while</span> cur.next != self._head:</div><div class="line">                <span class="comment"># 找到了要删除的元素</span></div><div class="line">                <span class="keyword">if</span> cur.item == item:</div><div class="line">                    <span class="comment"># 删除</span></div><div class="line">                    pre.next = cur.next</div><div class="line">                    <span class="keyword">return</span></div><div class="line">                <span class="keyword">else</span>:</div><div class="line">                    pre = cur</div><div class="line">                    cur = cur.next</div><div class="line">            <span class="comment"># cur 指向尾节点</span></div><div class="line">            <span class="keyword">if</span> cur.item == item:</div><div class="line">                <span class="comment"># 尾部删除</span></div><div class="line">                pre.next = cur.next</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""查找节点是否存在"""</span></div><div class="line">        <span class="keyword">if</span> self.is_empty():</div><div class="line">            <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">        cur = self._head</div><div class="line">        <span class="keyword">if</span> cur.item == item:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">        <span class="keyword">while</span> cur.next != self._head:</div><div class="line">            cur = cur.next</div><div class="line">            <span class="keyword">if</span> cur.item == item:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    ll = SinCycLinkedlist()</div><div class="line">    ll.add(<span class="number">1</span>)</div><div class="line">    ll.add(<span class="number">2</span>)</div><div class="line">    ll.append(<span class="number">3</span>)</div><div class="line">    ll.insert(<span class="number">2</span>, <span class="number">4</span>)</div><div class="line">    ll.insert(<span class="number">4</span>, <span class="number">5</span>)</div><div class="line">    ll.insert(<span class="number">0</span>, <span class="number">6</span>)</div><div class="line">    <span class="keyword">print</span> <span class="string">"length:"</span>,ll.length()</div><div class="line">    ll.travel()</div><div class="line">    <span class="keyword">print</span> ll.search(<span class="number">3</span>)</div><div class="line">    <span class="keyword">print</span> ll.search(<span class="number">7</span>)</div><div class="line">    ll.remove(<span class="number">1</span>)</div><div class="line">    <span class="keyword">print</span> <span class="string">"length:"</span>,ll.length()</div><div class="line">    ll.travel()</div></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-双向链表]]></title>
+      <url>/2017/11/10/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8/</url>
+      <content type="html"><![CDATA[<p>一种更复杂的链表是“双向链表”或“双面链表”。每个节点有两个链接：一个指向前一个节点，当此节点为第一个节点时，指向空值；而另一个指向下一个节点，当此节点为最后一个节点时，指向空值。<br><img src="/images/algorithm/双向链表.png" alt="双向链表"><br><a id="more"></a></p>
+<h1 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h1><ul>
+<li>is_empty() 链表是否为空</li>
+<li>length() 链表长度</li>
+<li>travel() 遍历链表</li>
+<li>add(item) 链表头部添加</li>
+<li>append(item) 链表尾部添加</li>
+<li>insert(pos, item) 指定位置添加</li>
+<li>remove(item) 删除节点</li>
+<li>search(item) 查找节点是否存在</li>
+</ul>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""双向链表节点"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, item)</span>:</span></div><div class="line">        self.item = item</div><div class="line">        self.next = <span class="keyword">None</span></div><div class="line">        self.prev = <span class="keyword">None</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DLinkList</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""双向链表"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self._head = <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""判断链表是否为空"""</span></div><div class="line">        <span class="keyword">return</span> self._head == <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">length</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""返回链表的长度"""</span></div><div class="line">        cur = self._head</div><div class="line">        count = <span class="number">0</span></div><div class="line">        <span class="keyword">while</span> cur != <span class="keyword">None</span>:</div><div class="line">            count += <span class="number">1</span></div><div class="line">            cur = cur.next</div><div class="line">        <span class="keyword">return</span> count</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">travel</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""遍历链表"""</span></div><div class="line">        cur = self._head</div><div class="line">        <span class="keyword">while</span> cur != <span class="keyword">None</span>:</div><div class="line">            <span class="keyword">print</span> cur.item,</div><div class="line">            cur = cur.next</div><div class="line">        <span class="keyword">print</span> <span class="string">""</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""头部插入元素"""</span></div><div class="line">        node = Node(item)</div><div class="line">        <span class="keyword">if</span> self.is_empty():</div><div class="line">            <span class="comment"># 如果是空链表，将_head指向node</span></div><div class="line">            self._head = node</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="comment"># 将node的next指向_head的头节点</span></div><div class="line">            node.next = self._head</div><div class="line">            <span class="comment"># 将_head的头节点的prev指向node</span></div><div class="line">            self._head.prev = node</div><div class="line">            <span class="comment"># 将_head 指向node</span></div><div class="line">            self._head = node</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">append</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""尾部插入元素"""</span></div><div class="line">        node = Node(item)</div><div class="line">        <span class="keyword">if</span> self.is_empty():</div><div class="line">            <span class="comment"># 如果是空链表，将_head指向node</span></div><div class="line">            self._head = node</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="comment"># 移动到链表尾部</span></div><div class="line">            cur = self._head</div><div class="line">            <span class="keyword">while</span> cur.next != <span class="keyword">None</span>:</div><div class="line">                cur = cur.next</div><div class="line">            <span class="comment"># 将尾节点cur的next指向node</span></div><div class="line">            cur.next = node</div><div class="line">            <span class="comment"># 将node的prev指向cur</span></div><div class="line">            node.prev = cur</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""查找元素是否存在"""</span></div><div class="line">        cur = self._head</div><div class="line">        <span class="keyword">while</span> cur != <span class="keyword">None</span>:</div><div class="line">            <span class="keyword">if</span> cur.item == item:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">            cur = cur.next</div><div class="line">        <span class="keyword">return</span> <span class="keyword">False</span></div></pre></td></tr></table></figure>
+<h2 id="指定位置插入节点"><a href="#指定位置插入节点" class="headerlink" title="指定位置插入节点"></a>指定位置插入节点</h2><p><img src="/images/algorithm/双向链表指定位置插入元素.png" alt="双向链表指定位置插入元素"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, pos, item)</span>:</span></div><div class="line">        <span class="string">"""在指定位置添加节点"""</span></div><div class="line">        <span class="keyword">if</span> pos &lt;= <span class="number">0</span>:</div><div class="line">            self.add(item)</div><div class="line">        <span class="keyword">elif</span> pos &gt; (self.length()<span class="number">-1</span>):</div><div class="line">            self.append(item)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            node = Node(item)</div><div class="line">            cur = self._head</div><div class="line">            count = <span class="number">0</span></div><div class="line">            <span class="comment"># 移动到指定位置的前一个位置</span></div><div class="line">            <span class="keyword">while</span> count &lt; (pos<span class="number">-1</span>):</div><div class="line">                count += <span class="number">1</span></div><div class="line">                cur = cur.next</div><div class="line">            <span class="comment"># 将node的prev指向cur</span></div><div class="line">            node.prev = cur</div><div class="line">            <span class="comment"># 将node的next指向cur的下一个节点</span></div><div class="line">            node.next = cur.next</div><div class="line">            <span class="comment"># 将cur的下一个节点的prev指向node</span></div><div class="line">            cur.next.prev = node</div><div class="line">            <span class="comment"># 将cur的next指向node</span></div><div class="line">            cur.next = node</div></pre></td></tr></table></figure></p>
+<h2 id="删除元素"><a href="#删除元素" class="headerlink" title="删除元素"></a>删除元素</h2><p><img src="/images/algorithm/双向链表删除节点.png" alt="双向链表删除节点"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(self, item)</span>:</span></div><div class="line">       <span class="string">"""删除元素"""</span></div><div class="line">       <span class="keyword">if</span> self.is_empty():</div><div class="line">           <span class="keyword">return</span></div><div class="line">       <span class="keyword">else</span>:</div><div class="line">           cur = self._head</div><div class="line">           <span class="keyword">if</span> cur.item == item:</div><div class="line">               <span class="comment"># 如果首节点的元素即是要删除的元素</span></div><div class="line">               <span class="keyword">if</span> cur.next == <span class="keyword">None</span>:</div><div class="line">                   <span class="comment"># 如果链表只有这一个节点</span></div><div class="line">                   self._head = <span class="keyword">None</span></div><div class="line">               <span class="keyword">else</span>:</div><div class="line">                   <span class="comment"># 将第二个节点的prev设置为None</span></div><div class="line">                   cur.next.prev = <span class="keyword">None</span></div><div class="line">                   <span class="comment"># 将_head指向第二个节点</span></div><div class="line">                   self._head = cur.next</div><div class="line">               <span class="keyword">return</span></div><div class="line">           <span class="keyword">while</span> cur != <span class="keyword">None</span>:</div><div class="line">               <span class="keyword">if</span> cur.item == item:</div><div class="line">                   <span class="comment"># 将cur的前一个节点的next指向cur的后一个节点</span></div><div class="line">                   cur.prev.next = cur.next</div><div class="line">                   <span class="comment"># 将cur的后一个节点的prev指向cur的前一个节点</span></div><div class="line">                   cur.next.prev = cur.prev</div><div class="line">                   <span class="keyword">break</span></div><div class="line">               cur = cur.next</div></pre></td></tr></table></figure></p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    ll = DLinkList()</div><div class="line">    ll.add(<span class="number">1</span>)</div><div class="line">    ll.add(<span class="number">2</span>)</div><div class="line">    ll.append(<span class="number">3</span>)</div><div class="line">    ll.insert(<span class="number">2</span>, <span class="number">4</span>)</div><div class="line">    ll.insert(<span class="number">4</span>, <span class="number">5</span>)</div><div class="line">    ll.insert(<span class="number">0</span>, <span class="number">6</span>)</div><div class="line">    <span class="keyword">print</span> <span class="string">"length:"</span>,ll.length()</div><div class="line">    ll.travel()</div><div class="line">    <span class="keyword">print</span> ll.search(<span class="number">3</span>)</div><div class="line">    <span class="keyword">print</span> ll.search(<span class="number">4</span>)</div><div class="line">    ll.remove(<span class="number">1</span>)</div><div class="line">    <span class="keyword">print</span> <span class="string">"length:"</span>,ll.length()</div><div class="line">    ll.travel()</div></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-单向链表(二)]]></title>
+      <url>/2017/11/02/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8%E4%BA%8C/</url>
+      <content type="html"><![CDATA[<h2 id="头部添加元素"><a href="#头部添加元素" class="headerlink" title="头部添加元素"></a>头部添加元素</h2><p><img src="/images/algorithm/单链表表头插入元素.png" alt="单链表表头插入元素"><br><a id="more"></a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self, item)</span>:</span></div><div class="line">    <span class="string">"""头部添加元素"""</span></div><div class="line">    <span class="comment"># 先创建一个保存item值的节点</span></div><div class="line">    node = SingleNode(item)</div><div class="line">    <span class="comment"># 将新节点的链接域next指向头节点，即_head指向的位置</span></div><div class="line">    node.next = self._head</div><div class="line">    <span class="comment"># 将链表的头_head指向新节点</span></div><div class="line">    self._head = node</div></pre></td></tr></table></figure></p>
+<h2 id="尾部添加元素"><a href="#尾部添加元素" class="headerlink" title="尾部添加元素"></a>尾部添加元素</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">append</span><span class="params">(self, item)</span>:</span></div><div class="line">       <span class="string">"""尾部添加元素"""</span></div><div class="line">       node = SingleNode(item)</div><div class="line">       <span class="comment"># 先判断链表是否为空，若是空链表，则将_head指向新节点</span></div><div class="line">       <span class="keyword">if</span> self.is_empty():</div><div class="line">           self._head = node</div><div class="line">       <span class="comment"># 若不为空，则找到尾部，将尾节点的next指向新节点</span></div><div class="line">       <span class="keyword">else</span>:</div><div class="line">           cur = self._head</div><div class="line">           <span class="keyword">while</span> cur.next != <span class="keyword">None</span>:</div><div class="line">               cur = cur.next</div><div class="line">           cur.next = node</div></pre></td></tr></table></figure>
+<h2 id="指定位置添加元素"><a href="#指定位置添加元素" class="headerlink" title="指定位置添加元素"></a>指定位置添加元素</h2><p><img src="/images/algorithm/单链表指定位置添加元素.png" alt="单链表指定位置添加元素"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insert</span><span class="params">(self, pos, item)</span>:</span></div><div class="line">       <span class="string">"""指定位置添加元素"""</span></div><div class="line">       <span class="comment"># 若指定位置pos为第一个元素之前，则执行头部插入</span></div><div class="line">       <span class="keyword">if</span> pos &lt;= <span class="number">0</span>:</div><div class="line">           self.add(item)</div><div class="line">       <span class="comment"># 若指定位置超过链表尾部，则执行尾部插入</span></div><div class="line">       <span class="keyword">elif</span> pos &gt; (self.length()<span class="number">-1</span>):</div><div class="line">           self.append(item)</div><div class="line">       <span class="comment"># 找到指定位置</span></div><div class="line">       <span class="keyword">else</span>:</div><div class="line">           node = SingleNode(item)</div><div class="line">           count = <span class="number">0</span></div><div class="line">           <span class="comment"># pre用来指向指定位置pos的前一个位置pos-1，初始从头节点开始移动到指定位置</span></div><div class="line">           pre = self._head</div><div class="line">           <span class="keyword">while</span> count &lt; (pos<span class="number">-1</span>):</div><div class="line">               count += <span class="number">1</span></div><div class="line">               pre = pre.next</div><div class="line">           <span class="comment"># 先将新节点node的next指向插入位置的节点</span></div><div class="line">           node.next = pre.next</div><div class="line">           <span class="comment"># 将插入位置的前一个节点的next指向新节点</span></div><div class="line">           pre.next = node</div></pre></td></tr></table></figure>
+<h2 id="删除节点"><a href="#删除节点" class="headerlink" title="删除节点"></a>删除节点</h2><p><img src="/images/algorithm/单链表删除节点.png" alt="单链表删除节点"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(self,item)</span>:</span></div><div class="line">       <span class="string">"""删除节点"""</span></div><div class="line">       cur = self._head</div><div class="line">       pre = <span class="keyword">None</span></div><div class="line">       <span class="keyword">while</span> cur != <span class="keyword">None</span>:</div><div class="line">           <span class="comment"># 找到了指定元素</span></div><div class="line">           <span class="keyword">if</span> cur.item == item:</div><div class="line">               <span class="comment"># 如果第一个就是删除的节点</span></div><div class="line">               <span class="keyword">if</span> <span class="keyword">not</span> pre:</div><div class="line">                   <span class="comment"># 将头指针指向头节点的后一个节点</span></div><div class="line">                   self._head = cur.next</div><div class="line">               <span class="keyword">else</span>:</div><div class="line">                   <span class="comment"># 将删除位置前一个节点的next指向删除位置的后一个节点</span></div><div class="line">                   pre.next = cur.next</div><div class="line">               <span class="keyword">break</span></div><div class="line">           <span class="keyword">else</span>:</div><div class="line">               <span class="comment"># 继续按链表后移节点</span></div><div class="line">               pre = cur</div><div class="line">               cur = cur.next</div></pre></td></tr></table></figure>
+<h2 id="查找节点是否存在"><a href="#查找节点是否存在" class="headerlink" title="查找节点是否存在"></a>查找节点是否存在</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">search</span><span class="params">(self,item)</span>:</span></div><div class="line">       <span class="string">"""链表查找节点是否存在，并返回True或者False"""</span></div><div class="line">       cur = self._head</div><div class="line">       <span class="keyword">while</span> cur != <span class="keyword">None</span>:</div><div class="line">           <span class="keyword">if</span> cur.item == item:</div><div class="line">               <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line">           cur = cur.next</div><div class="line">       <span class="keyword">return</span> <span class="keyword">False</span></div></pre></td></tr></table></figure>
+<p>测试<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    ll = SingleLinkList()</div><div class="line">    ll.add(<span class="number">1</span>)</div><div class="line">    ll.add(<span class="number">2</span>)</div><div class="line">    ll.append(<span class="number">3</span>)</div><div class="line">    ll.insert(<span class="number">2</span>, <span class="number">4</span>)</div><div class="line">    <span class="keyword">print</span> <span class="string">"length:"</span>,ll.length()</div><div class="line">    ll.travel()</div><div class="line">    <span class="keyword">print</span> ll.search(<span class="number">3</span>)</div><div class="line">    <span class="keyword">print</span> ll.search(<span class="number">5</span>)</div><div class="line">    ll.remove(<span class="number">1</span>)</div><div class="line">    <span class="keyword">print</span> <span class="string">"length:"</span>,ll.length()</div><div class="line">    ll.travel()</div></pre></td></tr></table></figure></p>
+<h2 id="链表与顺序表的对比"><a href="#链表与顺序表的对比" class="headerlink" title="链表与顺序表的对比"></a>链表与顺序表的对比</h2><p>链表失去了顺序表随机读取的优点，同时链表由于增加了结点的指针域，空间开销比较大，但对存储空间的使用要相对灵活。<br>操作 | 链表 |     顺序表</p>
+<ul>
+<li>| :-: | -:<br>访问元素 | O(n)| O(1)<br>在头部插入/删除 | O(1) | O(n)<br>在尾部插入/删除 | O(n)| O(1)<br>在中间插入/删除 | O(n) |     O(n)</li>
+</ul>
+<p>注意虽然表面看起来复杂度都是 O(n)，但是链表和顺序表在插入和删除时进行的是完全不同的操作。链表的主要耗时操作是遍历查找，删除和插入操作本身的复杂度是O(1)。顺序表查找很快，主要耗时的操作是拷贝覆盖。因为除了目标元素在尾部的特殊情况，顺序表进行插入和删除时需要对操作点之后的所有元素进行前后移位操作，只能通过拷贝和覆盖的方法进行。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-单向链表(一)]]></title>
+      <url>/2017/11/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8/</url>
+      <content type="html"><![CDATA[<p>顺序表的构建需要预先知道数据大小来申请连续的存储空间，而在进行扩充时又需要进行数据的搬迁，所以使用起来并不是很灵活。</p>
+<p>链表结构可以充分利用计算机内存空间，实现灵活的内存动态管理。<br><a id="more"></a></p>
+<h1 id="链表的定义"><a href="#链表的定义" class="headerlink" title="链表的定义"></a>链表的定义</h1><p>链表（Linked list）是一种常见的基础数据结构，是一种线性表，但是不像顺序表一样连续存储数据，而是在每一个节点（数据存储单元）里存放下一个节点的位置信息（即地址）。</p>
+<h1 id="单向链表"><a href="#单向链表" class="headerlink" title="单向链表"></a>单向链表</h1><p>单向链表也叫单链表，是链表中最简单的一种形式，它的每个节点包含两个域，一个信息域（元素域）和一个链接域。这个链接指向链表中的下一个节点，而最后一个节点的链接域则指向一个空值。<br><img src="/images/algorithm/单链表的节点和单链表.png" alt="单链表的节点和单链表"></p>
+<ul>
+<li>表元素域elem用来存放具体的数据。</li>
+<li>链接域next用来存放下一个节点的位置（python中的标识）</li>
+<li>变量p指向链表的头节点（首节点）的位置，从p出发能找到表中的任意节点。</li>
+</ul>
+<h2 id="节点实现"><a href="#节点实现" class="headerlink" title="节点实现"></a>节点实现</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SingleNode</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""单链表的结点"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,item)</span>:</span></div><div class="line">        <span class="comment"># _item存放数据元素</span></div><div class="line">        self.item = item</div><div class="line">        <span class="comment"># _next是下一个节点的标识</span></div><div class="line">        self.next = <span class="keyword">None</span></div></pre></td></tr></table></figure>
+<h2 id="单链表的操作"><a href="#单链表的操作" class="headerlink" title="单链表的操作"></a>单链表的操作</h2><ul>
+<li>is_empty() 链表是否为空</li>
+<li>length() 链表长度</li>
+<li>travel() 遍历整个链表</li>
+<li>add(item) 链表头部添加元素</li>
+<li>append(item) 链表尾部添加元素</li>
+<li>insert(pos, item) 指定位置添加元素</li>
+<li>remove(item) 删除节点</li>
+<li>search(item) 查找节点是否存在</li>
+</ul>
+<h2 id="单链表的实现"><a href="#单链表的实现" class="headerlink" title="单链表的实现"></a>单链表的实现</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SingleLinkList</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""单链表"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self._head = <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""判断链表是否为空"""</span></div><div class="line">        <span class="keyword">return</span> self._head == <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">length</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""链表长度"""</span></div><div class="line">        <span class="comment"># cur初始时指向头节点</span></div><div class="line">        cur = self._head</div><div class="line">        count = <span class="number">0</span></div><div class="line">        <span class="comment"># 尾节点指向None，当未到达尾部时</span></div><div class="line">        <span class="keyword">while</span> cur != <span class="keyword">None</span>:</div><div class="line">            count += <span class="number">1</span></div><div class="line">            <span class="comment"># 将cur后移一个节点</span></div><div class="line">            cur = cur.next</div><div class="line">        <span class="keyword">return</span> count</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">travel</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""遍历链表"""</span></div><div class="line">        cur = self._head</div><div class="line">        <span class="keyword">while</span> cur != <span class="keyword">None</span>:</div><div class="line">            <span class="keyword">print</span> cur.item,</div><div class="line">            cur = cur.next</div><div class="line">        <span class="keyword">print</span> <span class="string">""</span></div></pre></td></tr></table></figure>]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-顺序表]]></title>
+      <url>/2017/10/19/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%A1%BA%E5%BA%8F%E8%A1%A8/</url>
+      <content type="html"><![CDATA[<p>在程序中，经常需要将一组（通常是同为某个类型的）数据元素作为整体管理和使用，需要创建这种元素组，用变量记录它们，传进传出函数等。一组数据中包含的元素个数可能发生变化（可以增加或删除元素）。<br><a id="more"></a><br>对于这种需求，最简单的解决方案便是将这样一组元素看成一个序列，用元素在序列里的位置和顺序，表示实际应用中的某种有意义的信息，或者表示数据之间的某种关系。</p>
+<p>这样的一组序列元素的组织形式，我们可以将其抽象为线性表。一个线性表是某类元素的一个集合，还记录着元素之间的一种顺序关系。线性表是最基本的数据结构之一，在实际程序中应用非常广泛，它还经常被用作更复杂的数据结构的实现基础。</p>
+<p>根据线性表的实际存储方式，分为两种实现模型：</p>
+<ul>
+<li>顺序表，将元素顺序地存放在一块连续的存储区里，元素间的顺序关系由它们的存储顺序自然表示。</li>
+<li>链表，将元素存放在通过链接构造起来的一系列存储块中。</li>
+</ul>
+<h1 id="顺序表的基本形式"><a href="#顺序表的基本形式" class="headerlink" title="顺序表的基本形式"></a>顺序表的基本形式</h1><p><img src="/images/algorithm/顺序表的两种基本形式.png" alt="顺序表的两种基本形式"></p>
+<p>图a表示的是顺序表的基本形式，数据元素本身连续存储，每个元素所占的存储单元大小固定相同，元素的下标是其逻辑地址，而元素存储的物理地址（实际内存地址）可以通过存储区的起始地址Loc (e0)加上逻辑地址（第i个元素）与存储单元大小（c）的乘积计算而得，即：</p>
+<p>Loc(ei) = Loc(e0) + c*i</p>
+<p>故，访问指定元素时无需从头遍历，通过计算便可获得对应地址，其时间复杂度为O(1)。</p>
+<p>如果元素的大小不统一，则须采用图b的元素外置的形式，将实际数据元素另行存储，而顺序表中各单元位置保存对应元素的地址信息（即链接）。由于每个链接所需的存储量相同，通过上述公式，可以计算出元素链接的存储位置，而后顺着链接找到实际存储的数据元素。注意，图b中的c不再是数据元素的大小，而是存储一个链接地址所需的存储量，这个量通常很小。</p>
+<p>图b这样的顺序表也被称为对实际数据的索引，这是最简单的索引结构。</p>
+<h1 id="顺序表的结构"><a href="#顺序表的结构" class="headerlink" title="顺序表的结构"></a>顺序表的结构</h1><p><img src="/images/algorithm/顺序表的结构.png" alt="顺序表的结构"><br>一个顺序表的完整信息包括两部分，一部分是表中的元素集合，另一部分是为实现正确操作而需记录的信息，即有关表的整体情况的信息，这部分信息主要包括元素存储区的容量和当前表中已有的元素个数两项。</p>
+<h1 id="顺序表的两种基本实现方式"><a href="#顺序表的两种基本实现方式" class="headerlink" title="顺序表的两种基本实现方式"></a>顺序表的两种基本实现方式</h1><p><img src="/images/algorithm/顺序表的实现方式.png" alt="顺序表的实现方式"><br>图a为一体式结构，存储表信息的单元与元素存储区以连续的方式安排在一块存储区里，两部分数据的整体形成一个完整的顺序表对象。</p>
+<p>一体式结构整体性强，易于管理。但是由于数据元素存储区域是表对象的一部分，顺序表创建后，元素存储区就固定了。</p>
+<p>图b为分离式结构，表对象里只保存与整个表有关的信息（即容量和元素个数），实际数据元素存放在另一个独立的元素存储区里，通过链接与基本表对象关联。</p>
+<p>#元素存储区替换<br>一体式结构由于顺序表信息区与数据区连续存储在一起，所以若想更换数据区，则只能整体搬迁，即整个顺序表对象（指存储顺序表的结构信息的区域）改变了。</p>
+<p>分离式结构若想更换数据区，只需将表信息区中的数据区链接地址更新即可，而该顺序表对象不变。</p>
+<h1 id="元素存储区扩充"><a href="#元素存储区扩充" class="headerlink" title="元素存储区扩充"></a>元素存储区扩充</h1><p>采用分离式结构的顺序表，若将数据区更换为存储空间更大的区域，则可以在不改变表对象的前提下对其数据存储区进行了扩充，所有使用这个表的地方都不必修改。只要程序的运行环境（计算机系统）还有空闲存储，这种表结构就不会因为满了而导致操作无法进行。人们把采用这种技术实现的顺序表称为动态顺序表，因为其容量可以在使用中动态变化。</p>
+<h2 id="扩充的两种策略"><a href="#扩充的两种策略" class="headerlink" title="扩充的两种策略"></a>扩充的两种策略</h2><ul>
+<li><p>每次扩充增加固定数目的存储位置，如每次扩充增加10个元素位置，这种策略可称为线性增长。<br>特点：节省空间，但是扩充操作频繁，操作次数多。</p>
+</li>
+<li><p>每次扩充容量加倍，如每次扩充增加一倍存储空间。<br>特点：减少了扩充操作的执行次数，但可能会浪费空间资源。以空间换时间，推荐的方式。</p>
+</li>
+</ul>
+<h1 id="顺序表的操作"><a href="#顺序表的操作" class="headerlink" title="顺序表的操作"></a>顺序表的操作</h1><h2 id="增加元素"><a href="#增加元素" class="headerlink" title="增加元素"></a>增加元素</h2><p>如图所示，为顺序表增加新元素111的三种方式<br><img src="/images/algorithm/顺序表增加元素.png" alt="顺序表增加元素"><br>a. 尾端加入元素，时间复杂度为O(1)</p>
+<p>b. 非保序的加入元素（不常见），时间复杂度为O(1)</p>
+<p>c. 保序的元素加入，时间复杂度为O(n)</p>
+<h2 id="删除元素"><a href="#删除元素" class="headerlink" title="删除元素"></a>删除元素</h2><p><img src="/images/algorithm/顺序表删除元素.png" alt="顺序表删除元素"><br>a. 删除表尾元素，时间复杂度为O(1)</p>
+<p>b. 非保序的元素删除（不常见），时间复杂度为O(1)</p>
+<p>c. 保序的元素删除，时间复杂度为O(n)</p>
+<h1 id="Python中的顺序表"><a href="#Python中的顺序表" class="headerlink" title="Python中的顺序表"></a>Python中的顺序表</h1><p>Python中的list和tuple两种类型采用了顺序表的实现技术，具有前面讨论的顺序表的所有性质。</p>
+<p>tuple是不可变类型，即不变的顺序表，因此不支持改变其内部状态的任何操作，而其他方面，则与list的性质类似。</p>
+<h2 id="list的基本实现技术"><a href="#list的基本实现技术" class="headerlink" title="list的基本实现技术"></a>list的基本实现技术</h2><p>Python标准类型list就是一种元素个数可变的线性表，可以加入和删除元素，并在各种操作中维持已有元素的顺序（即保序），而且还具有以下行为特征：</p>
+<ul>
+<li><p>基于下标（位置）的高效元素访问和更新，时间复杂度应该是O(1)；<br>为满足该特征，应该采用顺序表技术，表中元素保存在一块连续的存储区中。</p>
+</li>
+<li><p>允许任意加入元素，而且在不断加入元素的过程中，表对象的标识（函数id得到的值）不变。<br>为满足该特征，就必须能更换元素存储区，并且为保证更换存储区时list对象的标识id不变，只能采用分离式实现技术。</p>
+</li>
+</ul>
+<p>在Python的官方实现中，list就是一种采用分离式技术实现的动态顺序表。这就是为什么用list.append(x) （或 list.insert(len(list), x)，即尾部插入）比在指定位置插入元素效率高的原因。</p>
+<p>在Python的官方实现中，list实现采用了如下的策略：在建立空表（或者很小的表）时，系统分配一块能容纳8个元素的存储区；在执行插入操作（insert或append）时，如果元素存储区满就换一块4倍大的存储区。但如果此时的表已经很大（目前的阀值为50000），则改变策略，采用加一倍的方法。引入这种改变策略的方式，是为了避免出现过多空闲的存储位置。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-常见时间复杂度]]></title>
+      <url>/2017/10/10/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%B8%B8%E8%A7%81%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/</url>
+      <content type="html"><![CDATA[<table>
+<thead>
+<tr>
+<th>执行次数函数举例</th>
+<th style="text-align:center">阶</th>
+<th style="text-align:right">非正式术语</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12</td>
+<td style="text-align:center">O(1)</td>
+<td style="text-align:right">常数阶</td>
+</tr>
+<tr>
+<td>2n+3</td>
+<td style="text-align:center">O(n)</td>
+<td style="text-align:right">线性阶</td>
+</tr>
+<tr>
+<td>3n^2+2n+1</td>
+<td style="text-align:center">O(n2)</td>
+<td style="text-align:right">平方阶</td>
+</tr>
+<tr>
+<td>5log2n+20</td>
+<td style="text-align:center">O(logn)</td>
+<td style="text-align:right">对数阶</td>
+</tr>
+<tr>
+<td>2n+3nlog2n+19</td>
+<td style="text-align:center">O(nlogn)</td>
+<td style="text-align:right">nlogn阶</td>
+</tr>
+<tr>
+<td>6n^3+2n^2+3n+4</td>
+<td style="text-align:center">O(n3)</td>
+<td style="text-align:right">立方阶</td>
+</tr>
+<tr>
+<td>2n</td>
+<td style="text-align:center">O(2^n)</td>
+<td style="text-align:right">指数阶</td>
+</tr>
+</tbody>
+</table>
+<a id="more"></a>
+<p>注意，经常将log2n（以2为底的对数）简写成logn</p>
+<h1 id="常见时间复杂度之间的关系"><a href="#常见时间复杂度之间的关系" class="headerlink" title="常见时间复杂度之间的关系"></a>常见时间复杂度之间的关系</h1><p><img src="/images/algorithm/算法效率关系.bmp" alt="算法效率关系"></p>
+<p>所消耗的时间从小到大</p>
+<p>O(1) &lt; O(logn) &lt; O(n) &lt; O(nlogn) &lt; O(n^2) &lt; O(n^3) &lt; O(2^n) &lt; O(n!) &lt; O(n^n)</p>
+<h1 id="Python内置类型性能分析"><a href="#Python内置类型性能分析" class="headerlink" title="Python内置类型性能分析"></a>Python内置类型性能分析</h1><h2 id="timeit模块"><a href="#timeit模块" class="headerlink" title="timeit模块"></a>timeit模块</h2><p>timeit模块可以用来测试一小段Python代码的执行速度。</p>
+<p>class timeit.Timer(stmt=’pass’, setup=’pass’, timer=<timer function="">)<br>Timer是测量小段代码执行速度的类。</timer></p>
+<p>stmt参数是要测试的代码语句（statment）；</p>
+<p>setup参数是运行代码时需要的设置；</p>
+<p>timer参数是一个定时器函数，与平台有关。</p>
+<p>timeit.Timer.timeit(number=1000000)<br>Timer类中测试语句执行速度的对象方法。number参数是测试代码时的测试次数，默认为1000000次。方法返回执行代码的平均耗时，一个float类型的秒数。</p>
+<h2 id="list的操作测试"><a href="#list的操作测试" class="headerlink" title="list的操作测试"></a>list的操作测试</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">test1</span><span class="params">()</span>:</span></div><div class="line">   l = []</div><div class="line">   <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</div><div class="line">      l = l + [i]</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">test2</span><span class="params">()</span>:</span></div><div class="line">   l = []</div><div class="line">   <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</div><div class="line">      l.append(i)</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">test3</span><span class="params">()</span>:</span></div><div class="line">   l = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>)]</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">test4</span><span class="params">()</span>:</span></div><div class="line">   l = list(range(<span class="number">1000</span>))</div><div class="line"></div><div class="line"><span class="keyword">from</span> timeit <span class="keyword">import</span> Timer</div><div class="line"></div><div class="line">t1 = Timer(<span class="string">"test1()"</span>, <span class="string">"from __main__ import test1"</span>)</div><div class="line">print(<span class="string">"concat "</span>,t1.timeit(number=<span class="number">1000</span>), <span class="string">"seconds"</span>)</div><div class="line">t2 = Timer(<span class="string">"test2()"</span>, <span class="string">"from __main__ import test2"</span>)</div><div class="line">print(<span class="string">"append "</span>,t2.timeit(number=<span class="number">1000</span>), <span class="string">"seconds"</span>)</div><div class="line">t3 = Timer(<span class="string">"test3()"</span>, <span class="string">"from __main__ import test3"</span>)</div><div class="line">print(<span class="string">"comprehension "</span>,t3.timeit(number=<span class="number">1000</span>), <span class="string">"seconds"</span>)</div><div class="line">t4 = Timer(<span class="string">"test4()"</span>, <span class="string">"from __main__ import test4"</span>)</div><div class="line">print(<span class="string">"list range "</span>,t4.timeit(number=<span class="number">1000</span>), <span class="string">"seconds"</span>)</div><div class="line"></div><div class="line"><span class="comment"># ('concat ', 1.7890608310699463, 'seconds')</span></div><div class="line"><span class="comment"># ('append ', 0.13796091079711914, 'seconds')</span></div><div class="line"><span class="comment"># ('comprehension ', 0.05671119689941406, 'seconds')</span></div><div class="line"><span class="comment"># ('list range ', 0.014147043228149414, 'seconds')</span></div></pre></td></tr></table></figure>
+<p><img src="/images/algorithm/list操作.png" alt="list操作"></p>
+<h2 id="pop操作测试"><a href="#pop操作测试" class="headerlink" title="pop操作测试"></a>pop操作测试</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">x = range(<span class="number">2000000</span>)</div><div class="line">pop_zero = Timer(<span class="string">"x.pop(0)"</span>,<span class="string">"from __main__ import x"</span>)</div><div class="line">print(<span class="string">"pop_zero "</span>,pop_zero.timeit(number=<span class="number">1000</span>), <span class="string">"seconds"</span>)</div><div class="line">x = range(<span class="number">2000000</span>)</div><div class="line">pop_end = Timer(<span class="string">"x.pop()"</span>,<span class="string">"from __main__ import x"</span>)</div><div class="line">print(<span class="string">"pop_end "</span>,pop_end.timeit(number=<span class="number">1000</span>), <span class="string">"seconds"</span>)</div><div class="line"></div><div class="line"><span class="comment"># ('pop_zero ', 1.9101738929748535, 'seconds')</span></div><div class="line"><span class="comment"># ('pop_end ', 0.00023603439331054688, 'seconds')</span></div></pre></td></tr></table></figure>
+<p>测试pop操作：从结果可以看出，pop最后一个元素的效率远远高于pop第一个元素</p>
+<p>附:<br><img src="/images/algorithm/dict操作.png" alt="dict操作"></p>
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><blockquote>
+<p>我们如何用Python中的类型来保存一个班的学生信息？ 如果想要快速的通过学生姓名获取其信息呢？</p>
+</blockquote>
+<p>实际上当我们在思考这个问题的时候，我们已经用到了数据结构。列表和字典都可以存储一个班的学生信息，但是想要在列表中获取一名同学的信息时，就要遍历这个列表，其时间复杂度为O(n)，而使用字典存储时，可将学生姓名作为字典的键，学生信息作为值，进而查询时不需要遍历便可快速获取到学生信息，其时间复杂度为O(1)。</p>
+<p>我们为了解决问题，需要将数据保存下来，然后根据数据的存储方式来设计算法实现进行处理，那么数据的存储方式不同就会导致需要不同的算法进行处理。我们希望算法解决问题的效率越快越好，于是我们就需要考虑数据究竟如何保存的问题，这就是数据结构。</p>
+<p>在上面的问题中我们可以选择Python中的列表或字典来存储学生信息。列表和字典就是Python内建帮我们封装好的两种数据结构。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>数据是一个抽象的概念，将其进行分类后得到程序设计语言中的基本类型。如：int，float，char等。数据元素之间不是独立的，存在特定的关系，这些关系便是结构。数据结构指数据对象中数据元素之间的关系。</p>
+<p>Python给我们提供了很多现成的数据结构类型，这些系统自己定义好的，不需要我们自己去定义的数据结构叫做Python的内置数据结构，比如列表、元组、字典。而有些数据组织方式，Python系统里面没有直接定义，需要我们自己去定义实现这些数据的组织方式，这些数据组织方式称之为Python的扩展数据结构，比如栈，队列等。</p>
+<h2 id="算法与数据结构的区别"><a href="#算法与数据结构的区别" class="headerlink" title="算法与数据结构的区别"></a>算法与数据结构的区别</h2><p>数据结构只是静态的描述了数据元素之间的关系。</p>
+<p>高效的程序需要在数据结构的基础上设计和选择算法。</p>
+<p>程序 = 数据结构 + 算法</p>
+<p>总结：算法是为了解决实际问题而设计的，数据结构是算法需要处理的问题载体</p>
+<h2 id="抽象数据类型-Abstract-Data-Type"><a href="#抽象数据类型-Abstract-Data-Type" class="headerlink" title="抽象数据类型(Abstract Data Type)"></a>抽象数据类型(Abstract Data Type)</h2><p>抽象数据类型(ADT)的含义是指一个数学模型以及定义在此数学模型上的一组操作。即把数据类型和数据类型上的运算捆在一起，进行封装。引入抽象数据类型的目的是把数据类型的表示和数据类型上运算的实现与这些数据类型和运算在程序中的引用隔开，使它们相互独立。</p>
+<p>最常用的数据运算有五种：</p>
+<ul>
+<li>插入</li>
+<li>删除</li>
+<li>修改</li>
+<li>查找</li>
+<li>排序</li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[数据结构与算法-引入]]></title>
+      <url>/2017/09/20/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%BC%95%E5%85%A5/</url>
+      <content type="html"><![CDATA[<h1 id="理解数据结构与算法"><a href="#理解数据结构与算法" class="headerlink" title="理解数据结构与算法"></a>理解数据结构与算法</h1><p>如果将最终写好运行的程序比作战场，我们码农便是指挥作战的将军，而我们所写的代码便是士兵和武器。</p>
+<p>那么数据结构和算法是什么？答曰：兵法！<br><a id="more"></a><br>我们可以不看兵法在战场上肉搏，如此，可能会胜利，可能会失败。即使胜利，可能也会付出巨大的代价。我们写程序亦然：没有看过数据结构和算法，有时面对问题可能会没有任何思路，不知如何下手去解决；大部分时间可能解决了问题，可是对程序运行的效率和开销没有意识，性能低下；有时会借助别人开发的利器暂时解决了问题，可是遇到性能瓶颈的时候，又不知该如何进行针对性的优化。</p>
+<p>如果我们常看兵法，便可做到胸有成竹，有时会事半功倍！同样，如果我们常看数据结构与算法，我们写程序时也能游刃有余、明察秋毫，遇到问题时亦能入木三分、迎刃而解。</p>
+<p>故，数据结构和算法是一名程序开发人员的必备基本功</p>
+<h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>先来看一道题:</p>
+<p>如果 a+b+c=1000，且 a^2+b^2=c^2（a,b,c 为自然数），如何求出所有a、b、c可能的组合?</p>
+<h2 id="第一次尝试"><a href="#第一次尝试" class="headerlink" title="第一次尝试"></a>第一次尝试</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line">start_time = time.time()</div><div class="line"></div><div class="line"><span class="comment"># 注意是三重循环</span></div><div class="line"><span class="keyword">for</span> a <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>):</div><div class="line">    <span class="keyword">for</span> b <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>):</div><div class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>):</div><div class="line">            <span class="keyword">if</span> a**<span class="number">2</span> + b**<span class="number">2</span> == c**<span class="number">2</span> <span class="keyword">and</span> a+b+c == <span class="number">1000</span>:</div><div class="line">                print(<span class="string">"a, b, c: %d, %d, %d"</span> % (a, b, c))</div><div class="line"></div><div class="line">end_time = time.time()</div><div class="line">print(<span class="string">"elapsed: %f"</span> % (end_time - start_time))</div><div class="line">print(<span class="string">"complete!"</span>)</div></pre></td></tr></table></figure>
+<p>运行结果：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">a, b, c: <span class="number">0</span>, <span class="number">500</span>, <span class="number">500</span></div><div class="line">a, b, c: <span class="number">200</span>, <span class="number">375</span>, <span class="number">425</span></div><div class="line">a, b, c: <span class="number">375</span>, <span class="number">200</span>, <span class="number">425</span></div><div class="line">a, b, c: <span class="number">500</span>, <span class="number">0</span>, <span class="number">500</span></div><div class="line">elapsed: <span class="number">214.583347</span></div><div class="line">complete!</div></pre></td></tr></table></figure></p>
+<p>注意运行时间为：214.583347秒</p>
+<h2 id="第二次尝试"><a href="#第二次尝试" class="headerlink" title="第二次尝试"></a>第二次尝试</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line">start_time = time.time()</div><div class="line"></div><div class="line"><span class="comment"># 注意是两重循环</span></div><div class="line"><span class="keyword">for</span> a <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>):</div><div class="line">    <span class="keyword">for</span> b <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>-a):</div><div class="line">        c = <span class="number">1000</span> - a - b</div><div class="line">        <span class="keyword">if</span> a**<span class="number">2</span> + b**<span class="number">2</span> == c**<span class="number">2</span>:</div><div class="line">            print(<span class="string">"a, b, c: %d, %d, %d"</span> % (a, b, c))</div><div class="line"></div><div class="line">end_time = time.time()</div><div class="line">print(<span class="string">"elapsed: %f"</span> % (end_time - start_time))</div><div class="line">print(<span class="string">"complete!"</span>)</div></pre></td></tr></table></figure>
+<p>运行结果：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">a, b, c: <span class="number">0</span>, <span class="number">500</span>, <span class="number">500</span></div><div class="line">a, b, c: <span class="number">200</span>, <span class="number">375</span>, <span class="number">425</span></div><div class="line">a, b, c: <span class="number">375</span>, <span class="number">200</span>, <span class="number">425</span></div><div class="line">a, b, c: <span class="number">500</span>, <span class="number">0</span>, <span class="number">500</span></div><div class="line">elapsed: <span class="number">0.182897</span></div><div class="line">complete!</div></pre></td></tr></table></figure></p>
+<p>注意运行的时间:0.182897秒</p>
+<h1 id="算法的概念"><a href="#算法的概念" class="headerlink" title="算法的概念"></a>算法的概念</h1><p>算法是计算机处理信息的本质，因为计算机程序本质上是一个算法来告诉计算机确切的步骤来执行一个指定的任务。一般地，当算法在处理信息时，会从输入设备或数据的存储地址读取数据，把结果写入输出设备或某个存储地址供以后再调用。</p>
+<p>算法是独立存在的一种解决问题的方法和思想。</p>
+<p>对于算法而言，实现的语言并不重要，重要的是思想。</p>
+<p>算法可以有不同的语言描述实现版本（如C描述、C++描述、Python描述等）</p>
+<h1 id="算法的五大特性"><a href="#算法的五大特性" class="headerlink" title="算法的五大特性"></a>算法的五大特性</h1><ul>
+<li>输入: 算法具有0个或多个输入</li>
+<li>输出: 算法至少有1个或多个输出</li>
+<li>有穷性: 算法在有限的步骤之后会自动结束而不会无限循环，并且每一个步骤可以在可接受的时间内完成</li>
+<li>确定性：算法中的每一步都有确定的含义，不会出现二义性</li>
+<li>可行性：算法的每一步都是可行的，也就是说每一步都能够执行有限的次数完成</li>
+</ul>
+<h1 id="算法效率衡量"><a href="#算法效率衡量" class="headerlink" title="算法效率衡量"></a>算法效率衡量</h1><h2 id="执行时间反应算法效率"><a href="#执行时间反应算法效率" class="headerlink" title="执行时间反应算法效率"></a>执行时间反应算法效率</h2><p>对于同一问题，我们给出了两种解决算法，在两种算法的实现中，我们对程序执行的时间进行了测算，发现两段程序执行的时间相差悬殊（214.583347秒相比于0.182897秒），由此我们可以得出结论：实现算法程序的执行时间可以反应出算法的效率，即算法的优劣。</p>
+<h2 id="单靠时间值绝对可信吗？"><a href="#单靠时间值绝对可信吗？" class="headerlink" title="单靠时间值绝对可信吗？"></a>单靠时间值绝对可信吗？</h2><p>假设我们将第二次尝试的算法程序运行在一台配置古老性能低下的计算机中，情况会如何？很可能运行的时间并不会比在我们的电脑中运行算法一的214.583347秒快多少。</p>
+<p>单纯依靠运行的时间来比较算法的优劣并不一定是客观准确的！</p>
+<p>程序的运行离不开计算机环境（包括硬件和操作系统），这些客观原因会影响程序运行的速度并反应在程序的执行时间上。那么如何才能客观的评判一个算法的优劣呢？</p>
+<h2 id="时间复杂度与“大O记法”"><a href="#时间复杂度与“大O记法”" class="headerlink" title="时间复杂度与“大O记法”"></a>时间复杂度与“大O记法”</h2><p>我们假定计算机执行算法每一个基本操作的时间是固定的一个时间单位，那么有多少个基本操作就代表会花费多少时间单位。算然对于不同的机器环境而言，确切的单位时间是不同的，但是对于算法进行多少个基本操作（即花费多少时间单位）在规模数量级上却是相同的，由此可以忽略机器环境的影响而客观的反应算法的时间效率。</p>
+<p>对于算法的时间效率，我们可以用“大O记法”来表示。</p>
+<p>“大O记法”：对于单调的整数函数f，如果存在一个整数函数g和实常数c&gt;0，使得对于充分大的n总有f(n)&lt;=c*g(n)，就说函数g是f的一个渐近函数（忽略常数），记为f(n)=O(g(n))。也就是说，在趋向无穷的极限意义下，函数f的增长速度受到函数g的约束，亦即函数f与函数g的特征相似。</p>
+<p>时间复杂度：假设存在函数g，使得算法A处理规模为n的问题示例所用时间为T(n)=O(g(n))，则称O(g(n))为算法A的渐近时间复杂度，简称时间复杂度，记为T(n)</p>
+<h2 id="如何理解“大O记法”"><a href="#如何理解“大O记法”" class="headerlink" title="如何理解“大O记法”"></a>如何理解“大O记法”</h2><p>对于算法进行特别具体的细致分析虽然很好，但在实践中的实际价值有限。对于算法的时间性质和空间性质，最重要的是其数量级和趋势，这些是分析算法效率的主要部分。而计量算法基本操作数量的规模函数中那些常量因子可以忽略不计。例如，可以认为3n2和100n2属于同一个量级，如果两个算法处理同样规模实例的代价分别为这两个函数，就认为它们的效率“差不多”，都为n2级。</p>
+<h2 id="最坏时间复杂度"><a href="#最坏时间复杂度" class="headerlink" title="最坏时间复杂度"></a>最坏时间复杂度</h2><p>分析算法时，存在几种可能的考虑：</p>
+<p>算法完成工作最少需要多少基本操作，即最优时间复杂度<br>算法完成工作最多需要多少基本操作，即最坏时间复杂度<br>算法完成工作平均需要多少基本操作，即平均时间复杂度<br>对于最优时间复杂度，其价值不大，因为它没有提供什么有用信息，其反映的只是最乐观最理想的情况，没有参考价值。</p>
+<p>对于最坏时间复杂度，提供了一种保证，表明算法在此种程度的基本操作中一定能完成工作。</p>
+<p>对于平均时间复杂度，是对算法的一个全面评价，因此它完整全面的反映了这个算法的性质。但另一方面，这种衡量并没有保证，不是每个计算都能在这个基本操作内完成。而且，对于平均情况的计算，也会因为应用算法的实例分布可能并不均匀而难以计算。</p>
+<p>因此，我们主要关注算法的最坏情况，亦即最坏时间复杂度。</p>
+<h2 id="时间复杂度的几条基本计算规则"><a href="#时间复杂度的几条基本计算规则" class="headerlink" title="时间复杂度的几条基本计算规则"></a>时间复杂度的几条基本计算规则</h2><ul>
+<li>基本操作，即只有常数项，认为其时间复杂度为O(1)</li>
+<li>顺序结构，时间复杂度按加法进行计算</li>
+<li>循环结构，时间复杂度按乘法进行计算</li>
+<li>分支结构，时间复杂度取最大值</li>
+<li>判断一个算法的效率时，往往只需要关注操作数量的最高次项，其它次要项和常数项可以忽略</li>
+<li>在没有特殊说明时，我们所分析的算法的时间复杂度都是指最坏时间复杂度</li>
+</ul>
+<h1 id="算法分析"><a href="#算法分析" class="headerlink" title="算法分析"></a>算法分析</h1><h2 id="第一次尝试的算法核心部分"><a href="#第一次尝试的算法核心部分" class="headerlink" title="第一次尝试的算法核心部分"></a>第一次尝试的算法核心部分</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> a <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>):</div><div class="line">    <span class="keyword">for</span> b <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>):</div><div class="line">        <span class="keyword">for</span> c <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>):</div><div class="line">            <span class="keyword">if</span> a**<span class="number">2</span> + b**<span class="number">2</span> == c**<span class="number">2</span> <span class="keyword">and</span> a+b+c == <span class="number">1000</span>:</div><div class="line">                print(<span class="string">"a, b, c: %d, %d, %d"</span> % (a, b, c))</div></pre></td></tr></table></figure>
+<p>时间复杂度：</p>
+<p>T(n) = O(n<em>n</em>n) = O(n3)</p>
+<h2 id="第二次尝试的算法核心部分"><a href="#第二次尝试的算法核心部分" class="headerlink" title="第二次尝试的算法核心部分"></a>第二次尝试的算法核心部分</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> a <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>):</div><div class="line">    <span class="keyword">for</span> b <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">1001</span>-a):</div><div class="line">        c = <span class="number">1000</span> - a - b</div><div class="line">        <span class="keyword">if</span> a**<span class="number">2</span> + b**<span class="number">2</span> == c**<span class="number">2</span>:</div><div class="line">            print(<span class="string">"a, b, c: %d, %d, %d"</span> % (a, b, c))</div></pre></td></tr></table></figure>
+<p>时间复杂度：</p>
+<p>T(n) = O(n<em>n</em>(1+1)) = O(n*n) = O(n2)</p>
+<p>由此可见，我们尝试的第二种算法要比第一种算法的时间复杂度好多的。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 数据结构与算法 </tag>
             
         </tags>
         
