@@ -93,7 +93,7 @@
 <meta property="og:description" content="以Django为代表的python web应用部署时采用wsgi协议与服务器对接（被服务器托管），而这类服务器通常都是基于多线程的，也就是说每一个网络请求服务器都会有一个对应的线程来用web应用（如Django）进行处理。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/tornado/tornado_performance.png">
-<meta property="og:updated_time" content="2018-03-20T06:20:09.731Z">
+<meta property="og:updated_time" content="2018-03-21T10:49:45.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tornado简介">
 <meta name="twitter:description" content="以Django为代表的python web应用部署时采用wsgi协议与服务器对接（被服务器托管），而这类服务器通常都是基于多线程的，也就是说每一个网络请求服务器都会有一个对应的线程来用web应用（如Django）进行处理。">
@@ -416,16 +416,16 @@
 <ul>
 <li>session功能</li>
 <li>后台管理</li>
-<li><p>ORM</p>
+<li>ORM</li>
+</ul>
 <h2 id="Tornado-1"><a href="#Tornado-1" class="headerlink" title="Tornado"></a>Tornado</h2><p>Tornado走的是少而精的方向，注重的是性能优越，它最出名的是异步非阻塞的设计方式。</p>
-</li>
-<li><p>HTTP服务器</p>
-</li>
+<ul>
+<li>HTTP服务器</li>
 <li>异步编程</li>
 <li>WebSockets</li>
 </ul>
 <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pip install tornado</div></pre></td></tr></table></figure>
-<p>or<br>下载安装包tornado-5.0.tar.gz（<a href="https://pypi.python.org/packages/source/t/tornado/tornado-5.0.tar.gz）" target="_blank" rel="noopener">https://pypi.python.org/packages/source/t/tornado/tornado-5.0.tar.gz）</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ tar xvzf tornado-4.3.tar.gz</div><div class="line">$ cd tornado-4.3</div><div class="line">$ python setup.py build</div><div class="line">$ sudo python setup.py install</div></pre></td></tr></table></figure></p>
+<p>or<br>下载安装包tornado-5.0.tar.gz（<a href="https://pypi.python.org/packages/source/t/tornado/tornado-5.0.tar.gz）" target="_blank" rel="noopener">https://pypi.python.org/packages/source/t/tornado/tornado-5.0.tar.gz）</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ tar xvzf tornado-5.0.tar.gz</div><div class="line">$ cd tornado-5.0</div><div class="line">$ python setup.py build</div><div class="line">$ sudo python setup.py install</div></pre></td></tr></table></figure></p>
 <h1 id="关于使用平台的说明"><a href="#关于使用平台的说明" class="headerlink" title="关于使用平台的说明"></a>关于使用平台的说明</h1><blockquote>
 <p>Tornado should run on any Unix-like platform, although for the best performance and scalability only Linux (with epoll) and BSD (with kqueue) are recommended for production deployment (even though Mac OS X is derived from BSD and supports kqueue, its networking performance is generally poor so it is recommended only for development use). Tornado will also run on Windows, although this configuration is not officially supported and is recommended only for development use.</p>
 </blockquote>
