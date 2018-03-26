@@ -3,6 +3,56 @@
   
     
     <entry>
+      <title><![CDATA[Tornado最基本代码理解]]></title>
+      <url>/2018/03/26/tornado02/</url>
+      <content type="html"><![CDATA[<p>新建Hello.py，代码如下<br><a id="more"></a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="string">"""主路由处理类"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""对应http的get请求方式"""</span></div><div class="line">        self.write(<span class="string">"Hello Tornado!"</span>)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    app = tornado.web.Application([</div><div class="line">        (<span class="string">r"/"</span>, IndexHandler),</div><div class="line">    ])</div><div class="line">    app.listen(<span class="number">8000</span>)</div><div class="line">    tornado.ioloop.IOLoop.current().start()</div></pre></td></tr></table></figure>
+<p>执行如下命令，开启tornado：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python hello.py</div></pre></td></tr></table></figure>
+<h1 id="代码理解"><a href="#代码理解" class="headerlink" title="代码理解"></a>代码理解</h1><h2 id="tornado-web"><a href="#tornado-web" class="headerlink" title="tornado.web"></a>tornado.web</h2><p>tornado的基础web框架模块</p>
+<ul>
+<li>RequestHandler</li>
+</ul>
+<p>封装了对应一个请求的所有信息和方法，write(响应信息)就是写响应信息的一个方法；对应每一种http请求方式（get、post等），把对应的处理逻辑写进同名的成员方法中（如对应get请求方式，就将对应的处理逻辑写在get()方法中），当没有对应请求方式的成员方法时，会返回“405: Method Not Allowed”错误。</p>
+<p>我们将代码中定义的get()方法更改为post()后，再用浏览器重新访问（浏览器地址栏中输入网址访问的方式为get请求方式），演示如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="string">"""主路由处理类"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self)</span>:</span>  <span class="comment"># 我们修改了这里</span></div><div class="line">        <span class="string">"""对应http的post请求方式"""</span></div><div class="line">        self.write(<span class="string">"Hello Tornado!"</span>)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    app = tornado.web.Application([</div><div class="line">        (<span class="string">r"/"</span>, IndexHandler),</div><div class="line">    ])</div><div class="line">    app.listen(<span class="number">8000</span>)</div><div class="line">    tornado.ioloop.IOLoop.current().start()</div></pre></td></tr></table></figure></p>
+<p><img src="/images/tornado/405_method_not_allowed.png" alt="405_method_not_allowed.png"></p>
+<ul>
+<li>Application</li>
+</ul>
+<p>Tornado Web框架的核心应用类，是与服务器对接的接口，里面保存了路由信息表，其初始化接收的第一个参数就是一个路由信息映射元组的列表；其listen(端口)方法用来创建一个http服务器实例，并绑定到给定端口（注意：此时服务器并未开启监听）。</p>
+<h2 id="tornado-ioloop"><a href="#tornado-ioloop" class="headerlink" title="tornado.ioloop"></a>tornado.ioloop</h2><p>tornado的核心io循环模块，封装了Linux的epoll和BSD的kqueue，tornado高性能的基石。 以Linux的epoll为例，其原理如下图：<br><img src="/images/tornado/ioloop_epoll.png" alt="ioloop_epoll.png"></p>
+<ul>
+<li>IOLoop.current()</li>
+</ul>
+<p>返回当前线程的IOLoop实例。</p>
+<ul>
+<li>IOLoop.start()</li>
+</ul>
+<p>启动IOLoop实例的I/O循环,同时服务器监听被打开。</p>
+<h1 id="Tornado-Web程序编写思路"><a href="#Tornado-Web程序编写思路" class="headerlink" title="Tornado Web程序编写思路"></a>Tornado Web程序编写思路</h1><ol>
+<li>创建web应用实例对象，第一个初始化参数为路由映射列表。</li>
+<li>定义实现路由映射列表中的handler类。</li>
+<li>创建服务器实例，绑定服务器端口。</li>
+<li>启动当前线程的IOLoop。</li>
+</ol>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Tornado </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Tornado简介]]></title>
       <url>/2018/03/20/tornado01/</url>
       <content type="html"><![CDATA[<p>以Django为代表的python web应用部署时采用wsgi协议与服务器对接（被服务器托管），而这类服务器通常都是基于多线程的，也就是说每一个网络请求服务器都会有一个对应的线程来用web应用（如Django）进行处理。<br><a id="more"></a></p>
