@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="数据结构与算法," />
+  <meta name="keywords" content="Tornado," />
 
 
 
@@ -84,20 +84,20 @@
 
 
 
-<meta name="description" content="队列（queue）是只允许在一端进行插入操作，而在另一端进行删除操作的线性表。 队列是一种先进先出的（First In First Out）的线性表，简称FIFO。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作！假设队列是q=（a1，a2，……，an），那么a1就是队头元素，而an是队尾元素。">
-<meta name="keywords" content="数据结构与算法">
+<meta name="description" content="利用HTTP协议向服务器传参的途径">
+<meta name="keywords" content="Tornado">
 <meta property="og:type" content="article">
-<meta property="og:title" content="数据结构与算法-队列">
-<meta property="og:url" content="http://yoursite.com/2018/01/19/数据结构与算法-队列/index.html">
+<meta property="og:title" content="tornado-输入">
+<meta property="og:url" content="http://yoursite.com/2018/04/18/tornado04/index.html">
 <meta property="og:site_name" content="天边一钩残月带三星">
-<meta property="og:description" content="队列（queue）是只允许在一端进行插入操作，而在另一端进行删除操作的线性表。 队列是一种先进先出的（First In First Out）的线性表，简称FIFO。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作！假设队列是q=（a1，a2，……，an），那么a1就是队头元素，而an是队尾元素。这样我们就可以删除时，总是从a1开始，而插入时，总是在队列最后。这也比较符合我们">
+<meta property="og:description" content="利用HTTP协议向服务器传参的途径">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/algorithm/队列模型.png">
-<meta property="og:updated_time" content="2018-03-19T08:05:59.116Z">
+<meta property="og:image" content="http://yoursite.com/images/tornado/get_argument_demo.png">
+<meta property="og:updated_time" content="2018-04-18T11:27:08.404Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="数据结构与算法-队列">
-<meta name="twitter:description" content="队列（queue）是只允许在一端进行插入操作，而在另一端进行删除操作的线性表。 队列是一种先进先出的（First In First Out）的线性表，简称FIFO。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作！假设队列是q=（a1，a2，……，an），那么a1就是队头元素，而an是队尾元素。这样我们就可以删除时，总是从a1开始，而插入时，总是在队列最后。这也比较符合我们">
-<meta name="twitter:image" content="http://yoursite.com/images/algorithm/队列模型.png">
+<meta name="twitter:title" content="tornado-输入">
+<meta name="twitter:description" content="利用HTTP协议向服务器传参的途径">
+<meta name="twitter:image" content="http://yoursite.com/images/tornado/get_argument_demo.png">
 
 
 
@@ -125,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/19/数据结构与算法-队列/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/04/18/tornado04/"/>
 
 
 
 
 
-  <title> 数据结构与算法-队列 | 天边一钩残月带三星 </title>
+  <title> tornado-输入 | 天边一钩残月带三星 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -287,7 +287,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/19/数据结构与算法-队列/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/18/tornado04/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="AlexanderZhou">
@@ -311,7 +311,7 @@
             
             
               
-                数据结构与算法-队列
+                tornado-输入
               
             
           </h1>
@@ -326,8 +326,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-19T14:11:02+08:00">
-                2018-01-19
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-18T19:18:42+08:00">
+                2018-04-18
               </time>
             
 
@@ -367,8 +367,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/19/数据结构与算法-队列/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/19/数据结构与算法-队列/" itemprop="commentCount"></span>
+                <a href="/2018/04/18/tornado04/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/18/tornado04/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -394,16 +394,50 @@
       
 
       
-        <p>队列（queue）是只允许在一端进行插入操作，而在另一端进行删除操作的线性表。</p>
-<p>队列是一种先进先出的（First In First Out）的线性表，简称FIFO。允许插入的一端为队尾，允许删除的一端为队头。队列不允许在中间部位进行操作！假设队列是q=（a1，a2，……，an），那么a1就是队头元素，而an是队尾元素。这样我们就可以删除时，总是从a1开始，而插入时，总是在队列最后。这也比较符合我们通常生活中的习惯，排在第一个的优先出列，最后来的当然排在队伍最后。</p>
-<p><img src="/images/algorithm/队列模型.png" alt="队列模型"><br><a id="more"></a></p>
-<h1 id="队列的实现"><a href="#队列的实现" class="headerlink" title="队列的实现"></a>队列的实现</h1><p>同栈一样，队列也可以用顺序表或者链表实现。</p>
-<h1 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h1><ul>
-<li>Queue() 创建一个空的队列</li>
-<li>enqueue(item) 往队列中添加一个item元素</li>
-<li>dequeue() 从队列头部删除一个元素</li>
-<li>is_empty() 判断一个队列是否为空</li>
-<li>size() 返回队列的大小<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Queue</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""队列"""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self.items = []</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">is_empty</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> self.items == []</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">enqueue</span><span class="params">(self, item)</span>:</span></div><div class="line">        <span class="string">"""进队列"""</span></div><div class="line">        self.items.insert(<span class="number">0</span>,item)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dequeue</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""出队列"""</span></div><div class="line">        <span class="keyword">return</span> self.items.pop()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""返回大小"""</span></div><div class="line">        <span class="keyword">return</span> len(self.items)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    q = Queue()</div><div class="line">    q.enqueue(<span class="string">"hello"</span>)</div><div class="line">    q.enqueue(<span class="string">"world"</span>)</div><div class="line">    q.enqueue(<span class="string">"itcast"</span>)</div><div class="line">    <span class="keyword">print</span> q.size()</div><div class="line">    <span class="keyword">print</span> q.dequeue()</div><div class="line">    <span class="keyword">print</span> q.dequeue()</div><div class="line">    <span class="keyword">print</span> q.dequeue()</div></pre></td></tr></table></figure></li>
+        <p>利用HTTP协议向服务器传参的途径</p>
+<a id="more"></a>
+<ul>
+<li>查询字符串（query string)，形如key1=value1&amp;key2=value2；</li>
+<li>请求体（body）中发送的数据，比如表单数据、json、xml；</li>
+<li>提取uri的特定部分，如/blogs/2016/09/0001，可以在服务器端的路由中用正则表达式截取；</li>
+<li>在http报文的头（header）中增加自定义字段，如X-XSRFToken=itcast。<br>我们现在来看下tornado中为我们提供了哪些方法来获取请求的信息。</li>
+</ul>
+<h1 id="获取查询字符串参数"><a href="#获取查询字符串参数" class="headerlink" title="获取查询字符串参数"></a>获取查询字符串参数</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get_query_argument(name, default=_ARG_DEFAULT, strip=<span class="keyword">True</span>)</div></pre></td></tr></table></figure>
+<p>从请求的查询字符串中返回指定参数name的值，如果出现多个同名参数，则返回最后一个的值。</p>
+<p>default为设值未传name参数时返回的默认值，如若default也未设置，则会抛出tornado.web.MissingArgumentError异常。</p>
+<p>strip表示是否过滤掉左右两边的空白字符，默认为过滤。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get_query_arguments(name, strip=<span class="keyword">True</span>)</div></pre></td></tr></table></figure></p>
+<p>从请求的查询字符串中返回指定参数name的值，注意返回的是list列表（即使对应name参数只有一个值）。若未找到name参数，则返回空列表[]。</p>
+<h1 id="获取请求体参数"><a href="#获取请求体参数" class="headerlink" title="获取请求体参数"></a>获取请求体参数</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get_body_argument(name, default=_ARG_DEFAULT, strip=<span class="keyword">True</span>)</div></pre></td></tr></table></figure>
+<p>从请求体中返回指定参数name的值，如果出现多个同名参数，则返回最后一个的值。</p>
+<p>default与strip同前，不再赘述。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get_body_arguments(name, strip=<span class="keyword">True</span>)</div></pre></td></tr></table></figure></p>
+<p>从请求体中返回指定参数name的值，注意返回的是list列表（即使对应name参数只有一个值）。若未找到name参数，则返回空列表[]。</p>
+<p>strip同前，不再赘述。</p>
+<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>对于请求体中的数据要求为字符串，且格式为表单编码格式（与url中的请求字符串格式相同），即key1=value1&amp;key2=value2，HTTP报文头Header中的”Content-Type”为application/x-www-form-urlencoded 或 multipart/form-data。对于请求体数据为json或xml的，无法通过这两个方法获取。</p>
+<h1 id="前两类方法的整合"><a href="#前两类方法的整合" class="headerlink" title="前两类方法的整合"></a>前两类方法的整合</h1><p>get_argument(name, default=_ARG_DEFAULT, strip=True)<br>从请求体和查询字符串中返回指定参数name的值，如果出现多个同名参数，则返回最后一个的值。</p>
+<p>default与strip同前，不再赘述。</p>
+<p>get_arguments(name, strip=True)<br>从请求体和查询字符串中返回指定参数name的值，注意返回的是list列表（即使对应name参数只有一个值）。若未找到name参数，则返回空列表[]。</p>
+<p>strip同前，不再赘述。</p>
+<p>代码整合<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"><span class="keyword">import</span> tornado.httpserver</div><div class="line"><span class="keyword">import</span> tornado.options</div><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> options, define</div><div class="line"><span class="keyword">from</span> tornado.web <span class="keyword">import</span> RequestHandler, MissingArgumentError</div><div class="line"></div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, type=int, help=<span class="string">"run server on the given port."</span>)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexHandler</span><span class="params">(RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self)</span>:</span></div><div class="line">        query_arg = self.get_query_argument(<span class="string">"a"</span>)</div><div class="line">        query_args = self.get_query_arguments(<span class="string">"a"</span>)</div><div class="line">        body_arg = self.get_body_argument(<span class="string">"a"</span>)</div><div class="line">        body_args = self.get_body_arguments(<span class="string">"a"</span>, strip=<span class="keyword">False</span>)</div><div class="line">        arg = self.get_argument(<span class="string">"a"</span>)</div><div class="line">        args = self.get_arguments(<span class="string">"a"</span>)</div><div class="line"></div><div class="line">        default_arg = self.get_argument(<span class="string">"b"</span>, <span class="string">"itcast"</span>)</div><div class="line">        default_args = self.get_arguments(<span class="string">"b"</span>)</div><div class="line"></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            missing_arg = self.get_argument(<span class="string">"c"</span>)</div><div class="line">        <span class="keyword">except</span> MissingArgumentError <span class="keyword">as</span> e:</div><div class="line">            missing_arg = <span class="string">"We catched the MissingArgumentError!"</span></div><div class="line">            <span class="keyword">print</span> e</div><div class="line">        missing_args = self.get_arguments(<span class="string">"c"</span>)</div><div class="line"></div><div class="line">        rep = <span class="string">"query_arg:%s&lt;br/&gt;"</span> % query_arg</div><div class="line">        rep += <span class="string">"query_args:%s&lt;br/&gt;"</span> % query_args </div><div class="line">        rep += <span class="string">"body_arg:%s&lt;br/&gt;"</span>  % body_arg</div><div class="line">        rep += <span class="string">"body_args:%s&lt;br/&gt;"</span> % body_args</div><div class="line">        rep += <span class="string">"arg:%s&lt;br/&gt;"</span>  % arg</div><div class="line">        rep += <span class="string">"args:%s&lt;br/&gt;"</span> % args </div><div class="line">        rep += <span class="string">"default_arg:%s&lt;br/&gt;"</span> % default_arg </div><div class="line">        rep += <span class="string">"default_args:%s&lt;br/&gt;"</span> % default_args </div><div class="line">        rep += <span class="string">"missing_arg:%s&lt;br/&gt;"</span> % missing_arg</div><div class="line">        rep += <span class="string">"missing_args:%s&lt;br/&gt;"</span> % missing_args</div><div class="line"></div><div class="line">        self.write(rep)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application([</div><div class="line">        (<span class="string">r"/"</span>, IndexHandler),</div><div class="line">    ])</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.current().start()</div></pre></td></tr></table></figure></p>
+<p><img src="/images/tornado/get_argument_demo.png" alt="get_argument_demo.png"></p>
+<h1 id="关于请求的其他信息"><a href="#关于请求的其他信息" class="headerlink" title="关于请求的其他信息"></a>关于请求的其他信息</h1><p>RequestHandler.request 对象存储了关于请求的相关信息，具体属性有：</p>
+<ul>
+<li>method HTTP的请求方式，如GET或POST;</li>
+<li>host 被请求的主机名；</li>
+<li>uri 请求的完整资源标示，包括路径和查询字符串；</li>
+<li>path 请求的路径部分；</li>
+<li>query 请求的查询字符串部分；</li>
+<li>version 使用的HTTP版本；</li>
+<li>headers 请求的协议头，是类字典型的对象，支持关键字索引的方式获取特定协议头信息，例如：request.headers[“Content-Type”]</li>
+<li>body 请求体数据；</li>
+<li>remote_ip 客户端的IP地址；</li>
+<li>files 用户上传的文件，为字典类型<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"form_filename1"</span>:[&lt;tornado.httputil.HTTPFile&gt;, &lt;tornado.httputil.HTTPFile&gt;],</div><div class="line">  <span class="string">"form_filename2"</span>:[&lt;tornado.httputil.HTTPFile&gt;,],</div><div class="line">  ... </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>tornado.httputil.HTTPFile是接收到的文件对象，它有三个属性：</p>
+<ul>
+<li>filename 文件的实际名字，与form_filename1不同，字典中的键名代表的是表单对应项的名字；</li>
+<li>body 文件的数据实体；</li>
+<li>content_type 文件的类型。 这三个对象属性可以像字典一样支持关键字索引，如request.files[“form_filename1”][0][“body”]。</li>
 </ul>
 
       
@@ -428,7 +462,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+            <a href="/tags/Tornado/" rel="tag"># Tornado</a>
           
         </div>
       
@@ -437,8 +471,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/16/数据结构与算法-栈/" rel="next" title="数据结构与算法-栈">
-                <i class="fa fa-chevron-left"></i> 数据结构与算法-栈
+              <a href="/2018/04/03/tornado03/" rel="next" title="Tornado-Application">
+                <i class="fa fa-chevron-left"></i> Tornado-Application
               </a>
             
           </div>
@@ -446,10 +480,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/02/05/socket/" rel="prev" title="Soket基本概念">
-                Soket基本概念 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -475,8 +505,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2018/01/19/数据结构与算法-队列/"
-           data-title="数据结构与算法-队列" data-url="http://yoursite.com/2018/01/19/数据结构与算法-队列/">
+      <div class="ds-thread" data-thread-key="2018/04/18/tornado04/"
+           data-title="tornado-输入" data-url="http://yoursite.com/2018/04/18/tornado04/">
       </div>
     
   </div>
@@ -576,7 +606,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#队列的实现"><span class="nav-number">1.</span> <span class="nav-text">队列的实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#操作"><span class="nav-number">2.</span> <span class="nav-text">操作</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#获取查询字符串参数"><span class="nav-number">1.</span> <span class="nav-text">获取查询字符串参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#获取请求体参数"><span class="nav-number">2.</span> <span class="nav-text">获取请求体参数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#说明"><span class="nav-number">2.1.</span> <span class="nav-text">说明</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前两类方法的整合"><span class="nav-number">3.</span> <span class="nav-text">前两类方法的整合</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于请求的其他信息"><span class="nav-number">4.</span> <span class="nav-text">关于请求的其他信息</span></a></li></ol></div>
             
 
           </div>
