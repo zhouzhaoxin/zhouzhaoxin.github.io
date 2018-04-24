@@ -3,6 +3,73 @@
   
     
     <entry>
+      <title><![CDATA[tornado-输出]]></title>
+      <url>/2018/04/24/tornado05/</url>
+      <content type="html"><![CDATA[<h1 id="write-chunk"><a href="#write-chunk" class="headerlink" title="write(chunk)"></a>write(chunk)</h1><p>将chunk数据写到输出缓冲区。如我们在之前的示例代码中写的：<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">class IndexHandler(RequestHandler):</div><div class="line">    def get(self):</div><div class="line">        self.write(&quot;hello!&quot;)</div><div class="line">```        </div><div class="line">想一想，可不可以在同一个处理方法中多次使用write方法？</div><div class="line">下面的代码会出现什么效果？</div></pre></td></tr></table></figure></p>
+<p>class IndexHandler(RequestHandler):<br>    def get(self):<br>        self.write(“hello 1!”)<br>        self.write(“hello 2!”)<br>        self.write(“hello 3!”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">write方法是写到缓冲区的，我们可以像写文件一样多次使用write方法不断追加响应内容，最终所有写到缓冲区的内容一起作为本次请求的响应输出。</div><div class="line"></div><div class="line">想一想，如何利用write方法写json数据？</div></pre></td></tr></table></figure></p>
+<p>import json</p>
+<p>class IndexHandler(RequestHandler):<br>    def get(self):<br>        stu = {<br>            “name”:”zhangsan”,<br>            “age”:24,<br>            “gender”:1,<br>        }<br>        stu_json = json.dumps(stu)<br>        self.write(stu_json)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">实际上，我们可以不用自己手动去做json序列化，当write方法检测到我们传入的chunk参数是字典类型后，会自动帮我们转换为json字符串。</div></pre></td></tr></table></figure></p>
+<p>class IndexHandler(RequestHandler):<br>    def get(self):<br>        stu = {<br>            “name”:”zhangsan”,<br>            “age”:24,<br>            “gender”:1,<br>        }<br>        self.write(stu)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 两种方式有什么差异？</div><div class="line"></div><div class="line">对比一下两种方式的响应头header中Content-Type字段，自己手动序列化时为Content-Type:text/html; charset=UTF-8，而采用write方法时为Content-Type:application/json; charset=UTF-8。</div><div class="line"></div><div class="line">write方法除了帮我们将字典转换为json字符串之外，还帮我们将Content-Type设置为application/json; charset=UTF-8。</div><div class="line"></div><div class="line"># set_header(name, value)</div><div class="line"></div><div class="line">利用set_header(name, value)方法，可以手动设置一个名为name、值为value的响应头header字段。</div><div class="line"></div><div class="line">用set_header方法来完成上面write所做的工作。</div></pre></td></tr></table></figure></p>
+<p>import json</p>
+<p>class IndexHandler(RequestHandler):<br>    def get(self):<br>        stu = {<br>            “name”:”zhangsan”,<br>            “age”:24,<br>            “gender”:1,<br>        }<br>        stu_json = json.dumps(stu)<br>        self.write(stu_json)<br>        self.set_header(“Content-Type”, “application/json; charset=UTF-8”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"># set_default_headers()</div><div class="line"></div><div class="line">该方法会在进入HTTP处理方法前先被调用，可以重写此方法来预先设置默认的headers。注意：在HTTP处理方法中使用set_header()方法会覆盖掉在set_default_headers()方法中设置的同名header。</div></pre></td></tr></table></figure></p>
+<p>class IndexHandler(RequestHandler):<br>    def set_default_headers(self):<br>        print “执行了set_default_headers()”</p>
+<pre><code>    # 设置get与post方式的默认响应体格式为json
+    self.set_header(&quot;Content-Type&quot;, &quot;application/json; charset=UTF-8&quot;)
+    # 设置一个名为hello、值为python的header
+    self.set_header(&quot;hello&quot;, &quot;python&quot;)
+
+def get(self):
+    print &quot;执行了get()&quot;
+    stu = {
+        &quot;name&quot;:&quot;zhangsan&quot;,
+        &quot;age&quot;:24,
+        &quot;gender&quot;:1,
+    }
+    stu_json = json.dumps(stu)
+    self.write(stu_json)
+    self.set_header(&quot;hello&quot;, &quot;i love python&quot;) # hello
+
+def post(self):
+    print &quot;执行了post()&quot;
+    stu = {
+        &quot;name&quot;:&quot;zhangsan&quot;,
+        &quot;age&quot;:24,
+        &quot;gender&quot;:1,
+    }
+    stu_json = json.dumps(stu)
+    self.write(stu_json)
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"># redirect(url)</div><div class="line"></div><div class="line">告知浏览器跳转到url。</div></pre></td></tr></table></figure>
+<p>class IndexHandler(RequestHandler):<br>    “””对应/“””<br>    def get(self):<br>        self.write(“主页”)</p>
+<p>class LoginHandler(RequestHandler):<br>    “””对应/login”””<br>    def get(self):<br>        self.write(‘<form method="post"><input type="submit" value="登陆"></form>‘)</p>
+<pre><code>def post(self):
+    self.redirect(&quot;/&quot;)
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"># send_error(status_code=500, **kwargs)</div><div class="line"></div><div class="line">抛出HTTP错误状态码status_code，默认为500，kwargs为可变命名参数。使用send_error抛出错误后tornado会调用write_error()方法进行处理，并返回给浏览器处理后的错误页面。</div></pre></td></tr></table></figure>
+<p>class IndexHandler(RequestHandler):<br>    def get(self):<br>        self.write(“主页”)<br>        self.send_error(404, content=”出现404错误”)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">注意：默认的write\_error()方法不会处理send\_error抛出的kwargs参数，即上面的代码中content=&quot;出现404错误&quot;是没有意义的。</div><div class="line"></div><div class="line">尝试下面的代码会出现什么问题？</div></pre></td></tr></table></figure></p>
+<p>class IndexHandler(RequestHandler):<br>    def get(self):<br>        self.write(“主页”)<br>        self.send_error(404, content=”出现404错误”)<br>        self.write(“结束”) # 我们在send_error再次向输出缓冲区写内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"># write_error(status_code, **kwargs)</div><div class="line"></div><div class="line">用来处理send_error抛出的错误信息并返回给浏览器错误信息页面。可以重写此方法来定制自己的错误显示页面。</div></pre></td></tr></table></figure></p>
+<p>class IndexHandler(RequestHandler):<br>    def get(self):<br>        err_code = self.get_argument(“code”, None) # 注意返回的是unicode字符串，下同<br>        err_title = self.get_argument(“title”, “”)<br>        err_content = self.get_argument(“content”, “”)<br>        if err_code:<br>            self.send_error(err_code, title=err_title, content=err_content)<br>        else:<br>            self.write(“主页”)</p>
+<pre><code>def write_error(self, status_code, **kwargs):
+    self.write(u&quot;&lt;h1&gt;出错了，程序员GG正在赶过来！&lt;/h1&gt;&quot;)
+    self.write(u&quot;&lt;p&gt;错误名：%s&lt;/p&gt;&quot; % kwargs[&quot;title&quot;])
+    self.write(u&quot;&lt;p&gt;错误详情：%s&lt;/p&gt;&quot; % kwargs[&quot;content&quot;])
+</code></pre><p>```        </p>
+]]></content>
+      
+        <categories>
+            
+            <category> 后端 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Tornado </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[tornado-输入]]></title>
       <url>/2018/04/18/tornado04/</url>
       <content type="html"><![CDATA[<p>利用HTTP协议向服务器传参的途径</p>
