@@ -3,7 +3,7 @@ layout: post
 title: "Hybrid App 数据存储及ListView的应用"
 author: zhouzhaoxin
 categories: ["APP"]
-image: assets/images/17.jpg
+image: assets/images/1.jpg
 comments: false
 ---
 AppCan是Hybrid App开发框架即混合开发框架,由官方提供底层功能使用API

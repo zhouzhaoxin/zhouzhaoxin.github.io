@@ -3,7 +3,7 @@ layout: post
 title: "Spring Boot踩坑之路二"
 author: zhouzhaoxin
 categories: ["后端"]
-image: assets/images/17.jpg
+image: assets/images/10.jpg
 comments: false
 ---
 上篇文章使用Maven构建项目并成功运行hello，让我初步感受Spring Boot的强大。本次我将使用更优雅的方式创建Spring Boot项目并学习它对数据库的相关操作

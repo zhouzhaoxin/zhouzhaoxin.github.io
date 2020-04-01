@@ -3,7 +3,7 @@ layout: post
 title: "Spring Boot踩坑之路一"
 author: zhouzhaoxin
 categories: ["后端"]
-image: assets/images/17.jpg
+image: assets/images/11.jpg
 comments: false
 ---
 > Takes an opinionated view of building production-ready Spring applications. Spring Boot favors convention over configuration and is designed to get you up and running as quickly as possible.

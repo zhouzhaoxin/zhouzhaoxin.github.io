@@ -4,7 +4,7 @@ title: "Missyo"
 description: "学习·生活·反思"
 logo: 'assets/images/logo.png'
 favicon: 'assets/images/logo.png'
-baseurl: /
+#baseurl:
 google_analytics: 'UA-46278016-1'
 disqus: 'demowebsite'
 mailchimp-list: 'https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b'
@@ -16,11 +16,11 @@ authors:
   zhouzhaoxin:
     name: zhouzhaoxin 
     display_name: zhouzhaoxin 
-    gravatar: e56154546cf4be74e393c62d1ae9f9d4
-    email: wowthemesnet@gmail.com
-    web: https://www.wowthemes.net
+    gravatar: 1fc7f3d27b80b4bb329ba3b3548f266c
+    email: singleorb@gmail.com
+    web: https://www.missyo.vip
     #twitter: https://twitter.com/wowthemesnet
-    description: "Author of Mediumish, a Bootstrap Medium styled template available for WordPress, HTML, Ghost and Jekyll. You are currently previewing Jekyll template demo."
+    description: "主攻python，喜欢读书，喜欢摄影，芒格的忠实追随者。关注各个领域发展，取长补短，擅长结合多学科技术解决问题"
 
 # Plugins
 plugins:

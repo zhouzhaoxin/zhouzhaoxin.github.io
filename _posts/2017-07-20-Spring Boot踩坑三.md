@@ -3,7 +3,7 @@ layout: post
 title: "Spring Boot踩坑之路三"
 author: zhouzhaoxin
 categories: ["后端"]
-image: assets/images/17.jpg
+image: assets/images/8.jpg
 comments: false
 ---
 使用JPA进行CRUD以及IDEA 中 Devtools热部署配置

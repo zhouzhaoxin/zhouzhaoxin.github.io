@@ -3,7 +3,7 @@ layout: post
 title: "Hybrid App 关闭页面和listview动态加载数据"
 author: zhouzhaoxin
 categories: ["APP"]
-image: assets/images/17.jpg
+image: assets/images/3.jpg
 comments: false
 ---
 AppCan 的页面是由两个HTML组成，如果要完全关闭的话需要在主HTML eg.index.html中关闭,关闭方法：

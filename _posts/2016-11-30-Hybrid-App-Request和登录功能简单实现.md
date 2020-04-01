@@ -3,7 +3,7 @@ layout: post
 title: "Hybrid App Request和登录功能简单实现"
 author: zhouzhaoxin
 categories: ["APP"]
-image: assets/images/17.jpg
+image: assets/images/2.jpg
 comments: false
 ---
 记录在apcan中对数据的请求获取
