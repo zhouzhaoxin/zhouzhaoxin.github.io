@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" href="/missyo/assets/images/logo.png">
+
+<title>Spring Boot踩坑之路一 | missyo</title>
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Spring Boot踩坑之路一 | Missyo</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Spring Boot踩坑之路一" />
+<meta name="author" content="zhouzhaoxin" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Takes an opinionated view of building production-ready Spring applications. Spring Boot favors convention over configuration and is designed to get you up and running as quickly as possible." />
+<meta property="og:description" content="Takes an opinionated view of building production-ready Spring applications. Spring Boot favors convention over configuration and is designed to get you up and running as quickly as possible." />
+<link rel="canonical" href="http://localhost:4000/missyo/Spring-Boot%E8%B8%A9%E5%9D%91%E4%B8%80/" />
+<meta property="og:url" content="http://localhost:4000/missyo/Spring-Boot%E8%B8%A9%E5%9D%91%E4%B8%80/" />
+<meta property="og:site_name" content="Missyo" />
+<meta property="og:image" content="http://localhost:4000/missyo/assets/images/17.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-02-05T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/missyo/Spring-Boot%E8%B8%A9%E5%9D%91%E4%B8%80/","headline":"Spring Boot踩坑之路一","datePublished":"2017-02-05T00:00:00+08:00","dateModified":"2017-02-05T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/missyo/assets/images/logo.png"},"name":"zhouzhaoxin"},"image":"http://localhost:4000/missyo/assets/images/17.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/missyo/Spring-Boot%E8%B8%A9%E5%9D%91%E4%B8%80/"},"author":{"@type":"Person","name":"zhouzhaoxin"},"description":"Takes an opinionated view of building production-ready Spring applications. Spring Boot favors convention over configuration and is designed to get you up and running as quickly as possible.","@type":"BlogPosting","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+<link href="/missyo/assets/css/screen.css" rel="stylesheet">
+
+<link href="/missyo/assets/css/main.css" rel="stylesheet">
+
+<script src="/missyo/assets/js/jquery.min.js"></script>
+
+</head>
+
+
+
+
+<body class="layout-post">
+	<!-- defer loading of font and font awesome -->
+	<noscript id="deferred-styles">
+		<link href="https://fonts.googleapis.com/css?family=Righteous%7CMerriweather:300,300i,400,400i,700,700i" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</noscript>
+
+
+<!-- Begin Menu Navigation
+================================================== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top mediumnavigation nav-down">
+
+    <div class="container pr-0">
+
+    <!-- Begin Logo -->
+    <a class="navbar-brand" href="/missyo/">
+    <img src="/missyo/assets/images/logo.png" alt="missyo">
+    </a>
+    <!-- End Logo -->
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMediumish" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMediumish">
+
+        <!-- Begin Menu -->
+
+            <ul class="navbar-nav ml-auto">
+
+                
+                <li class="nav-item">
+                
+                <a class="nav-link" href="/missyo/index.html">博客</a>
+                </li>
+
+<!--                <li class="nav-item">-->
+<!--                <a class="nav-link" href="/missyo/about">关于我</a>-->
+<!--                </li>-->
+
+                <script src="/missyo/assets/js/lunr.js"></script>
+
+
+<style>
+    .lunrsearchresult .title {color: #d9230f;}
+    .lunrsearchresult .url {color: silver;}
+    .lunrsearchresult a {display: block; color: #777;}
+    .lunrsearchresult a:hover, .lunrsearchresult a:focus {text-decoration: none;}
+    .lunrsearchresult a:hover .title {text-decoration: underline;}
+</style>
+
+
+<form class="bd-search" onSubmit="return lunr_search(document.getElementById('lunrsearch').value);">
+    <input type="text" class="form-control text-small launch-modal-search" id="lunrsearch" name="q" maxlength="255" value="" placeholder="点击回车搜索..."/>
+</form>
+
+<div id="lunrsearchresults">
+    <ul></ul>
+</div>
+
+<script src="/missyo/assets/js/lunrsearchengine.js"></script>
+
+            </ul>
+
+        <!-- End Menu -->
+
+    </div>
+
+    </div>
+</nav>
+<!-- End Navigation
+================================================== -->
+
+<div class="site-content">
+
+<div class="container">
+
+<!-- Site Title
+================================================== -->
+<div class="mainheading">
+    <h1 class="sitetitle">missyo</h1>
+    <p class="lead">
+        学习·生活·反思
+    </p>
+</div>
+
+<!-- Content
+================================================== -->
+<div class="main-content">
+    <!-- Begin Article
+================================================== -->
+<div class="container">
+    <div class="row">
+
+        <!-- Post Share -->
+        <div class="col-md-2 pl-0">
+            <div class="share sticky-top sticky-top-offset">
+    <p>
+        分享
+    </p>
+    <ul>
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=Spring Boot踩坑之路一&url=http://localhost:4000/missyo/Spring-Boot%E8%B8%A9%E5%9D%91%E4%B8%80/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=http://localhost:4000/missyo/Spring-Boot%E8%B8%A9%E5%9D%91%E4%B8%80/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:4000/missyo/Spring-Boot%E8%B8%A9%E5%9D%91%E4%B8%80/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </li>
+
+    </ul>
+    
+</div>
+
+        </div>
+
+        <!-- Post -->
+        
+
+        <div class="col-md-9 flex-first flex-md-unordered">
+            <div class="mainheading">
+
+                <!-- Author Box -->
+                
+                <div class="row post-top-meta">
+                    <div class="col-xs-12 col-md-3 col-lg-2 text-center text-md-left mb-4 mb-md-0">
+                        
+                        <img class="author-thumb" src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&d=mm&r=x" alt="zhouzhaoxin">
+                        
+                    </div>
+                    <div class="col-xs-12 col-md-9 col-lg-10 text-center text-md-left">
+                        <a target="_blank" class="link-dark" href="https://www.wowthemes.net">zhouzhaoxin</a><a target="_blank" href="" class="btn follow">Follow</a>
+                        <span class="author-description">Author of Mediumish, a Bootstrap Medium styled template available for WordPress, HTML, Ghost and Jekyll. You are currently previewing Jekyll template demo.</span>
+                    </div>
+                </div>
+                
+
+                <!-- Post Title -->
+                <h1 class="posttitle">Spring Boot踩坑之路一</h1>
+
+            </div>
+
+            <!-- Adsense if enabled from _config.yml (change your pub id and slot) -->
+            
+            <!-- End Adsense -->
+
+            <!-- Post Featured Image -->
+            
+
+            
+            <img class="featured-image img-fluid" src="/missyo/assets/images/17.jpg" alt="Spring Boot踩坑之路一">
+            
+
+            
+            <!-- End Featured Image -->
+
+            <!-- Post Content -->
+            <div class="article-post">
+                <!-- Toc if any -->
+                
+                <!-- End Toc -->
+                <blockquote>
+  <p>Takes an opinionated view of building production-ready Spring applications. Spring Boot favors convention over configuration and is designed to get you up and running as quickly as possible.</p>
+</blockquote>
+
+<p>旨在简化创建产品级的 Spring应用和服务。Spring Boot 引导优先于配置，它可以让你避免繁杂的配置，尽可能的帮助你快速建站。</p>
+
+<h2 id="为什么使用spring-boot">为什么使用Spring Boot</h2>
+<p>经过十多年的发展Spring家族已经壮大，要灵活使用Spring家族的产品已经变得有些困难，尤其是要维护一大堆的配置文件，在项目开发中令人头疼。Spring Boot解决了这个问题，并大大简化了我们的开发成本</p>
+
+<h2 id="其优点如下">其优点如下:</h2>
+<ul>
+  <li>不用看一大坨的xml。用java config可以让你很容易明白一些框架的关键</li>
+  <li>Spring Boot 要解决的问题, 精简配置是一方面, 另外一方面是如何方便的让spring生态圈和其他工具链整合(比如redis, email, elecsearch)</li>
+  <li>配合各种starter使用，基本上可以做到自动化配置</li>
+  <li>配合Maven或Gradle等构件工具打成Jar包后，Java -jar 简化部署运行</li>
+</ul>
+
+<h2 id="建立maven-web项目">建立maven web项目</h2>
+<p>使用maven建立web项目，并参考官方文档进行版本选择和pom配置</p>
+
+<p>官方maven配置，请根据需求选择版本</p>
+
+<p>POM中添加parent标签
+添加parent后添加相关依赖不需要version</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;parent&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.4.2.RELEASE<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/parent&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="添加依赖">添加依赖</h2>
+<p>web工程的依赖，包括spring mvc tomcat等，spring boot会在需要时使用</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="添加插件">添加插件</h2>
+<p>用来在main方法中启动工程</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="nt">&lt;plugins&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin <span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;/plugin&gt;</span>
+<span class="nt">&lt;/plugins&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<h2 id="编写代码-hello-world">编写代码 HELLO WORLD</h2>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="c1">// 其中@SpringBootApplication申明让spring boot自动给程序进行必要的配置，等价于使用@Configuration，@EnableAutoConfiguration和@ComponentScan</span>
+<span class="nd">@RestController</span>
+<span class="nd">@SpringBootApplication</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorld</span> <span class="o">{</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"Hello World"</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">HelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">,</span><span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>检验成果
+运行main函数之后访问http://localhost:8080/即可看到结果</p>
+
+<h2 id="我遇到的问题">我遇到的问题</h2>
+<p>问题出现在我建立maven项目编写java代码的时候在默认包中写的application类，并没有建立包。这种做法让Spring Boot每次都会扫描默认类及下属的所有类，浪费大量时间。所以在启动时会报警告，启动不成功</p>
+
+<p>Your Application class should be placed in a specific package and not in the default (top-level) package. For example, put it in com.example and place all your application code in this package or in sub-packages like com.example.foo and com.example.bar.</p>
+
+<p>Placing your Application class in the default package, i.e. directly in src/main/java isn’t a good idea and it will almost certainly cause your application to fail to start. If you do so, you should see this warning:</p>
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>** WARNING ** : Your ApplicationContext is unlikely to start due to a @ComponentScan of the default package.
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+            </div>
+
+            <!-- Rating -->
+            
+
+            <!-- Post Date -->
+            <p>
+            <small>
+                <span class="post-date"><time class="post-date" datetime="2017-02-05">05 Feb 2017</time></span>           
+                
+                </small>
+            </p>
+
+            <!-- Post Categories -->
+            <div class="after-post-cats">
+                <ul class="tags mb-4">
+                    
+                    
+                    <li>
+                        <a class="smoothscroll" href="/missyo/categories#后端">后端</a>
+                    </li>
+                    
+                </ul>
+            </div>
+            <!-- End Categories -->
+
+            <!-- Post Tags -->
+            <div class="after-post-tags">
+                <ul class="tags">
+                    
+                    
+                </ul>
+            </div>
+            <!-- End Tags -->
+
+            <!-- Prev/Next -->
+            <div class="row PageNavigation d-flex justify-content-between font-weight-bold">
+            
+            <a class="prev d-block col-md-6" href="/missyo//Java%E8%99%9A%E6%8B%9F%E6%9C%BA/"> &laquo; Java虚拟机</a>
+            
+            
+            <a class="next d-block col-md-6 text-lg-right" href="/missyo//Spring-Boot%E8%B8%A9%E5%9D%91%E4%BA%8C/">Spring Boot踩坑之路二 &raquo; </a>
+            
+            <div class="clearfix"></div>
+            </div>
+            <!-- End Categories -->
+
+        </div>
+        <!-- End Post -->
+
+    </div>
+</div>
+<!-- End Article
+================================================== -->
+
+<!-- Begin Comments
+================================================== -->
+
+<!--End Comments
+================================================== -->
+
+<!-- Review with LD-JSON, adapt it for your needs if you like, but make sure you test the generated HTML source code first: 
+https://search.google.com/structured-data/testing-tool/u/0/
+================================================== -->
+
+</div>
+
+
+<!-- Bottom Alert Bar
+================================================== -->
+<!--<div class="alertbar">-->
+<!--	<div class="container text-center">-->
+<!--		<span><img src="/missyo/assets/images/logo.png" alt="Missyo"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>-->
+<!--        <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>-->
+<!--            <div class="mc-field-group">-->
+<!--            <input type="email" placeholder="Email" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>-->
+<!--            <input type="submit" value="Subscribe" name="subscribe" class="heart">-->
+<!--            </div>-->
+<!--        </form>-->
+<!--	</div>-->
+<!--</div>-->
+
+    
+</div>
+
+<!-- Categories Jumbotron
+================================================== -->
+<div class="jumbotron fortags">
+	<div class="d-md-flex h-100">
+		<div class="col-md-4 transpdark align-self-center text-center h-100">
+            <div class="d-md-flex align-items-center justify-content-center h-100">
+                <h2 class="d-md-block align-self-center py-1 font-weight-light">探索 <span class="d-none d-md-inline">→</span></h2>
+            </div>
+		</div>
+		<div class="col-md-8 p-5 align-self-center text-center">
+            
+            
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#APP">APP (3)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#后端">后端 (11)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#数据库">数据库 (2)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#算法">算法 (18)</a>
+                
+            
+            
+		</div>
+	</div>
+</div>
+
+<!-- Begin Footer
+================================================== -->
+<!--<footer class="footer">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-6 col-sm-6 text-center text-lg-left">-->
+<!--                Copyright © 2020 missyo -->
+<!--            </div>-->
+<!--&lt;!&ndash;            <div class="col-md-6 col-sm-6 text-center text-lg-right">    &ndash;&gt;-->
+<!--&lt;!&ndash;                <a target="_blank" href="https://www.wowthemes.net/mediumish-free-jekyll-template/">Mediumish Jekyll Theme</a> by WowThemes.net&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</footer>-->
+<!-- End Footer
+================================================== -->
+
+</div> <!-- /.site-content -->
+
+<!-- Scripts
+================================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+<script src="/missyo/assets/js/mediumish.js"></script>
+
+
+
+<script src="/missyo/assets/js/ie10-viewport-bug-workaround.js"></script> 
+
+
+<script id="dsq-count-scr" src="//demowebsite.disqus.com/count.js"></script>
+
+
+</body>
+</html>

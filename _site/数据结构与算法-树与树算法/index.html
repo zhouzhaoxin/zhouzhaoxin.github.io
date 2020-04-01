@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" href="/missyo/assets/images/logo.png">
+
+<title>数据结构与算法-树与树算法 | missyo</title>
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>数据结构与算法-树与树算法 | Missyo</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="数据结构与算法-树与树算法" />
+<meta name="author" content="zhouzhaoxin" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="树（英语：tree）是一种抽象数据类型（ADT）或是实作这种抽象数据类型的数据结构，用来模拟具有树状结构性质的数据集合。它是由n（n&gt;=1）个有限节点组成一个具有层次关系的集合。把它叫做“树”是因为它看起来像一棵倒挂的树，也就是说它是根朝上，而叶朝下的。它具有以下的特点：" />
+<meta property="og:description" content="树（英语：tree）是一种抽象数据类型（ADT）或是实作这种抽象数据类型的数据结构，用来模拟具有树状结构性质的数据集合。它是由n（n&gt;=1）个有限节点组成一个具有层次关系的集合。把它叫做“树”是因为它看起来像一棵倒挂的树，也就是说它是根朝上，而叶朝下的。它具有以下的特点：" />
+<link rel="canonical" href="http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%A0%91%E4%B8%8E%E6%A0%91%E7%AE%97%E6%B3%95/" />
+<meta property="og:url" content="http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%A0%91%E4%B8%8E%E6%A0%91%E7%AE%97%E6%B3%95/" />
+<meta property="og:site_name" content="Missyo" />
+<meta property="og:image" content="http://localhost:4000/missyo/assets/images/17.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-16T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%A0%91%E4%B8%8E%E6%A0%91%E7%AE%97%E6%B3%95/","headline":"数据结构与算法-树与树算法","datePublished":"2019-03-16T00:00:00+08:00","dateModified":"2019-03-16T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/missyo/assets/images/logo.png"},"name":"zhouzhaoxin"},"image":"http://localhost:4000/missyo/assets/images/17.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%A0%91%E4%B8%8E%E6%A0%91%E7%AE%97%E6%B3%95/"},"author":{"@type":"Person","name":"zhouzhaoxin"},"description":"树（英语：tree）是一种抽象数据类型（ADT）或是实作这种抽象数据类型的数据结构，用来模拟具有树状结构性质的数据集合。它是由n（n&gt;=1）个有限节点组成一个具有层次关系的集合。把它叫做“树”是因为它看起来像一棵倒挂的树，也就是说它是根朝上，而叶朝下的。它具有以下的特点：","@type":"BlogPosting","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+<link href="/missyo/assets/css/screen.css" rel="stylesheet">
+
+<link href="/missyo/assets/css/main.css" rel="stylesheet">
+
+<script src="/missyo/assets/js/jquery.min.js"></script>
+
+</head>
+
+
+
+
+<body class="layout-post">
+	<!-- defer loading of font and font awesome -->
+	<noscript id="deferred-styles">
+		<link href="https://fonts.googleapis.com/css?family=Righteous%7CMerriweather:300,300i,400,400i,700,700i" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</noscript>
+
+
+<!-- Begin Menu Navigation
+================================================== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top mediumnavigation nav-down">
+
+    <div class="container pr-0">
+
+    <!-- Begin Logo -->
+    <a class="navbar-brand" href="/missyo/">
+    <img src="/missyo/assets/images/logo.png" alt="missyo">
+    </a>
+    <!-- End Logo -->
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMediumish" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMediumish">
+
+        <!-- Begin Menu -->
+
+            <ul class="navbar-nav ml-auto">
+
+                
+                <li class="nav-item">
+                
+                <a class="nav-link" href="/missyo/index.html">博客</a>
+                </li>
+
+<!--                <li class="nav-item">-->
+<!--                <a class="nav-link" href="/missyo/about">关于我</a>-->
+<!--                </li>-->
+
+                <script src="/missyo/assets/js/lunr.js"></script>
+
+
+<style>
+    .lunrsearchresult .title {color: #d9230f;}
+    .lunrsearchresult .url {color: silver;}
+    .lunrsearchresult a {display: block; color: #777;}
+    .lunrsearchresult a:hover, .lunrsearchresult a:focus {text-decoration: none;}
+    .lunrsearchresult a:hover .title {text-decoration: underline;}
+</style>
+
+
+<form class="bd-search" onSubmit="return lunr_search(document.getElementById('lunrsearch').value);">
+    <input type="text" class="form-control text-small launch-modal-search" id="lunrsearch" name="q" maxlength="255" value="" placeholder="点击回车搜索..."/>
+</form>
+
+<div id="lunrsearchresults">
+    <ul></ul>
+</div>
+
+<script src="/missyo/assets/js/lunrsearchengine.js"></script>
+
+            </ul>
+
+        <!-- End Menu -->
+
+    </div>
+
+    </div>
+</nav>
+<!-- End Navigation
+================================================== -->
+
+<div class="site-content">
+
+<div class="container">
+
+<!-- Site Title
+================================================== -->
+<div class="mainheading">
+    <h1 class="sitetitle">missyo</h1>
+    <p class="lead">
+        学习·生活·反思
+    </p>
+</div>
+
+<!-- Content
+================================================== -->
+<div class="main-content">
+    <!-- Begin Article
+================================================== -->
+<div class="container">
+    <div class="row">
+
+        <!-- Post Share -->
+        <div class="col-md-2 pl-0">
+            <div class="share sticky-top sticky-top-offset">
+    <p>
+        分享
+    </p>
+    <ul>
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=数据结构与算法-树与树算法&url=http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%A0%91%E4%B8%8E%E6%A0%91%E7%AE%97%E6%B3%95/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%A0%91%E4%B8%8E%E6%A0%91%E7%AE%97%E6%B3%95/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E6%A0%91%E4%B8%8E%E6%A0%91%E7%AE%97%E6%B3%95/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </li>
+
+    </ul>
+    
+</div>
+
+        </div>
+
+        <!-- Post -->
+        
+
+        <div class="col-md-9 flex-first flex-md-unordered">
+            <div class="mainheading">
+
+                <!-- Author Box -->
+                
+                <div class="row post-top-meta">
+                    <div class="col-xs-12 col-md-3 col-lg-2 text-center text-md-left mb-4 mb-md-0">
+                        
+                        <img class="author-thumb" src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&d=mm&r=x" alt="zhouzhaoxin">
+                        
+                    </div>
+                    <div class="col-xs-12 col-md-9 col-lg-10 text-center text-md-left">
+                        <a target="_blank" class="link-dark" href="https://www.wowthemes.net">zhouzhaoxin</a><a target="_blank" href="" class="btn follow">Follow</a>
+                        <span class="author-description">Author of Mediumish, a Bootstrap Medium styled template available for WordPress, HTML, Ghost and Jekyll. You are currently previewing Jekyll template demo.</span>
+                    </div>
+                </div>
+                
+
+                <!-- Post Title -->
+                <h1 class="posttitle">数据结构与算法-树与树算法</h1>
+
+            </div>
+
+            <!-- Adsense if enabled from _config.yml (change your pub id and slot) -->
+            
+            <!-- End Adsense -->
+
+            <!-- Post Featured Image -->
+            
+
+            
+            <img class="featured-image img-fluid" src="/missyo/assets/images/17.jpg" alt="数据结构与算法-树与树算法">
+            
+
+            
+            <!-- End Featured Image -->
+
+            <!-- Post Content -->
+            <div class="article-post">
+                <!-- Toc if any -->
+                
+                <!-- End Toc -->
+                <p>树（英语：tree）是一种抽象数据类型（ADT）或是实作这种抽象数据类型的数据结构，用来模拟具有树状结构性质的数据集合。它是由n（n&gt;=1）个有限节点组成一个具有层次关系的集合。把它叫做“树”是因为它看起来像一棵倒挂的树，也就是说它是根朝上，而叶朝下的。它具有以下的特点：</p>
+
+<ul>
+  <li>每个节点有零个或多个子节点；</li>
+  <li>没有父节点的节点称为根节点；</li>
+  <li>每一个非根节点有且只有一个父节点；</li>
+  <li>除了根节点外，每个子节点可以分为多个不相交的子树；
+比如说：</li>
+</ul>
+
+<p><img src="/missyo/assets/images/algorithm/tree.png" alt="maven" />
+<img src="/missyo/assets/images/algorithm/Treedatastructure.png" alt="maven" /></p>
+
+<h2 id="树的术语">树的术语</h2>
+<ul>
+  <li>节点的度：一个节点含有的子树的个数称为该节点的度；</li>
+  <li>树的度：一棵树中，最大的节点的度称为树的度；</li>
+  <li>叶节点或终端节点：度为零的节点；</li>
+  <li>父亲节点或父节点：若一个节点含有子节点，则这个节点称为其子节点的父节点；</li>
+  <li>孩子节点或子节点：一个节点含有的子树的根节点称为该节点的子节点；</li>
+  <li>兄弟节点：具有相同父节点的节点互称为兄弟节点；</li>
+  <li>节点的层次：从根开始定义起，根为第1层，根的子节点为第2层，以此类推；</li>
+  <li>树的高度或深度：树中节点的最大层次；</li>
+  <li>堂兄弟节点：父节点在同一层的节点互为堂兄弟；</li>
+  <li>节点的祖先：从根到该节点所经分支上的所有节点；</li>
+  <li>子孙：以某节点为根的子树中任一节点都称为该节点的子孙。</li>
+  <li>森林：由m（m&gt;=0）棵互不相交的树的集合称为森林；
+    <h2 id="树的种类">树的种类</h2>
+  </li>
+  <li>无序树：树中任意节点的子节点之间没有顺序关系，这种树称为无序树，也称为自由树；</li>
+  <li>有序树：树中任意节点的子节点之间有顺序关系，这种树称为有序树；
+    <ul>
+      <li>二叉树：每个节点最多含有两个子树的树称为二叉树；</li>
+      <li>完全二叉树：对于一颗二叉树，假设其深度为d(d&gt;1)。除了第d层外，其它各层的节点数目均已达最大值，且第d层所有节点从左向右连续地紧密排列，这样的二叉树被称为完全二叉树，其中满二叉树的定义是所有叶节点都在最底层的完全二叉树;</li>
+      <li>平衡二叉树（AVL树）：当且仅当任何节点的两棵子树的高度差不大于1的二叉树；</li>
+      <li>排序二叉树（二叉查找树（英语：Binary Search Tree），也称二叉搜索树、有序二叉树）；</li>
+      <li>霍夫曼树（用于信息编码）：带权路径最短的二叉树称为哈夫曼树或最优二叉树；</li>
+      <li>B树：一种对读写操作进行优化的自平衡的二叉查找树，能够保持数据有序，拥有多余两个子树。</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="树的存储与表示">树的存储与表示</h2>
+<p>顺序存储：将数据结构存储在固定的数组中，然在遍历速度上有一定的优势，但因所占空间比较大，是非主流二叉树。二叉树通常以链式存储。</p>
+
+<p><img src="/missyo/assets/images/algorithm/树的顺序存储.png" alt="maven" /></p>
+
+<p>链式存储：</p>
+
+<p><img src="/missyo/assets/images/algorithm/树的链式存储.png" alt="maven" /></p>
+
+<p>由于对节点的个数无法掌握，常见树的存储表示都转换成二叉树进行处理，子节点个数最多为2</p>
+
+<p>常见的一些树的应用场景</p>
+<ul>
+  <li>xml，html等，那么编写这些东西的解析器的时候，不可避免用到树</li>
+  <li>路由协议就是使用了树的算法</li>
+  <li>mysql数据库索引</li>
+  <li>文件系统的目录结构</li>
+  <li>所以很多经典的AI算法其实都是树搜索，此外机器学习中的decision tree也是树结构</li>
+</ul>
+
+
+            </div>
+
+            <!-- Rating -->
+            
+
+            <!-- Post Date -->
+            <p>
+            <small>
+                <span class="post-date"><time class="post-date" datetime="2019-03-16">16 Mar 2019</time></span>           
+                
+                </small>
+            </p>
+
+            <!-- Post Categories -->
+            <div class="after-post-cats">
+                <ul class="tags mb-4">
+                    
+                    
+                    <li>
+                        <a class="smoothscroll" href="/missyo/categories#算法">算法</a>
+                    </li>
+                    
+                </ul>
+            </div>
+            <!-- End Categories -->
+
+            <!-- Post Tags -->
+            <div class="after-post-tags">
+                <ul class="tags">
+                    
+                    
+                </ul>
+            </div>
+            <!-- End Tags -->
+
+            <!-- Prev/Next -->
+            <div class="row PageNavigation d-flex justify-content-between font-weight-bold">
+            
+            <a class="prev d-block col-md-6" href="/missyo//Soket%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/"> &laquo; Soket理解</a>
+            
+            
+            <a class="next d-block col-md-6 text-lg-right" href="/missyo//%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E4%BA%8C%E5%8F%89%E6%A0%91/">数据结构与算法-二叉树 &raquo; </a>
+            
+            <div class="clearfix"></div>
+            </div>
+            <!-- End Categories -->
+
+        </div>
+        <!-- End Post -->
+
+    </div>
+</div>
+<!-- End Article
+================================================== -->
+
+<!-- Begin Comments
+================================================== -->
+
+<!--End Comments
+================================================== -->
+
+<!-- Review with LD-JSON, adapt it for your needs if you like, but make sure you test the generated HTML source code first: 
+https://search.google.com/structured-data/testing-tool/u/0/
+================================================== -->
+
+</div>
+
+
+<!-- Bottom Alert Bar
+================================================== -->
+<!--<div class="alertbar">-->
+<!--	<div class="container text-center">-->
+<!--		<span><img src="/missyo/assets/images/logo.png" alt="Missyo"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>-->
+<!--        <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>-->
+<!--            <div class="mc-field-group">-->
+<!--            <input type="email" placeholder="Email" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>-->
+<!--            <input type="submit" value="Subscribe" name="subscribe" class="heart">-->
+<!--            </div>-->
+<!--        </form>-->
+<!--	</div>-->
+<!--</div>-->
+
+    
+</div>
+
+<!-- Categories Jumbotron
+================================================== -->
+<div class="jumbotron fortags">
+	<div class="d-md-flex h-100">
+		<div class="col-md-4 transpdark align-self-center text-center h-100">
+            <div class="d-md-flex align-items-center justify-content-center h-100">
+                <h2 class="d-md-block align-self-center py-1 font-weight-light">探索 <span class="d-none d-md-inline">→</span></h2>
+            </div>
+		</div>
+		<div class="col-md-8 p-5 align-self-center text-center">
+            
+            
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#APP">APP (3)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#后端">后端 (11)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#数据库">数据库 (2)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#算法">算法 (18)</a>
+                
+            
+            
+		</div>
+	</div>
+</div>
+
+<!-- Begin Footer
+================================================== -->
+<!--<footer class="footer">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-6 col-sm-6 text-center text-lg-left">-->
+<!--                Copyright © 2020 missyo -->
+<!--            </div>-->
+<!--&lt;!&ndash;            <div class="col-md-6 col-sm-6 text-center text-lg-right">    &ndash;&gt;-->
+<!--&lt;!&ndash;                <a target="_blank" href="https://www.wowthemes.net/mediumish-free-jekyll-template/">Mediumish Jekyll Theme</a> by WowThemes.net&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</footer>-->
+<!-- End Footer
+================================================== -->
+
+</div> <!-- /.site-content -->
+
+<!-- Scripts
+================================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+<script src="/missyo/assets/js/mediumish.js"></script>
+
+
+
+<script src="/missyo/assets/js/ie10-viewport-bug-workaround.js"></script> 
+
+
+<script id="dsq-count-scr" src="//demowebsite.disqus.com/count.js"></script>
+
+
+</body>
+</html>

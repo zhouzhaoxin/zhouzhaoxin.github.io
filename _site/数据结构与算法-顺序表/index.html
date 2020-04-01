@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" href="/missyo/assets/images/logo.png">
+
+<title>数据结构与算法-顺序表 | missyo</title>
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>数据结构与算法-顺序表 | Missyo</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="数据结构与算法-顺序表" />
+<meta name="author" content="zhouzhaoxin" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="在程序中，经常需要将一组（通常是同为某个类型的）数据元素作为整体管理和使用，需要创建这种元素组，用变量记录它们，传进传出函数等。一组数据中包含的元素个数可能发生变化（可以增加或删除元素）。" />
+<meta property="og:description" content="在程序中，经常需要将一组（通常是同为某个类型的）数据元素作为整体管理和使用，需要创建这种元素组，用变量记录它们，传进传出函数等。一组数据中包含的元素个数可能发生变化（可以增加或删除元素）。" />
+<link rel="canonical" href="http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%A1%BA%E5%BA%8F%E8%A1%A8/" />
+<meta property="og:url" content="http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%A1%BA%E5%BA%8F%E8%A1%A8/" />
+<meta property="og:site_name" content="Missyo" />
+<meta property="og:image" content="http://localhost:4000/missyo/assets/images/17.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-10-19T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%A1%BA%E5%BA%8F%E8%A1%A8/","headline":"数据结构与算法-顺序表","datePublished":"2017-10-19T00:00:00+08:00","dateModified":"2017-10-19T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/missyo/assets/images/logo.png"},"name":"zhouzhaoxin"},"image":"http://localhost:4000/missyo/assets/images/17.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%A1%BA%E5%BA%8F%E8%A1%A8/"},"author":{"@type":"Person","name":"zhouzhaoxin"},"description":"在程序中，经常需要将一组（通常是同为某个类型的）数据元素作为整体管理和使用，需要创建这种元素组，用变量记录它们，传进传出函数等。一组数据中包含的元素个数可能发生变化（可以增加或删除元素）。","@type":"BlogPosting","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+<link href="/missyo/assets/css/screen.css" rel="stylesheet">
+
+<link href="/missyo/assets/css/main.css" rel="stylesheet">
+
+<script src="/missyo/assets/js/jquery.min.js"></script>
+
+</head>
+
+
+
+
+<body class="layout-post">
+	<!-- defer loading of font and font awesome -->
+	<noscript id="deferred-styles">
+		<link href="https://fonts.googleapis.com/css?family=Righteous%7CMerriweather:300,300i,400,400i,700,700i" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</noscript>
+
+
+<!-- Begin Menu Navigation
+================================================== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top mediumnavigation nav-down">
+
+    <div class="container pr-0">
+
+    <!-- Begin Logo -->
+    <a class="navbar-brand" href="/missyo/">
+    <img src="/missyo/assets/images/logo.png" alt="missyo">
+    </a>
+    <!-- End Logo -->
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMediumish" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMediumish">
+
+        <!-- Begin Menu -->
+
+            <ul class="navbar-nav ml-auto">
+
+                
+                <li class="nav-item">
+                
+                <a class="nav-link" href="/missyo/index.html">博客</a>
+                </li>
+
+<!--                <li class="nav-item">-->
+<!--                <a class="nav-link" href="/missyo/about">关于我</a>-->
+<!--                </li>-->
+
+                <script src="/missyo/assets/js/lunr.js"></script>
+
+
+<style>
+    .lunrsearchresult .title {color: #d9230f;}
+    .lunrsearchresult .url {color: silver;}
+    .lunrsearchresult a {display: block; color: #777;}
+    .lunrsearchresult a:hover, .lunrsearchresult a:focus {text-decoration: none;}
+    .lunrsearchresult a:hover .title {text-decoration: underline;}
+</style>
+
+
+<form class="bd-search" onSubmit="return lunr_search(document.getElementById('lunrsearch').value);">
+    <input type="text" class="form-control text-small launch-modal-search" id="lunrsearch" name="q" maxlength="255" value="" placeholder="点击回车搜索..."/>
+</form>
+
+<div id="lunrsearchresults">
+    <ul></ul>
+</div>
+
+<script src="/missyo/assets/js/lunrsearchengine.js"></script>
+
+            </ul>
+
+        <!-- End Menu -->
+
+    </div>
+
+    </div>
+</nav>
+<!-- End Navigation
+================================================== -->
+
+<div class="site-content">
+
+<div class="container">
+
+<!-- Site Title
+================================================== -->
+<div class="mainheading">
+    <h1 class="sitetitle">missyo</h1>
+    <p class="lead">
+        学习·生活·反思
+    </p>
+</div>
+
+<!-- Content
+================================================== -->
+<div class="main-content">
+    <!-- Begin Article
+================================================== -->
+<div class="container">
+    <div class="row">
+
+        <!-- Post Share -->
+        <div class="col-md-2 pl-0">
+            <div class="share sticky-top sticky-top-offset">
+    <p>
+        分享
+    </p>
+    <ul>
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=数据结构与算法-顺序表&url=http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%A1%BA%E5%BA%8F%E8%A1%A8/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%A1%BA%E5%BA%8F%E8%A1%A8/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:4000/missyo/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E9%A1%BA%E5%BA%8F%E8%A1%A8/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </li>
+
+    </ul>
+    
+</div>
+
+        </div>
+
+        <!-- Post -->
+        
+
+        <div class="col-md-9 flex-first flex-md-unordered">
+            <div class="mainheading">
+
+                <!-- Author Box -->
+                
+                <div class="row post-top-meta">
+                    <div class="col-xs-12 col-md-3 col-lg-2 text-center text-md-left mb-4 mb-md-0">
+                        
+                        <img class="author-thumb" src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&d=mm&r=x" alt="zhouzhaoxin">
+                        
+                    </div>
+                    <div class="col-xs-12 col-md-9 col-lg-10 text-center text-md-left">
+                        <a target="_blank" class="link-dark" href="https://www.wowthemes.net">zhouzhaoxin</a><a target="_blank" href="" class="btn follow">Follow</a>
+                        <span class="author-description">Author of Mediumish, a Bootstrap Medium styled template available for WordPress, HTML, Ghost and Jekyll. You are currently previewing Jekyll template demo.</span>
+                    </div>
+                </div>
+                
+
+                <!-- Post Title -->
+                <h1 class="posttitle">数据结构与算法-顺序表</h1>
+
+            </div>
+
+            <!-- Adsense if enabled from _config.yml (change your pub id and slot) -->
+            
+            <!-- End Adsense -->
+
+            <!-- Post Featured Image -->
+            
+
+            
+            <img class="featured-image img-fluid" src="/missyo/assets/images/17.jpg" alt="数据结构与算法-顺序表">
+            
+
+            
+            <!-- End Featured Image -->
+
+            <!-- Post Content -->
+            <div class="article-post">
+                <!-- Toc if any -->
+                
+                <!-- End Toc -->
+                <p>在程序中，经常需要将一组（通常是同为某个类型的）数据元素作为整体管理和使用，需要创建这种元素组，用变量记录它们，传进传出函数等。一组数据中包含的元素个数可能发生变化（可以增加或删除元素）。</p>
+
+<p>对于这种需求，最简单的解决方案便是将这样一组元素看成一个序列，用元素在序列里的位置和顺序，表示实际应用中的某种有意义的信息，或者表示数据之间的某种关系。</p>
+
+<p>这样的一组序列元素的组织形式，我们可以将其抽象为线性表。一个线性表是某类元素的一个集合，还记录着元素之间的一种顺序关系。线性表是最基本的数据结构之一，在实际程序中应用非常广泛，它还经常被用作更复杂的数据结构的实现基础。</p>
+
+<p>根据线性表的实际存储方式，分为两种实现模型：</p>
+
+<ul>
+  <li>顺序表，将元素顺序地存放在一块连续的存储区里，元素间的顺序关系由它们的存储顺序自然表示。</li>
+  <li>链表，将元素存放在通过链接构造起来的一系列存储块中。</li>
+</ul>
+
+<h2 id="顺序表的基本形式">顺序表的基本形式</h2>
+<p><img src="/missyo/assets/images/algorithm/顺序表的两种基本形式.png" alt="maven" />
+图a表示的是顺序表的基本形式，数据元素本身连续存储，每个元素所占的存储单元大小固定相同，元素的下标是其逻辑地址，而元素存储的物理地址（实际内存地址）可以通过存储区的起始地址Loc (e0)加上逻辑地址（第i个元素）与存储单元大小（c）的乘积计算而得，即：</p>
+
+<p>Loc(ei) = Loc(e0) + c*i</p>
+
+<p>故，访问指定元素时无需从头遍历，通过计算便可获得对应地址，其时间复杂度为O(1)。</p>
+
+<p>如果元素的大小不统一，则须采用图b的元素外置的形式，将实际数据元素另行存储，而顺序表中各单元位置保存对应元素的地址信息（即链接）。由于每个链接所需的存储量相同，通过上述公式，可以计算出元素链接的存储位置，而后顺着链接找到实际存储的数据元素。注意，图b中的c不再是数据元素的大小，而是存储一个链接地址所需的存储量，这个量通常很小。</p>
+
+<p>图b这样的顺序表也被称为对实际数据的索引，这是最简单的索引结构。</p>
+
+<h2 id="顺序表的结构">顺序表的结构</h2>
+<p><img src="/missyo/assets/images/algorithm/顺序表的结构.png" alt="maven" /></p>
+
+<p>一个顺序表的完整信息包括两部分，一部分是表中的元素集合，另一部分是为实现正确操作而需记录的信息，即有关表的整体情况的信息，这部分信息主要包括元素存储区的容量和当前表中已有的元素个数两项。</p>
+
+<h2 id="顺序表的两种基本实现方式">顺序表的两种基本实现方式</h2>
+<p><img src="/missyo/assets/images/algorithm/顺序表的实现方式.png" alt="maven" />
+图a为一体式结构，存储表信息的单元与元素存储区以连续的方式安排在一块存储区里，两部分数据的整体形成一个完整的顺序表对象。</p>
+
+<p>一体式结构整体性强，易于管理。但是由于数据元素存储区域是表对象的一部分，顺序表创建后，元素存储区就固定了。</p>
+
+<p>图b为分离式结构，表对象里只保存与整个表有关的信息（即容量和元素个数），实际数据元素存放在另一个独立的元素存储区里，通过链接与基本表对象关联。</p>
+
+<h2 id="元素存储区替换">元素存储区替换</h2>
+<p>一体式结构由于顺序表信息区与数据区连续存储在一起，所以若想更换数据区，则只能整体搬迁，即整个顺序表对象（指存储顺序表的结构信息的区域）改变了。</p>
+
+<p>分离式结构若想更换数据区，只需将表信息区中的数据区链接地址更新即可，而该顺序表对象不变。</p>
+
+<h2 id="元素存储区扩充">元素存储区扩充</h2>
+<p>采用分离式结构的顺序表，若将数据区更换为存储空间更大的区域，则可以在不改变表对象的前提下对其数据存储区进行了扩充，所有使用这个表的地方都不必修改。只要程序的运行环境（计算机系统）还有空闲存储，这种表结构就不会因为满了而导致操作无法进行。人们把采用这种技术实现的顺序表称为动态顺序表，因为其容量可以在使用中动态变化。</p>
+
+<h2 id="扩充的两种策略">扩充的两种策略</h2>
+<ul>
+  <li>
+    <p>每次扩充增加固定数目的存储位置，如每次扩充增加10个元素位置，这种策略可称为线性增长。
+特点：节省空间，但是扩充操作频繁，操作次数多。</p>
+  </li>
+  <li>
+    <p>每次扩充容量加倍，如每次扩充增加一倍存储空间。
+特点：减少了扩充操作的执行次数，但可能会浪费空间资源。以空间换时间，推荐的方式。</p>
+  </li>
+</ul>
+
+<h2 id="顺序表的操作">顺序表的操作</h2>
+<h4 id="增加元素">增加元素</h4>
+<p>如图所示，为顺序表增加新元素111的三种方式
+<img src="/missyo/assets/images/algorithm/顺序表增加元素.png" alt="maven" />
+a. 尾端加入元素，时间复杂度为O(1)</p>
+
+<p>b. 非保序的加入元素（不常见），时间复杂度为O(1)</p>
+
+<p>c. 保序的元素加入，时间复杂度为O(n)</p>
+
+<h4 id="删除元素">删除元素</h4>
+<p><img src="/missyo/assets/images/algorithm/顺序表删除元素.png" alt="maven" />
+a. 删除表尾元素，时间复杂度为O(1)</p>
+
+<p>b. 非保序的元素删除（不常见），时间复杂度为O(1)</p>
+
+<p>c. 保序的元素删除，时间复杂度为O(n)</p>
+
+<h2 id="python中的顺序表">Python中的顺序表</h2>
+<p>Python中的list和tuple两种类型采用了顺序表的实现技术，具有前面讨论的顺序表的所有性质。</p>
+
+<p>tuple是不可变类型，即不变的顺序表，因此不支持改变其内部状态的任何操作，而其他方面，则与list的性质类似。</p>
+
+<h2 id="list的基本实现技术">list的基本实现技术</h2>
+<p>Python标准类型list就是一种元素个数可变的线性表，可以加入和删除元素，并在各种操作中维持已有元素的顺序（即保序），而且还具有以下行为特征：</p>
+
+<ul>
+  <li>基于下标（位置）的高效元素访问和更新，时间复杂度应该是O(1)；</li>
+  <li>为满足该特征，应该采用顺序表技术，表中元素保存在一块连续的存储区中。</li>
+</ul>
+
+<p>允许任意加入元素，而且在不断加入元素的过程中，表对象的标识（函数id得到的值）不变。
+为满足该特征，就必须能更换元素存储区，并且为保证更换存储区时list对象的标识id不变，只能采用分离式实现技术。</p>
+
+<p>在Python的官方实现中，list就是一种采用分离式技术实现的动态顺序表。这就是为什么用list.append(x) （或 list.insert(len(list), x)，即尾部插入）比在指定位置插入元素效率高的原因。</p>
+
+<p>在Python的官方实现中，list实现采用了如下的策略：在建立空表（或者很小的表）时，系统分配一块能容纳8个元素的存储区；在执行插入操作（insert或append）时，如果元素存储区满就换一块4倍大的存储区。但如果此时的表已经很大（目前的阀值为50000），则改变策略，采用加一倍的方法。引入这种改变策略的方式，是为了避免出现过多空闲的存储位置。</p>
+
+            </div>
+
+            <!-- Rating -->
+            
+
+            <!-- Post Date -->
+            <p>
+            <small>
+                <span class="post-date"><time class="post-date" datetime="2017-10-19">19 Oct 2017</time></span>           
+                
+                </small>
+            </p>
+
+            <!-- Post Categories -->
+            <div class="after-post-cats">
+                <ul class="tags mb-4">
+                    
+                    
+                    <li>
+                        <a class="smoothscroll" href="/missyo/categories#算法">算法</a>
+                    </li>
+                    
+                </ul>
+            </div>
+            <!-- End Categories -->
+
+            <!-- Post Tags -->
+            <div class="after-post-tags">
+                <ul class="tags">
+                    
+                    
+                </ul>
+            </div>
+            <!-- End Tags -->
+
+            <!-- Prev/Next -->
+            <div class="row PageNavigation d-flex justify-content-between font-weight-bold">
+            
+            <a class="prev d-block col-md-6" href="/missyo//%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%BC%95%E5%85%A5/"> &laquo; 数据结构与算法-引入</a>
+            
+            
+            <a class="next d-block col-md-6 text-lg-right" href="/missyo//%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95-%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8(%E4%B8%80)/">数据结构与算法-单向链表(一) &raquo; </a>
+            
+            <div class="clearfix"></div>
+            </div>
+            <!-- End Categories -->
+
+        </div>
+        <!-- End Post -->
+
+    </div>
+</div>
+<!-- End Article
+================================================== -->
+
+<!-- Begin Comments
+================================================== -->
+
+<!--End Comments
+================================================== -->
+
+<!-- Review with LD-JSON, adapt it for your needs if you like, but make sure you test the generated HTML source code first: 
+https://search.google.com/structured-data/testing-tool/u/0/
+================================================== -->
+
+</div>
+
+
+<!-- Bottom Alert Bar
+================================================== -->
+<!--<div class="alertbar">-->
+<!--	<div class="container text-center">-->
+<!--		<span><img src="/missyo/assets/images/logo.png" alt="Missyo"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>-->
+<!--        <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>-->
+<!--            <div class="mc-field-group">-->
+<!--            <input type="email" placeholder="Email" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>-->
+<!--            <input type="submit" value="Subscribe" name="subscribe" class="heart">-->
+<!--            </div>-->
+<!--        </form>-->
+<!--	</div>-->
+<!--</div>-->
+
+    
+</div>
+
+<!-- Categories Jumbotron
+================================================== -->
+<div class="jumbotron fortags">
+	<div class="d-md-flex h-100">
+		<div class="col-md-4 transpdark align-self-center text-center h-100">
+            <div class="d-md-flex align-items-center justify-content-center h-100">
+                <h2 class="d-md-block align-self-center py-1 font-weight-light">探索 <span class="d-none d-md-inline">→</span></h2>
+            </div>
+		</div>
+		<div class="col-md-8 p-5 align-self-center text-center">
+            
+            
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#APP">APP (3)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#后端">后端 (11)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#数据库">数据库 (2)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#算法">算法 (18)</a>
+                
+            
+            
+		</div>
+	</div>
+</div>
+
+<!-- Begin Footer
+================================================== -->
+<!--<footer class="footer">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-6 col-sm-6 text-center text-lg-left">-->
+<!--                Copyright © 2020 missyo -->
+<!--            </div>-->
+<!--&lt;!&ndash;            <div class="col-md-6 col-sm-6 text-center text-lg-right">    &ndash;&gt;-->
+<!--&lt;!&ndash;                <a target="_blank" href="https://www.wowthemes.net/mediumish-free-jekyll-template/">Mediumish Jekyll Theme</a> by WowThemes.net&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</footer>-->
+<!-- End Footer
+================================================== -->
+
+</div> <!-- /.site-content -->
+
+<!-- Scripts
+================================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+<script src="/missyo/assets/js/mediumish.js"></script>
+
+
+
+<script src="/missyo/assets/js/ie10-viewport-bug-workaround.js"></script> 
+
+
+<script id="dsq-count-scr" src="//demowebsite.disqus.com/count.js"></script>
+
+
+</body>
+</html>

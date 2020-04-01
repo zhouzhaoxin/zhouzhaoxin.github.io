@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" href="/missyo/assets/images/logo.png">
+
+<title>Java注解 | missyo</title>
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Java注解 | Missyo</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Java注解" />
+<meta name="author" content="zhouzhaoxin" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="学习注解最重要的就是弄清楚，为什么学习注解？学习注解的好处？学完能做什么？ 1、能够读懂别人写的代码，特别是框架相关的代码； 2、能让编程更加简洁，代码更加清晰；" />
+<meta property="og:description" content="学习注解最重要的就是弄清楚，为什么学习注解？学习注解的好处？学完能做什么？ 1、能够读懂别人写的代码，特别是框架相关的代码； 2、能让编程更加简洁，代码更加清晰；" />
+<link rel="canonical" href="http://localhost:4000/missyo/Java%E6%B3%A8%E8%A7%A3/" />
+<meta property="og:url" content="http://localhost:4000/missyo/Java%E6%B3%A8%E8%A7%A3/" />
+<meta property="og:site_name" content="Missyo" />
+<meta property="og:image" content="http://localhost:4000/missyo/assets/images/17.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-01-11T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/missyo/Java%E6%B3%A8%E8%A7%A3/","headline":"Java注解","datePublished":"2017-01-11T00:00:00+08:00","dateModified":"2017-01-11T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/missyo/assets/images/logo.png"},"name":"zhouzhaoxin"},"image":"http://localhost:4000/missyo/assets/images/17.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/missyo/Java%E6%B3%A8%E8%A7%A3/"},"author":{"@type":"Person","name":"zhouzhaoxin"},"description":"学习注解最重要的就是弄清楚，为什么学习注解？学习注解的好处？学完能做什么？ 1、能够读懂别人写的代码，特别是框架相关的代码； 2、能让编程更加简洁，代码更加清晰；","@type":"BlogPosting","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+<link href="/missyo/assets/css/screen.css" rel="stylesheet">
+
+<link href="/missyo/assets/css/main.css" rel="stylesheet">
+
+<script src="/missyo/assets/js/jquery.min.js"></script>
+
+</head>
+
+
+
+
+<body class="layout-post">
+	<!-- defer loading of font and font awesome -->
+	<noscript id="deferred-styles">
+		<link href="https://fonts.googleapis.com/css?family=Righteous%7CMerriweather:300,300i,400,400i,700,700i" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</noscript>
+
+
+<!-- Begin Menu Navigation
+================================================== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top mediumnavigation nav-down">
+
+    <div class="container pr-0">
+
+    <!-- Begin Logo -->
+    <a class="navbar-brand" href="/missyo/">
+    <img src="/missyo/assets/images/logo.png" alt="missyo">
+    </a>
+    <!-- End Logo -->
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMediumish" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMediumish">
+
+        <!-- Begin Menu -->
+
+            <ul class="navbar-nav ml-auto">
+
+                
+                <li class="nav-item">
+                
+                <a class="nav-link" href="/missyo/index.html">博客</a>
+                </li>
+
+<!--                <li class="nav-item">-->
+<!--                <a class="nav-link" href="/missyo/about">关于我</a>-->
+<!--                </li>-->
+
+                <script src="/missyo/assets/js/lunr.js"></script>
+
+
+<style>
+    .lunrsearchresult .title {color: #d9230f;}
+    .lunrsearchresult .url {color: silver;}
+    .lunrsearchresult a {display: block; color: #777;}
+    .lunrsearchresult a:hover, .lunrsearchresult a:focus {text-decoration: none;}
+    .lunrsearchresult a:hover .title {text-decoration: underline;}
+</style>
+
+
+<form class="bd-search" onSubmit="return lunr_search(document.getElementById('lunrsearch').value);">
+    <input type="text" class="form-control text-small launch-modal-search" id="lunrsearch" name="q" maxlength="255" value="" placeholder="点击回车搜索..."/>
+</form>
+
+<div id="lunrsearchresults">
+    <ul></ul>
+</div>
+
+<script src="/missyo/assets/js/lunrsearchengine.js"></script>
+
+            </ul>
+
+        <!-- End Menu -->
+
+    </div>
+
+    </div>
+</nav>
+<!-- End Navigation
+================================================== -->
+
+<div class="site-content">
+
+<div class="container">
+
+<!-- Site Title
+================================================== -->
+<div class="mainheading">
+    <h1 class="sitetitle">missyo</h1>
+    <p class="lead">
+        学习·生活·反思
+    </p>
+</div>
+
+<!-- Content
+================================================== -->
+<div class="main-content">
+    <!-- Begin Article
+================================================== -->
+<div class="container">
+    <div class="row">
+
+        <!-- Post Share -->
+        <div class="col-md-2 pl-0">
+            <div class="share sticky-top sticky-top-offset">
+    <p>
+        分享
+    </p>
+    <ul>
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=Java注解&url=http://localhost:4000/missyo/Java%E6%B3%A8%E8%A7%A3/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=http://localhost:4000/missyo/Java%E6%B3%A8%E8%A7%A3/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:4000/missyo/Java%E6%B3%A8%E8%A7%A3/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </li>
+
+    </ul>
+    
+</div>
+
+        </div>
+
+        <!-- Post -->
+        
+
+        <div class="col-md-9 flex-first flex-md-unordered">
+            <div class="mainheading">
+
+                <!-- Author Box -->
+                
+                <div class="row post-top-meta">
+                    <div class="col-xs-12 col-md-3 col-lg-2 text-center text-md-left mb-4 mb-md-0">
+                        
+                        <img class="author-thumb" src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&d=mm&r=x" alt="zhouzhaoxin">
+                        
+                    </div>
+                    <div class="col-xs-12 col-md-9 col-lg-10 text-center text-md-left">
+                        <a target="_blank" class="link-dark" href="https://www.wowthemes.net">zhouzhaoxin</a><a target="_blank" href="" class="btn follow">Follow</a>
+                        <span class="author-description">Author of Mediumish, a Bootstrap Medium styled template available for WordPress, HTML, Ghost and Jekyll. You are currently previewing Jekyll template demo.</span>
+                    </div>
+                </div>
+                
+
+                <!-- Post Title -->
+                <h1 class="posttitle">Java注解</h1>
+
+            </div>
+
+            <!-- Adsense if enabled from _config.yml (change your pub id and slot) -->
+            
+            <!-- End Adsense -->
+
+            <!-- Post Featured Image -->
+            
+
+            
+            <img class="featured-image img-fluid" src="/missyo/assets/images/17.jpg" alt="Java注解">
+            
+
+            
+            <!-- End Featured Image -->
+
+            <!-- Post Content -->
+            <div class="article-post">
+                <!-- Toc if any -->
+                
+                <!-- End Toc -->
+                <p>学习注解最重要的就是弄清楚，为什么学习注解？学习注解的好处？学完能做什么？
+1、能够读懂别人写的代码，特别是框架相关的代码；
+2、能让编程更加简洁，代码更加清晰；</p>
+
+<h2 id="基本概念">基本概念</h2>
+<p>注解是Java提供的一种 源程序中的元素关联任何信息和任何元数据的途径和方法。</p>
+
+<h2 id="按来源分类注解">按来源分类注解</h2>
+<ul>
+  <li>java自带注解—— @Override 覆盖了父类的方法、@Deprecation 表示方法已经过时、@Suppvisewarnings 用于通知java编译器忽略特定的编译警告</li>
+  <li>第三方注解—— 种类很多，Spring的@Resource Hibernate 的@Entity等等</li>
+  <li>自定义注解—— 自定义注解的结构：元注解（用来注解注解的）、@接口定义、无参无异常的成员方法的定义（成员类型受限：基本数据类型、String、枚举）</li>
+</ul>
+
+<h2 id="按照运行机制分类注解">按照运行机制分类注解</h2>
+<ul>
+  <li>源码注解——注解只在源码中存在，编译程.class文件时就不存在了</li>
+  <li>编译时注解——注解在源码和.class文件都会存在的，JDK自带的注解都是编译时注解</li>
+  <li>运行时注解——在运行阶段还起作用，甚至会影响运行逻辑的注解，比如：@Autowired。</li>
+</ul>
+
+<h2 id="学会自定义注解">学会自定义注解</h2>
+<p>学习注解最终就是要把他应用的实际中，其中看懂注解固然重要，会自定义注解并在实际项目中解决问题也不可忽视</p>
+
+<p>要自定义注解就要先了解下面的的元注解：</p>
+
+<ul>
+  <li>@Target—作用域（constructor(构造方法声明)，field（字段声明），local_variable（局部变量声明），method（方法声明），package（包声明），parameter（参数声明），type（类，接口声明））</li>
+  <li>@Retention—生命周期（source：只在源码显示，编译时会丢弃。class：编译时会记录到class中，运行时忽略。runtime：运行时存在，可以通过反射读取）</li>
+  <li>Inherited—标识注解(允许子类继承)</li>
+  <li>Documented—生成Javadoc</li>
+</ul>
+
+<h2 id="下面看一个自定义注解的实例">下面看一个自定义注解的实例</h2>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="nd">@Target</span><span class="o">({</span><span class="n">ElementType</span><span class="o">.</span><span class="na">METHOD</span><span class="o">,})</span> <span class="c1">//作用域(控制注解能被用在什么地方)</span>
+<span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span> <span class="c1">//生命周期</span>
+<span class="nd">@Inherited</span> <span class="c1">//标识注解(允许子类继承)</span>
+<span class="nd">@Documented</span> <span class="c1">//生成javadoc会生成注解信息</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Description</span> <span class="o">{</span>
+    <span class="c1">//1.类型受限制，包括基本类型及String、Class、Annotation、Enumeration</span>
+    <span class="c1">//2.若只有一个成员，则名称必须为value(),使用时可以忽略成员名和赋值号(=)</span>
+    <span class="c1">//3.注解类可以没有成员，称为标识注解</span>
+    <span class="c1">//4成员无参且无异常声明</span>
+    <span class="n">String</span> <span class="nf">desc</span><span class="o">();</span>
+    <span class="n">String</span> <span class="nf">author</span><span class="o">();</span>
+    <span class="c1">//5可指定默认值</span>
+    <span class="kt">int</span> <span class="nf">age</span><span class="o">()</span> <span class="k">default</span> <span class="mi">18</span><span class="o">;</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Description</span><span class="o">{</span>
+    <span class="n">String</span> <span class="n">desc</span><span class="o">;</span>
+    <span class="n">String</span> <span class="n">author</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">age</span> <span class="k">default</span> <span class="mi">18</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="解析注解">解析注解</h2>
+
+<p>概念：通过反射获取类、函数或成员上的运行时注解信息，从而实现动态控制程序运行的逻辑。</p>
+
+<p>只是定义注解而不解析是没有任何用处的，解析注解为注解学习的核心，最主要的是了解两个方法isAnnotationPresent和getAnnotation</p>
+
+<p>@Inherited（子类是否可继承） 对接口interface、方法继承没有作用，对类才有效。
+通过反射回去类，函数或成员以上的运行时的注解信息从而实现动态控制程序运行的逻辑</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+</pre></td><td class="rouge-code"><pre><span class="c1">//1.使用类加载器加载类</span>
+<span class="k">try</span> <span class="o">{</span>
+    <span class="n">Class</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"com.ann.test.Child"</span><span class="o">);</span>
+    <span class="c1">//2.找到类上的注解</span>
+    <span class="kt">boolean</span> <span class="n">isExist</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">Description</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">isExist</span><span class="o">){</span>
+        <span class="c1">//3.拿到注解实例</span>
+        <span class="n">Description</span> <span class="n">d</span> <span class="o">=</span> <span class="o">(</span><span class="n">Description</span><span class="o">)</span><span class="n">c</span><span class="o">.</span><span class="na">getAnnotation</span><span class="o">(</span><span class="n">Description</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">d</span><span class="o">.</span><span class="na">value</span><span class="o">());</span>
+    <span class="o">}</span>
+    <span class="c1">//4.找到方法上的注解</span>
+    <span class="n">Method</span><span class="o">[]</span> <span class="n">ms</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">getMethods</span><span class="o">();</span>
+    <span class="k">for</span><span class="o">(</span><span class="n">Method</span> <span class="nl">m:</span><span class="n">ms</span><span class="o">){</span>
+        <span class="kt">boolean</span> <span class="n">isMExist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="na">isAnnotationPresent</span><span class="o">(</span><span class="n">Description</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">isMExist</span><span class="o">){</span>
+            <span class="n">Description</span> <span class="n">d</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="na">getAnnotation</span><span class="o">(</span><span class="n">Description</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">d</span><span class="o">.</span><span class="na">value</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="c1">//另外一种解析方法</span>
+    <span class="k">for</span><span class="o">(</span><span class="n">Method</span> <span class="nl">m:</span><span class="n">ms</span><span class="o">){</span>
+        <span class="n">Annotation</span><span class="o">[]</span> <span class="n">as</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="na">getAnnotations</span><span class="o">();</span>
+        <span class="k">for</span><span class="o">(</span><span class="n">Annotation</span> <span class="nl">a:</span><span class="n">as</span><span class="o">){</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">a</span> <span class="k">instanceof</span> <span class="n">Description</span><span class="o">){</span>
+            <span class="n">Description</span> <span class="n">d</span> <span class="o">=</span> <span class="o">(</span><span class="n">Description</span><span class="o">)</span><span class="n">a</span><span class="o">;</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">d</span><span class="o">.</span><span class="na">value</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ClassNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+            </div>
+
+            <!-- Rating -->
+            
+
+            <!-- Post Date -->
+            <p>
+            <small>
+                <span class="post-date"><time class="post-date" datetime="2017-01-11">11 Jan 2017</time></span>           
+                
+                </small>
+            </p>
+
+            <!-- Post Categories -->
+            <div class="after-post-cats">
+                <ul class="tags mb-4">
+                    
+                    
+                    <li>
+                        <a class="smoothscroll" href="/missyo/categories#后端">后端</a>
+                    </li>
+                    
+                </ul>
+            </div>
+            <!-- End Categories -->
+
+            <!-- Post Tags -->
+            <div class="after-post-tags">
+                <ul class="tags">
+                    
+                    
+                </ul>
+            </div>
+            <!-- End Tags -->
+
+            <!-- Prev/Next -->
+            <div class="row PageNavigation d-flex justify-content-between font-weight-bold">
+            
+            <a class="prev d-block col-md-6" href="/missyo//%E5%88%9D%E8%AF%86Maven/"> &laquo; 初识Maven</a>
+            
+            
+            <a class="next d-block col-md-6 text-lg-right" href="/missyo//Maven%E7%9A%84IDE%E9%9B%86%E6%88%90%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">Maven的IDE集成使用与生命周期 &raquo; </a>
+            
+            <div class="clearfix"></div>
+            </div>
+            <!-- End Categories -->
+
+        </div>
+        <!-- End Post -->
+
+    </div>
+</div>
+<!-- End Article
+================================================== -->
+
+<!-- Begin Comments
+================================================== -->
+
+<!--End Comments
+================================================== -->
+
+<!-- Review with LD-JSON, adapt it for your needs if you like, but make sure you test the generated HTML source code first: 
+https://search.google.com/structured-data/testing-tool/u/0/
+================================================== -->
+
+</div>
+
+
+<!-- Bottom Alert Bar
+================================================== -->
+<!--<div class="alertbar">-->
+<!--	<div class="container text-center">-->
+<!--		<span><img src="/missyo/assets/images/logo.png" alt="Missyo"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>-->
+<!--        <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>-->
+<!--            <div class="mc-field-group">-->
+<!--            <input type="email" placeholder="Email" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>-->
+<!--            <input type="submit" value="Subscribe" name="subscribe" class="heart">-->
+<!--            </div>-->
+<!--        </form>-->
+<!--	</div>-->
+<!--</div>-->
+
+    
+</div>
+
+<!-- Categories Jumbotron
+================================================== -->
+<div class="jumbotron fortags">
+	<div class="d-md-flex h-100">
+		<div class="col-md-4 transpdark align-self-center text-center h-100">
+            <div class="d-md-flex align-items-center justify-content-center h-100">
+                <h2 class="d-md-block align-self-center py-1 font-weight-light">探索 <span class="d-none d-md-inline">→</span></h2>
+            </div>
+		</div>
+		<div class="col-md-8 p-5 align-self-center text-center">
+            
+            
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#APP">APP (3)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#后端">后端 (11)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#数据库">数据库 (2)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#算法">算法 (18)</a>
+                
+            
+            
+		</div>
+	</div>
+</div>
+
+<!-- Begin Footer
+================================================== -->
+<!--<footer class="footer">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-6 col-sm-6 text-center text-lg-left">-->
+<!--                Copyright © 2020 missyo -->
+<!--            </div>-->
+<!--&lt;!&ndash;            <div class="col-md-6 col-sm-6 text-center text-lg-right">    &ndash;&gt;-->
+<!--&lt;!&ndash;                <a target="_blank" href="https://www.wowthemes.net/mediumish-free-jekyll-template/">Mediumish Jekyll Theme</a> by WowThemes.net&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</footer>-->
+<!-- End Footer
+================================================== -->
+
+</div> <!-- /.site-content -->
+
+<!-- Scripts
+================================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+<script src="/missyo/assets/js/mediumish.js"></script>
+
+
+
+<script src="/missyo/assets/js/ie10-viewport-bug-workaround.js"></script> 
+
+
+<script id="dsq-count-scr" src="//demowebsite.disqus.com/count.js"></script>
+
+
+</body>
+</html>

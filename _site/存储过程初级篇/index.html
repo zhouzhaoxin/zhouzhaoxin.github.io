@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" href="/missyo/assets/images/logo.png">
+
+<title>存储过程初级篇 | missyo</title>
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>存储过程初级篇 | Missyo</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="存储过程初级篇" />
+<meta name="author" content="zhouzhaoxin" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="本文旨在把自己学到的有关存储过程的知识和大家分享，并希望能够帮助正在被存储过程折磨的同学。 什么是存储过程 官方定义： A procedure is a subprogram that performs a specific action" />
+<meta property="og:description" content="本文旨在把自己学到的有关存储过程的知识和大家分享，并希望能够帮助正在被存储过程折磨的同学。 什么是存储过程 官方定义： A procedure is a subprogram that performs a specific action" />
+<link rel="canonical" href="http://localhost:4000/missyo/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%88%9D%E7%BA%A7%E7%AF%87/" />
+<meta property="og:url" content="http://localhost:4000/missyo/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%88%9D%E7%BA%A7%E7%AF%87/" />
+<meta property="og:site_name" content="Missyo" />
+<meta property="og:image" content="http://localhost:4000/missyo/assets/images/17.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-12-24T00:00:00+08:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/missyo/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%88%9D%E7%BA%A7%E7%AF%87/","headline":"存储过程初级篇","datePublished":"2016-12-24T00:00:00+08:00","dateModified":"2016-12-24T00:00:00+08:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/missyo/assets/images/logo.png"},"name":"zhouzhaoxin"},"image":"http://localhost:4000/missyo/assets/images/17.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/missyo/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%88%9D%E7%BA%A7%E7%AF%87/"},"author":{"@type":"Person","name":"zhouzhaoxin"},"description":"本文旨在把自己学到的有关存储过程的知识和大家分享，并希望能够帮助正在被存储过程折磨的同学。 什么是存储过程 官方定义： A procedure is a subprogram that performs a specific action","@type":"BlogPosting","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+<link href="/missyo/assets/css/screen.css" rel="stylesheet">
+
+<link href="/missyo/assets/css/main.css" rel="stylesheet">
+
+<script src="/missyo/assets/js/jquery.min.js"></script>
+
+</head>
+
+
+
+
+<body class="layout-post">
+	<!-- defer loading of font and font awesome -->
+	<noscript id="deferred-styles">
+		<link href="https://fonts.googleapis.com/css?family=Righteous%7CMerriweather:300,300i,400,400i,700,700i" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</noscript>
+
+
+<!-- Begin Menu Navigation
+================================================== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top mediumnavigation nav-down">
+
+    <div class="container pr-0">
+
+    <!-- Begin Logo -->
+    <a class="navbar-brand" href="/missyo/">
+    <img src="/missyo/assets/images/logo.png" alt="missyo">
+    </a>
+    <!-- End Logo -->
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMediumish" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMediumish">
+
+        <!-- Begin Menu -->
+
+            <ul class="navbar-nav ml-auto">
+
+                
+                <li class="nav-item">
+                
+                <a class="nav-link" href="/missyo/index.html">博客</a>
+                </li>
+
+<!--                <li class="nav-item">-->
+<!--                <a class="nav-link" href="/missyo/about">关于我</a>-->
+<!--                </li>-->
+
+                <script src="/missyo/assets/js/lunr.js"></script>
+
+
+<style>
+    .lunrsearchresult .title {color: #d9230f;}
+    .lunrsearchresult .url {color: silver;}
+    .lunrsearchresult a {display: block; color: #777;}
+    .lunrsearchresult a:hover, .lunrsearchresult a:focus {text-decoration: none;}
+    .lunrsearchresult a:hover .title {text-decoration: underline;}
+</style>
+
+
+<form class="bd-search" onSubmit="return lunr_search(document.getElementById('lunrsearch').value);">
+    <input type="text" class="form-control text-small launch-modal-search" id="lunrsearch" name="q" maxlength="255" value="" placeholder="点击回车搜索..."/>
+</form>
+
+<div id="lunrsearchresults">
+    <ul></ul>
+</div>
+
+<script src="/missyo/assets/js/lunrsearchengine.js"></script>
+
+            </ul>
+
+        <!-- End Menu -->
+
+    </div>
+
+    </div>
+</nav>
+<!-- End Navigation
+================================================== -->
+
+<div class="site-content">
+
+<div class="container">
+
+<!-- Site Title
+================================================== -->
+<div class="mainheading">
+    <h1 class="sitetitle">missyo</h1>
+    <p class="lead">
+        学习·生活·反思
+    </p>
+</div>
+
+<!-- Content
+================================================== -->
+<div class="main-content">
+    <!-- Begin Article
+================================================== -->
+<div class="container">
+    <div class="row">
+
+        <!-- Post Share -->
+        <div class="col-md-2 pl-0">
+            <div class="share sticky-top sticky-top-offset">
+    <p>
+        分享
+    </p>
+    <ul>
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=存储过程初级篇&url=http://localhost:4000/missyo/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%88%9D%E7%BA%A7%E7%AF%87/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=http://localhost:4000/missyo/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%88%9D%E7%BA%A7%E7%AF%87/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:4000/missyo/%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%88%9D%E7%BA%A7%E7%AF%87/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </li>
+
+    </ul>
+    
+</div>
+
+        </div>
+
+        <!-- Post -->
+        
+
+        <div class="col-md-9 flex-first flex-md-unordered">
+            <div class="mainheading">
+
+                <!-- Author Box -->
+                
+                <div class="row post-top-meta">
+                    <div class="col-xs-12 col-md-3 col-lg-2 text-center text-md-left mb-4 mb-md-0">
+                        
+                        <img class="author-thumb" src="https://www.gravatar.com/avatar/e56154546cf4be74e393c62d1ae9f9d4?s=250&d=mm&r=x" alt="zhouzhaoxin">
+                        
+                    </div>
+                    <div class="col-xs-12 col-md-9 col-lg-10 text-center text-md-left">
+                        <a target="_blank" class="link-dark" href="https://www.wowthemes.net">zhouzhaoxin</a><a target="_blank" href="" class="btn follow">Follow</a>
+                        <span class="author-description">Author of Mediumish, a Bootstrap Medium styled template available for WordPress, HTML, Ghost and Jekyll. You are currently previewing Jekyll template demo.</span>
+                    </div>
+                </div>
+                
+
+                <!-- Post Title -->
+                <h1 class="posttitle">存储过程初级篇</h1>
+
+            </div>
+
+            <!-- Adsense if enabled from _config.yml (change your pub id and slot) -->
+            
+            <!-- End Adsense -->
+
+            <!-- Post Featured Image -->
+            
+
+            
+            <img class="featured-image img-fluid" src="/missyo/assets/images/17.jpg" alt="存储过程初级篇">
+            
+
+            
+            <!-- End Featured Image -->
+
+            <!-- Post Content -->
+            <div class="article-post">
+                <!-- Toc if any -->
+                
+                <!-- End Toc -->
+                <p>本文旨在把自己学到的有关存储过程的知识和大家分享，并希望能够帮助正在被存储过程折磨的同学。</p>
+<h3 id="什么是存储过程">什么是存储过程</h3>
+<blockquote>
+  <p><a href="http://docs.oracle.com/cd/E11882_01/appdev.112/e25519/subprograms.htm#LNPLS99900">官方定义：</a>
+A procedure is a subprogram that performs a specific action</p>
+</blockquote>
+
+<blockquote>
+  <p>A PL/SQL subprogram is a named PL/SQL block that can be invoked repeatedly. If the subprogram has parameters, their values can differ for each invocation.</p>
+</blockquote>
+
+<blockquote>
+  <p>A subprogram is either a procedure or a function. Typically, you use a procedure to perform an action and a function to compute and return a value.</p>
+</blockquote>
+
+<p><strong>翻译：</strong>
+存储过程是一个可以执行特定行为的子程序</p>
+
+<p>PL/SQL子程序是一个可以被重复调用的拥有名称的PL/SQL块（PL/SQL程序都是以块为基本单位的）。如果这个子程序有参数，我们则可以在调用的时候赋予不同的参数</p>
+
+<p>子程序可以是存储过程或函数。通常情况下，你可以使用存储过程来执行一个动作，使用函数来计算并返回一个值</p>
+
+<p><strong>总结：</strong>存储过程对于不同的领域的人有不同的理解方式。可以把它理解为一个指令集，它可以帮助我们完成一系列复杂的数据操作，也可以把它看做一个专门处理SQL的批处理工具，在需要的时候执行一些增删改查的操作。</p>
+
+<h3 id="为什么学习存储过程">为什么学习存储过程</h3>
+<p>相信在学习存储过程的你一定已经对普通SQL了如指掌了，简单了解了存储过程的概念之后，用普通的SQL与存储过程进行比较可以让我们在工作中做出正确的选择。两者区别很大，详细的对比可以问度娘，由于本文主讲存储过程，故罗列一些重要存储过程的优点如下：</p>
+<ul>
+  <li>降低网络的通讯量。如果只是执行简单的SQL语句的话存储过程和普通SQL没有太大差别，但随着时间的推移SQL量越来越大甚至达到上百行时，其优越性明显体现</li>
+  <li>提高执行效率。我们都知道SQL是先编译再执行的，而存储过程是预编译在服务器中的，当执行的时候跳过编译的环节效率自然会提高</li>
+  <li>可维护性高。更新存储过程通常比更新，测试，重新部署需要较少的时间和精力</li>
+</ul>
+
+<p>总之存储过程是一个SQL提供的一个非常优秀的功能，在工作中我们或多或少都会用到，学会存储过程绝对会让你受益匪浅。</p>
+<h3 id="plsql存储过程">PL/SQL存储过程</h3>
+<hr />
+<h5 id="基本语法">基本语法</h5>
+<p>存储过程在不同的数据库语言中语法略有不同，本文针对ORACLE的PL/SQL，但其他数据库语言也是大同小异
+<img src="http://upload-images.jianshu.io/upload_images/3993341-4182833472a4d9cf.gif?imageMogr2/auto-orient/strip" alt="create_procedure" /></p>
+
+<p>上图是一个存储过程的模型，由此可知一个最简单的存储过程必须包含以下关键字CREATE、PROCEDURE、存储过程名称、IS/AS、PL/SQLB标准执行语句（BEGIN … END;）。
+通过不断的实践我们将会完全理解上图的含义。首先从简单的存储过程开始(其功能是向EMP表中添加一条数据)：</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="k">create</span>        <span class="c1">-- 存储过程头部区域开始 </span>
+<span class="k">or</span> <span class="k">replace</span>    <span class="c1">--可选表示如果数据库中已经存在一条相同名称的存储过程就把它替换掉</span>
+<span class="k">procedure</span>
+<span class="n">proc_emp_create</span> <span class="c1">--存储过程名称 procedure_name</span>
+<span class="p">(</span>
+<span class="n">empno</span> <span class="n">number</span><span class="p">,</span> <span class="n">ename</span> <span class="n">varchar2</span><span class="p">,</span> <span class="n">job</span> <span class="n">varchar2</span><span class="p">,</span> <span class="n">mgr</span> <span class="n">number</span><span class="p">,</span> <span class="n">hiredate</span> <span class="n">date</span><span class="p">,</span> <span class="n">sal</span> <span class="n">number</span><span class="p">,</span> <span class="n">comm</span> <span class="n">number</span><span class="p">,</span> <span class="n">deptno</span> <span class="n">number</span>
+<span class="p">)</span> <span class="c1">-- parameter_declaration 声明参数（注意不需要写长度），存储过程头部区域结束</span>
+<span class="k">as</span>
+<span class="c1">--声明区域，不需要声明变量可以不写</span>
+<span class="k">begin</span> <span class="c1">-- PL/SQL标准执行语句</span>
+<span class="c1">--执行区域</span>
+  <span class="k">insert</span> <span class="k">into</span> <span class="n">emp</span> <span class="k">values</span><span class="p">(</span><span class="n">empno</span><span class="p">,</span> <span class="n">ename</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">mgr</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">,</span> <span class="n">sal</span><span class="p">,</span> <span class="n">comm</span><span class="p">,</span> <span class="n">deptno</span><span class="p">);</span>
+<span class="k">end</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>当我们执行上面的存储过程之后这条存储过程就被编译到数据库中了，进入PLSQL Developer中的Procedures文件夹就可以看到我们刚才创建的存储过程了</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/3993341-20071311d7544ea5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="已经编译好的存储过程" /></p>
+
+<p>既然存储过程已经写好并编译完成了，接下来就是使用我们创建的存储过程了。使用存储过程有两种方法：
+第一种是直接在SQL窗口中，执行SQL语句。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">begin</span>
+  <span class="n">proc_emp_create</span><span class="p">(</span><span class="mi">7778</span><span class="p">,</span><span class="s1">'Alexander'</span><span class="p">,</span><span class="s1">'analyst'</span><span class="p">,</span><span class="mi">6789</span><span class="p">,</span><span class="n">sysdate</span><span class="p">,</span><span class="mi">4321</span><span class="p">,</span><span class="s1">''</span><span class="p">,</span><span class="mi">20</span><span class="p">);</span>
+<span class="k">end</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>第二种是在命令窗口中使用execute命令</p>
+<pre><code class="language-comand">Connected to Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 
+Connected as scott
+ 
+SQL&gt; execute   proc_emp_create(7778,'Alexander','analyst',6789,sysdate,4321,'',20);
+ 
+PL/SQL procedure successfully completed
+ 
+SQL&gt; 
+</code></pre>
+<p>无论使用哪一种方法，我们都会发现在EMP表中已经多了一条刚才插入的数据。也就是说，我们以后想要向EMP表中插入数据的话，就可以直接调用这条存储过程来执行插入操作。</p>
+
+<p>从上面的例子可以看出，一个存储过程可以分成三个区域</p>
+<ol>
+  <li>头部区域
+  用于编写最基本的存储过程头部标记，定义是否要创建一个替代原有存储过程的存储过程；决定是否定义参数；定义参数的类型（in out inout）；定义执行权限（Schema）。</li>
+  <li>声明区域
+  用于声明变量（要定义长度）包括cursor；</li>
+  <li>执行区域
+用于执行业务逻辑代码，可以使用条件语句（选择、判断、循环。。。）来进行一些业务逻辑CRUD的处理</li>
+</ol>
+
+<h5 id="继续实践">继续实践</h5>
+<p>了解了存储过程的基本语法和用途之后，再通过一些简单的实例可以帮助我们更好的理解存储过程的语法和其含义。上面的例子简单的完成了对EMP表的添加功能，接下来将会使用存储过程对EMP进行删除、修改和查询功能，实现完整的CRUD
+<strong>D</strong>
+创建用于根据EMPNO删除EMP中一条数据的存储过程</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="k">create</span> <span class="k">or</span> <span class="k">replace</span> <span class="k">procedure</span> <span class="n">proc_emp_delete</span><span class="p">(</span><span class="n">deleteid</span> <span class="n">number</span><span class="p">)</span> <span class="k">as</span>
+<span class="k">begin</span> 
+  <span class="k">delete</span> <span class="k">from</span> <span class="n">emp</span> <span class="k">where</span> <span class="n">empno</span> <span class="o">=</span> <span class="n">deleteid</span><span class="p">;</span>
+<span class="k">end</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>执行（两种方法任选其一即可）</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">begin</span>
+  <span class="n">proc_emp_delete</span><span class="p">(</span><span class="mi">7778</span><span class="p">);</span>
+<span class="k">end</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>执行完成之后，刚才我们在了解存储过程语法的那条数据就被删除了
+<strong>U</strong>
+接下来来写更新的存储过程，首先准备一条数据</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">begin</span> 
+<span class="n">proc_emp_create</span><span class="p">(</span><span class="mi">7778</span><span class="p">,</span><span class="s1">'Alexander'</span><span class="p">,</span><span class="s1">'analyst'</span><span class="p">,</span><span class="mi">6789</span><span class="p">,</span><span class="n">sysdate</span><span class="p">,</span><span class="mi">4321</span><span class="p">,</span><span class="s1">''</span><span class="p">,</span><span class="mi">20</span><span class="p">);</span>
+<span class="k">end</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>执行之后刚才被我们删掉的数据就又重新插入到EMP表中，接下来写更新的存储过程</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="k">create</span> <span class="k">or</span> <span class="k">replace</span> <span class="k">procedure</span>
+<span class="n">proc_emp_update</span> 
+<span class="p">(</span>
+<span class="n">p_empno</span> <span class="n">number</span><span class="p">,</span> <span class="n">p_ename</span> <span class="n">varchar2</span><span class="p">,</span> <span class="n">p_job</span> <span class="n">varchar2</span><span class="p">,</span> <span class="n">p_mgr</span> <span class="n">number</span><span class="p">,</span> <span class="n">p_hiredate</span> <span class="n">date</span><span class="p">,</span> <span class="n">p_sal</span> <span class="n">number</span><span class="p">,</span> <span class="n">p_comm</span> <span class="n">number</span><span class="p">,</span> <span class="n">p_deptno</span> <span class="n">number</span>
+<span class="p">)</span> 
+<span class="k">as</span>
+<span class="k">begin</span>
+  <span class="k">update</span> <span class="n">emp</span> <span class="k">set</span> <span class="n">ename</span> <span class="o">=</span> <span class="n">p_ename</span><span class="p">,</span><span class="n">job</span> <span class="o">=</span> <span class="n">p_job</span><span class="p">,</span><span class="n">mgr</span> <span class="o">=</span> <span class="n">p_mgr</span><span class="p">,</span><span class="n">hiredate</span><span class="o">=</span><span class="n">p_hiredate</span><span class="p">,</span><span class="n">sal</span> <span class="o">=</span> <span class="n">p_sal</span><span class="p">,</span><span class="n">comm</span><span class="o">=</span><span class="n">p_comm</span><span class="p">,</span><span class="n">deptno</span> <span class="o">=</span> <span class="n">p_deptno</span> <span class="k">where</span> <span class="n">empno</span><span class="o">=</span><span class="n">p_empno</span><span class="p">;</span>
+<span class="k">end</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>需要注意的是参数不能和字段表的名称相同，接下来执行</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">begin</span>
+  <span class="n">proc_emp_update</span><span class="p">(</span><span class="mi">7778</span><span class="p">,</span><span class="s1">'Alexander'</span><span class="p">,</span><span class="s1">'analyst'</span><span class="p">,</span><span class="s1">'6789'</span><span class="p">,</span><span class="n">sysdate</span><span class="p">,</span><span class="mi">4321</span><span class="p">,</span><span class="mi">3000</span><span class="p">,</span><span class="mi">10</span><span class="p">);</span>
+<span class="k">end</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>再次查询会发现Alexander的奖金多了3000块。
+R
+最后要做的就是查询了，对于多条数据的查询输出要使用cursor，留在下篇文章中讨论，我们先做一个最简单的单条数据查询</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="k">create</span> <span class="k">or</span> <span class="k">replace</span> <span class="k">procedure</span> <span class="n">proc_emp_read</span>
+<span class="k">as</span> 
+<span class="n">v_no</span> <span class="n">number</span><span class="p">;</span><span class="c1">--声明变量</span>
+<span class="k">begin</span> 
+  <span class="k">select</span> <span class="k">count</span><span class="p">(</span><span class="n">empno</span><span class="p">)</span> <span class="k">into</span> <span class="n">v_no</span> <span class="k">from</span> <span class="n">emp</span><span class="p">;</span><span class="c1">--在执行代码块里面查询一定要使用into赋值</span>
+  <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="n">v_no</span><span class="p">);</span>
+<span class="k">end</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>接下来执行</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">begin</span>
+  <span class="n">proc_emp_read</span><span class="p">;</span>
+<span class="k">end</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>我的结果如下图所示：
+<img src="http://upload-images.jianshu.io/upload_images/3993341-ebd43290102a5a9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查询EMP表总记录数结果" /></p>
+
+<p>至此，简单的CRUD实践就完成了，相信你已经对存储过程有了大概的理解并能写出简单存储过程了。当然这只是存储过程最基本的使用方法，其高级特性（cursor、schema、控制语句、事务等）将在下篇文章中讨论。</p>
+
+            </div>
+
+            <!-- Rating -->
+            
+
+            <!-- Post Date -->
+            <p>
+            <small>
+                <span class="post-date"><time class="post-date" datetime="2016-12-24">24 Dec 2016</time></span>           
+                
+                </small>
+            </p>
+
+            <!-- Post Categories -->
+            <div class="after-post-cats">
+                <ul class="tags mb-4">
+                    
+                    
+                    <li>
+                        <a class="smoothscroll" href="/missyo/categories#数据库">数据库</a>
+                    </li>
+                    
+                </ul>
+            </div>
+            <!-- End Categories -->
+
+            <!-- Post Tags -->
+            <div class="after-post-tags">
+                <ul class="tags">
+                    
+                    
+                </ul>
+            </div>
+            <!-- End Tags -->
+
+            <!-- Prev/Next -->
+            <div class="row PageNavigation d-flex justify-content-between font-weight-bold">
+            
+            <a class="prev d-block col-md-6" href="/missyo//%E5%88%9D%E8%AF%86HTTP%E5%8D%8F%E8%AE%AE/"> &laquo; 初识HTTP协议</a>
+            
+            
+            <a class="next d-block col-md-6 text-lg-right" href="/missyo//%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E9%AB%98%E7%BA%A7%E7%AF%87/">存储过程高级篇 &raquo; </a>
+            
+            <div class="clearfix"></div>
+            </div>
+            <!-- End Categories -->
+
+        </div>
+        <!-- End Post -->
+
+    </div>
+</div>
+<!-- End Article
+================================================== -->
+
+<!-- Begin Comments
+================================================== -->
+
+<!--End Comments
+================================================== -->
+
+<!-- Review with LD-JSON, adapt it for your needs if you like, but make sure you test the generated HTML source code first: 
+https://search.google.com/structured-data/testing-tool/u/0/
+================================================== -->
+
+</div>
+
+
+<!-- Bottom Alert Bar
+================================================== -->
+<!--<div class="alertbar">-->
+<!--	<div class="container text-center">-->
+<!--		<span><img src="/missyo/assets/images/logo.png" alt="Missyo"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>-->
+<!--        <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>-->
+<!--            <div class="mc-field-group">-->
+<!--            <input type="email" placeholder="Email" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>-->
+<!--            <input type="submit" value="Subscribe" name="subscribe" class="heart">-->
+<!--            </div>-->
+<!--        </form>-->
+<!--	</div>-->
+<!--</div>-->
+
+    
+</div>
+
+<!-- Categories Jumbotron
+================================================== -->
+<div class="jumbotron fortags">
+	<div class="d-md-flex h-100">
+		<div class="col-md-4 transpdark align-self-center text-center h-100">
+            <div class="d-md-flex align-items-center justify-content-center h-100">
+                <h2 class="d-md-block align-self-center py-1 font-weight-light">探索 <span class="d-none d-md-inline">→</span></h2>
+            </div>
+		</div>
+		<div class="col-md-8 p-5 align-self-center text-center">
+            
+            
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#APP">APP (3)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#后端">后端 (11)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#数据库">数据库 (2)</a>
+                
+                    <a class="mt-1 mb-1" href="/missyo/categories#算法">算法 (18)</a>
+                
+            
+            
+		</div>
+	</div>
+</div>
+
+<!-- Begin Footer
+================================================== -->
+<!--<footer class="footer">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-6 col-sm-6 text-center text-lg-left">-->
+<!--                Copyright © 2020 missyo -->
+<!--            </div>-->
+<!--&lt;!&ndash;            <div class="col-md-6 col-sm-6 text-center text-lg-right">    &ndash;&gt;-->
+<!--&lt;!&ndash;                <a target="_blank" href="https://www.wowthemes.net/mediumish-free-jekyll-template/">Mediumish Jekyll Theme</a> by WowThemes.net&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</footer>-->
+<!-- End Footer
+================================================== -->
+
+</div> <!-- /.site-content -->
+
+<!-- Scripts
+================================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+<script src="/missyo/assets/js/mediumish.js"></script>
+
+
+
+<script src="/missyo/assets/js/ie10-viewport-bug-workaround.js"></script> 
+
+
+<script id="dsq-count-scr" src="//demowebsite.disqus.com/count.js"></script>
+
+
+</body>
+</html>
